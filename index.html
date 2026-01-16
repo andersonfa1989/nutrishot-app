@@ -3,203 +3,169 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <title>NutriShot Elements</title>
+    <title>NutriShot Pro</title>
     <style>
-        :root { --primary: #2ab573; --secondary: #6a11cb; --bg: #ffffff; --text: #333; }
-        body { margin: 0; font-family: -apple-system, sans-serif; background: #f8f9fa; color: var(--text); padding-bottom: 80px; overflow-x: hidden; }
-        .container { padding: 20px; text-align: center; }
-        .texto-logo { font-size: 38px; font-weight: bold; background: linear-gradient(to right, #2ab573, #2490eb, #f39c12); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 15px 0; }
+        :root { --primary: #2ab573; --secondary: #6a11cb; --bg: #f8f9fa; --text: #333; }
+        body { margin: 0; font-family: -apple-system, sans-serif; background: #f8f9fa; color: var(--text); padding-bottom: 100px; }
         
-        /* Inputs e Botões */
-        .input-estilizado { width: 100%; padding: 15px; margin-bottom: 12px; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box; font-size: 16px; background: #fdfdfd; }
-        .btn-preto { width: 100%; background: #000; color: #fff; border: none; padding: 18px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
-        .btn-branco { width: 100%; background: #fff; color: #333; border: 1px solid #eee; padding: 15px; border-radius: 30px; font-size: 16px; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        /* Cabeçalho */
+        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; }
         
-        /* Grid de Tipos de Refeição */
-        .grid-tipos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
-        .tipo-btn { padding: 18px; border-radius: 25px; border: 1px solid #eee; background: #fff; font-size: 16px; cursor: pointer; font-weight: 500; transition: 0.2s; }
-        .tipo-btn.ativo { background: #000 !important; color: #fff !important; border-color: #000; }
-
-        /* Botão Loja */
-        .btn-loja { width: 100%; background: var(--primary); color: #fff; border: none; padding: 16px; border-radius: 15px; font-size: 14px; font-weight: bold; cursor: pointer; margin: 5px 0 15px 0; display: flex; align-items: center; justify-content: center; gap: 8px; }
-
-        /* Cards */
-        .card-home { background: #fff; padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #f2f2f2; text-align: left; }
-        .grid-macros { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .macro-box { background: #fff; padding: 15px; border-radius: 15px; border: 1px solid #f2f2f2; text-align: center; }
+        /* Cards do Dashboard */
+        .card { background: #fff; border-radius: 15px; padding: 20px; margin: 10px 20px; border: 1px solid #f0f0f0; }
+        .card-streak { background: linear-gradient(135deg, #4e54c8, #8f94fb); color: #fff; border: none; }
         
-        /* Gráfico 7 Dias */
-        .chart-7days { display: flex; justify-content: space-between; align-items: flex-end; height: 80px; padding-top: 10px; }
-        .bar-group { display: flex; flex-direction: column; align-items: center; width: 12%; }
-        .bar-fill { width: 100%; background: #eee; height: 5px; border-radius: 10px; }
-        .bar-fill.active { background: var(--secondary); height: 8px; }
-        .bar-val { font-size: 10px; color: #bbb; margin-bottom: 4px; }
-        .bar-date { font-size: 10px; color: #bbb; margin-top: 8px; }
+        /* Botões de Ação */
+        .btn-green { background: var(--primary); color: #fff; border: none; width: calc(100% - 40px); margin: 10px 20px; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-black { background: #111; color: #fff; border: none; padding: 18px; border-radius: 30px; width: 100%; font-size: 16px; font-weight: 500; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-outline { background: #fff; color: #333; border: 1px solid #eee; padding: 18px; border-radius: 30px; width: 100%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
 
-        /* Conquistas */
-        .conquista-box { background: #f0f2f8; border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 12px; }
-        .conquista-icon { width: 45px; height: 45px; background: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        /* Grid Tipo Refeição */
+        .meal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+        .meal-option { background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 25px; text-align: center; cursor: pointer; font-size: 15px; transition: 0.3s; }
+        .meal-option.active { background: #111; color: #fff; border-color: #111; }
 
-        .btn-add-fixo { position: fixed; bottom: 85px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; border: none; font-size: 35px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 100; cursor: pointer; }
-        .ad-banner-area { position: fixed; bottom: 0; left: 0; width: 100%; height: 55px; background: #fff; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #bbb; z-index: 1000; }
+        /* Gráfico de Barras */
+        .chart { display: flex; justify-content: space-between; align-items: flex-end; height: 60px; margin-top: 15px; }
+        .bar-container { display: flex; flex-direction: column; align-items: center; width: 12%; }
+        .bar { width: 100%; height: 6px; background: #eee; border-radius: 10px; margin-bottom: 5px; }
+        .bar.active { background: #6a11cb; }
+        .bar-label { font-size: 10px; color: #aaa; }
+
+        /* FAB - Botão Flutuante */
+        .fab { position: fixed; bottom: 80px; right: 20px; width: 60px; height: 60px; background: #000; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: none; cursor: pointer; z-index: 999; }
     </style>
 </head>
 <body>
-    <div id="root"></div>
 
-    <input type="file" id="input-camera" accept="image/*" capture="environment" style="display:none" onchange="processarFoto()">
-    <input type="file" id="input-galeria" accept="image/*" style="display:none" onchange="processarFoto()">
+    <div id="app"></div>
+
+    <input type="file" id="cam-input" accept="image/*" capture="environment" style="display:none" onchange="finalizarUpload()">
+    <input type="file" id="gal-input" accept="image/*" style="display:none" onchange="finalizarUpload()">
 
     <script>
-        const ADMOB = { banner: "ca-app-pub-6941311170472131/2257554053" };
-        let dadosHoje = JSON.parse(localStorage.getItem('dadosHoje')) || { cal: 0, prot: 0, carb: 0, gord: 0, lista: [] };
-        let telaAtual = localStorage.getItem('logado') === 'true' ? 'home' : 'inicial';
-        let tipoRefeicaoTemp = 'Café Da Manhã'; //
+        let estado = {
+            tela: 'home',
+            calorias: 450,
+            refeicoes: [{ nome: 'Almoço', cal: 450 }],
+            tipoSelecionado: 'Café Da Manhã'
+        };
 
-        function navegar(tela) { telaAtual = tela; renderizar(); window.scrollTo(0,0); }
-        function salvar() { localStorage.setItem('dadosHoje', JSON.stringify(dadosHoje)); }
-
-        function acaoDicaPremiada() {
-            document.body.style.opacity = "0.5";
-            setTimeout(() => {
-                document.body.style.opacity = "1";
-                navegar('tela_dica');
-            }, 2000);
+        function navegar(tela) {
+            estado.tela = tela;
+            render();
+            window.scrollTo(0,0);
         }
 
-        // Função que simula a IA após o upload da foto
-        function processarFoto() {
-            document.body.style.opacity = "0.5";
-            setTimeout(() => {
-                document.body.style.opacity = "1";
-                dadosHoje.cal += 450;
-                dadosHoje.lista.unshift({ nome: tipoRefeicaoTemp, cal: 450 });
-                salvar();
-                navegar('home');
-            }, 1500);
+        function selecionarTipo(tipo) {
+            estado.tipoSelecionado = tipo;
+            render();
         }
 
-        function renderizar() {
-            const root = document.getElementById('root');
+        function finalizarUpload() {
+            // Simula o processamento da IA
+            estado.calorias += 450;
+            estado.refeicoes.unshift({ nome: estado.tipoSelecionado, cal: 450 });
+            navegar('home');
+        }
 
-            if (telaAtual === 'inicial') {
+        function render() {
+            const root = document.getElementById('app');
+            
+            if (estado.tela === 'home') {
                 root.innerHTML = `
-                    <div class="container" style="padding-top: 80px;">
-                        <h1 class="texto-logo">NutriShot</h1>
-                        <p style="color:#888; margin-bottom: 40px;">Sua jornada saudável começa aqui.</p>
-                        <button class="btn-preto" onclick="navegar('login')">Entrar</button>
-                        <button class="btn-branco" onclick="navegar('cadastro')">Criar Conta</button>
-                    </div>`;
-            }
-
-            else if (telaAtual === 'home') {
-                root.innerHTML = `
-                    <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+                    <div class="header">
                         <div><b>Olá, Isaac!</b><br><small style="color:#888;">Resumo de hoje</small></div>
-                        <button onclick="localStorage.removeItem('logado'); navegar('inicial')" style="background:none; border:1px solid #eee; padding:8px 12px; border-radius:12px; cursor:pointer;">Sair</button>
+                        <button style="background:white; border:1px solid #eee; padding:5px 15px; border-radius:10px;">Sair</button>
                     </div>
 
-                    <div style="padding: 0 20px;">
-                        <div style="background: linear-gradient(135deg, #6a11cb, #2575fc); color: #fff; padding: 25px; border-radius: 20px; margin-bottom: 20px;">
-                            <span style="font-size: 14px; opacity: 0.8;">Fogo na Sequência</span>
-                            <div style="font-size: 48px; font-weight: bold; margin: 5px 0;">1 🔥</div>
-                        </div>
+                    <div class="card card-streak">
+                        <small>Fogo na Sequência</small>
+                        <div style="font-size: 40px; font-weight: bold; margin-top:5px;">1 🔥</div>
+                    </div>
 
-                        <div class="card-home">
-                            <b>Últimos 7 Dias</b>
-                            <div class="chart-7days">
-                                ${['9/1','10/1','11/1','12/1','13/1','14/1','15/1'].map((d, i) => `
-                                    <div class="bar-group">
-                                        <span class="bar-val">${i === 5 ? '400' : '0'}</span>
-                                        <div class="bar-fill ${i === 5 ? 'active' : ''}"></div>
-                                        <span class="bar-date">${d}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-
-                        <button class="btn-loja" onclick="navegar('loja')">🛒 VER SUPLEMENTOS RECOMENDADOS</button>
-
-                        <div class="card-home">
-                            <b>Calorias Consumidas</b>
-                            <div style="margin: 15px 0; font-size: 28px; font-weight: bold;">${dadosHoje.cal} <small style="font-size: 14px; color: #aaa;">/ 2577 cal</small></div>
-                            <div style="width: 100%; background: #f0f0f0; height: 8px; border-radius: 10px;">
-                                <div style="width: ${Math.min((dadosHoje.cal/2577)*100, 100)}%; background: var(--primary); height: 8px; border-radius: 10px;"></div>
-                            </div>
-                        </div>
-
-                        <div class="card-home" style="border: 2px solid var(--primary); background: #f6fff9;">
-                            <b style="color: var(--primary);">Dica Especial</b>
-                            <p style="font-size: 13px; color: #666;">Assista ao vídeo e libere uma dica nutricional!</p>
-                            <button class="btn-preto" style="background: var(--primary); padding: 10px; font-size: 14px;" onclick="acaoDicaPremiada()">📺 Assistir Anúncio</button>
-                        </div>
-
-                        <div class="card-home">
-                            <b>Conquistas</b>
-                            <div class="conquista-box" style="margin-top:10px;">
-                                <div class="conquista-icon">🏆</div>
-                                <div><b>Primeira Refeição</b><br><small style="color:#888;">Você começou sua jornada!</small></div>
-                            </div>
-                        </div>
-
-                        <div class="card-home">
-                            <b>Refeições</b>
-                            <div style="margin-top: 10px;">
-                                ${dadosHoje.lista.length === 0 ? '<p style="color:#aaa; text-align:center;">Nenhuma refeição ainda.</p>' : 
-                                    dadosHoje.lista.map(item => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f9f9f9;"><span>${item.nome}</span><b>+${item.cal} cal</b></div>`).join('')
-                                }
-                            </div>
+                    <div class="card">
+                        <b style="font-size:14px; color:#555;">Últimos 7 Dias</b>
+                        <div class="chart">
+                            ${['9/1','10/1','11/1','12/1','13/1','14/1','15/1'].map((d, i) => `
+                                <div class="bar-container">
+                                    <span style="font-size:9px; color:#ccc;">${i===5?'400':'0'}</span>
+                                    <div class="bar ${i===5?'active':''}"></div>
+                                    <span class="bar-label">${d}</span>
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
 
-                    <button class="btn-add-fixo" onclick="navegar('add_refeicao')">+</button>
-                    <div class="ad-banner-area">BANNER AD: ${ADMOB.banner}</div>
+                    <button class="btn-green">🛒 VER SUPLEMENTOS RECOMENDADOS</button>
+
+                    <div class="card">
+                        <b style="font-size:14px; color:#555;">Calorias Consumidas</b>
+                        <div style="font-size: 24px; font-weight: bold; margin: 10px 0;">
+                            ${estado.calorias} <span style="font-size:14px; color:#aaa; font-weight:normal;">/ 2577 cal</span>
+                        </div>
+                        <div style="width:100%; height:8px; background:#f0f0f0; border-radius:10px;">
+                            <div style="width:${(estado.calorias/2577)*100}%; height:100%; background:var(--primary); border-radius:10px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="border: 1px solid var(--primary); background: #fafffb;">
+                        <b style="color:var(--primary); font-size:14px;">Dica Especial</b>
+                        <p style="font-size:12px; color:#666; margin: 5px 0 15px 0;">Assista ao vídeo e libere uma dica nutricional!</p>
+                        <button class="btn-green" style="margin:0; width:100%; padding:10px;">📺 Assistir Anúncio</button>
+                    </div>
+
+                    <div class="card">
+                        <b style="font-size:14px; color:#555;">Conquistas</b>
+                        <div style="display:flex; align-items:center; gap:15px; margin-top:15px; background:#f8f9ff; padding:12px; border-radius:12px;">
+                            <div style="background:#fff; padding:8px; border-radius:8px; font-size:20px;">🏆</div>
+                            <div><b style="font-size:14px;">Primeira Refeição</b><br><small style="color:#aaa;">Você começou sua jornada!</small></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <b style="font-size:14px; color:#555;">Refeições</b>
+                        <div style="margin-top:10px;">
+                            ${estado.refeicoes.map(r => `
+                                <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #fcfcfc;">
+                                    <span style="font-size:14px;">${r.nome}</span>
+                                    <b style="font-size:14px;">+${r.cal} cal</b>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <button class="fab" onclick="navegar('add')">+</button>
+                `;
+            } 
+            
+            else if (estado.tela === 'add') {
+                root.innerHTML = `
+                    <div style="padding: 20px;">
+                        <div style="display:flex; align-items:center; gap:15px; margin-bottom:25px;">
+                            <span onclick="navegar('home')" style="font-size:24px; cursor:pointer;">←</span>
+                            <b style="font-size:20px;">Adicionar Refeição</b>
+                        </div>
+
+                        <p style="font-size:15px; font-weight:600; margin-bottom:15px;">Tipo de Refeição</p>
+                        
+                        <div class="meal-grid">
+                            <div class="meal-option ${estado.tipoSelecionado === 'Café Da Manhã' ? 'active' : ''}" onclick="selecionarTipo('Café Da Manhã')">Café Da Manhã</div>
+                            <div class="meal-option ${estado.tipoSelecionado === 'Almoço' ? 'active' : ''}" onclick="selecionarTipo('Almoço')">Almoço</div>
+                            <div class="meal-option ${estado.tipoSelecionado === 'Jantar' ? 'active' : ''}" onclick="selecionarTipo('Jantar')">Jantar</div>
+                            <div class="meal-option ${estado.tipoSelecionado === 'Lanche' ? 'active' : ''}" onclick="selecionarTipo('Lanche')">Lanche</div>
+                        </div>
+
+                        <div style="margin-top:30px;">
+                            <button class="btn-black" onclick="document.getElementById('cam-input').click()">📸 Abrir Câmera</button>
+                            <button class="btn-outline" onclick="document.getElementById('gal-input').click()">📁 Escolher da Galeria</button>
+                        </div>
+                    </div>
                 `;
             }
-
-            // TELA ADICIONAR REFEIÇÃO
-            else if (telaAtual === 'add_refeicao') {
-                root.innerHTML = `
-                    <div class="container" style="text-align:left;">
-                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:30px;">
-                            <button onclick="navegar('home')" style="background:none; border:none; font-size:24px; cursor:pointer;">←</button>
-                            <h2 style="margin:0;">Adicionar Refeição</h2>
-                        </div>
-
-                        <p style="font-weight:bold; margin-bottom:15px;">Tipo de Refeição</p>
-                        <div class="grid-tipos">
-                            <button class="tipo-btn ${tipoRefeicaoTemp === 'Café Da Manhã' ? 'ativo' : ''}" onclick="tipoRefeicaoTemp='Café Da Manhã'; renderizar()">Café Da Manhã</button>
-                            <button class="tipo-btn ${tipoRefeicaoTemp === 'Almoço' ? 'ativo' : ''}" onclick="tipoRefeicaoTemp='Almoço'; renderizar()">Almoço</button>
-                            <button class="tipo-btn ${tipoRefeicaoTemp === 'Jantar' ? 'ativo' : ''}" onclick="tipoRefeicaoTemp='Jantar'; renderizar()">Jantar</button>
-                            <button class="tipo-btn ${tipoRefeicaoTemp === 'Lanche' ? 'ativo' : ''}" onclick="tipoRefeicaoTemp='Lanche'; renderizar()">Lanche</button>
-                        </div>
-
-                        <div style="margin-top:40px;">
-                            <button class="btn-preto" onclick="document.getElementById('input-camera').click()">📸 Abrir Câmera</button>
-                            <button class="btn-branco" onclick="document.getElementById('input-galeria').click()">📁 Escolher da Galeria</button>
-                        </div>
-                    </div>`;
-            }
-
-            // TELA LOGIN E CADASTRO (Simplificadas para o fluxo)
-            else if (telaAtual === 'login' || telaAtual === 'cadastro') {
-                root.innerHTML = `
-                    <div class="container">
-                        <h2 style="margin-top: 40px;">NutriShot</h2>
-                        <input type="email" class="input-estilizado" placeholder="Email">
-                        <input type="password" class="input-estilizado" placeholder="Senha">
-                        <button class="btn-preto" onclick="localStorage.setItem('logado','true'); navegar('home')">Continuar</button>
-                        <button class="btn-branco" onclick="navegar('inicial')">Voltar</button>
-                    </div>`;
-            }
-
-            else if (telaAtual === 'tela_dica' || telaAtual === 'loja') {
-                 // Mantém as telas de dica e loja conforme seu código original
-                 root.innerHTML = `<div class="container"><button class="btn-branco" onclick="navegar('home')">Voltar</button></div>`;
-            }
         }
 
-        renderizar();
+        render();
     </script>
 </body>
 </html>
