@@ -15,19 +15,22 @@
         .grid-macros { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .macro-box { background: #fff; padding: 15px; border-radius: 15px; border: 1px solid #f2f2f2; text-align: center; }
         .btn-add-fixo { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; border: none; font-size: 35px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 100; cursor: pointer; }
-        .chip { padding: 12px 20px; border-radius: 25px; border: 1px solid #eee; font-size: 14px; font-weight: 500; cursor: pointer; text-align: center; }
-        .chip.ativo { background: #000; color: #fff; border-color: #000; }
+        .chip { padding: 12px 20px; border-radius: 25px; border: 1px solid #eee; font-size: 14px; font-weight: 500; cursor: pointer; text-align: center; background: #fff; }
+        .chip.ativo { background: #000 ! color: #fff; border-color: #000; color: #fff; }
         .barra-dia { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
-        .progresso-dia { width: 100%; background: #eee; border-radius: 5px; position: relative; height: 60px; display: flex; align-items: flex-end; }
+        .progresso-dia { width: 100%; background: #eee; border-radius: 5px; height: 60px; display: flex; align-items: flex-end; }
         .preenchimento-dia { background: #6a11cb; width: 100%; border-radius: 5px; }
+        #previewContainer img { width: 100%; border-radius: 15px; margin-top: 20px; border: 1px solid #eee; }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script>
-      let telaAtual = 'inicial'; 
-      let usuario = { nome: 'Isaac Ferreira', localidade: '', imc: 0, meta: 2577 };
+      // Lógica de Persistência de Sessão
+      let telaAtual = localStorage.getItem('logado') === 'true' ? 'home' : 'inicial';
+      let refeicaoSelecionada = 'Café Da Manhã';
+      let usuario = { nome: 'Isaac Ferreira', meta: 2577 };
 
       function navegar(tela) {
         telaAtual = tela;
@@ -35,14 +38,30 @@
         window.scrollTo(0,0);
       }
 
-      function finalizarCadastro() {
-        const p = parseFloat(document.getElementById('p_saude').value);
-        const a = parseFloat(document.getElementById('a_saude').value) / 100;
-        if(p > 0 && a > 0) {
-          usuario.imc = (p / (a * a)).toFixed(1);
-          alert("Cadastro realizado! Por favor, faça login.");
-          navegar('login');
-        } else { alert("Preencha peso e altura."); }
+      function realizarLogin() {
+        localStorage.setItem('logado', 'true');
+        navegar('home');
+      }
+
+      function realizarSair() {
+        localStorage.removeItem('logado');
+        navegar('login');
+      }
+
+      function selecionarRefeicao(tipo) {
+        refeicaoSelecionada = tipo;
+        renderizar();
+      }
+
+      function handleFile(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            document.getElementById('previewContainer').innerHTML = `<img src="${e.target.result}" />`;
+          };
+          reader.readAsDataURL(file);
+        }
       }
 
       function renderizar() {
@@ -65,33 +84,8 @@
               <h1 style="font-size: 32px; margin-top: 40px;">Entrar</h1>
               <input type="email" class="input-estilizado" placeholder="Email">
               <input type="password" class="input-estilizado" placeholder="Senha">
-              <button class="btn-preto" onclick="navegar('home')">Registrar</button>
+              <button class="btn-preto" onclick="realizarLogin()">Registrar</button>
               <button class="btn-branco" onclick="navegar('inicial')">Voltar</button>
-            </div>
-          `;
-        }
-
-        else if (telaAtual === 'cadastro_dados') {
-          root.innerHTML = `
-            <div class="container">
-              <h1 style="font-size: 30px;">Criar Conta</h1>
-              <div style="text-align: left; margin-top: 20px;">
-                <input type="text" id="reg_nome" class="input-estilizado" placeholder="Nome">
-                <input type="email" class="input-estilizado" placeholder="Email">
-                <input type="password" class="input-estilizado" placeholder="Senha">
-                <button class="btn-preto" onclick="navegar('cadastro_saude')">Próximo</button>
-              </div>
-            </div>
-          `;
-        }
-
-        else if (telaAtual === 'cadastro_saude') {
-          root.innerHTML = `
-            <div class="container">
-              <h1>Dados de Saúde</h1>
-              <input type="number" id="p_saude" class="input-estilizado" placeholder="Peso (kg)">
-              <input type="number" id="a_saude" class="input-estilizado" placeholder="Altura (cm)">
-              <button class="btn-preto" onclick="finalizarCadastro()">Finalizar</button>
             </div>
           `;
         }
@@ -100,53 +94,16 @@
           root.innerHTML = `
             <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
               <div><b style="font-size: 18px;">Olá, ${usuario.nome}!</b><br><small style="color:#888;">Como está sua alimentação hoje?</small></div>
-              <button onclick="navegar('login')" style="border: 1px solid #eee; background: none; padding: 8px 15px; border-radius: 12px;">Sair</button>
+              <button onclick="realizarSair()" style="border: 1px solid #eee; background: none; padding: 8px 15px; border-radius: 12px;">Sair</button>
             </div>
             <div style="padding: 0 20px; padding-bottom: 100px;">
-              <div style="background: linear-gradient(135deg, #6a11cb, #2575fc); color: #fff; padding: 25px; border-radius: 20px; margin-bottom: 20px; text-align: left;">
+              <div style="background: linear-gradient(135deg, #6a11cb, #2575fc); color: #fff; padding: 25px; border-radius: 20px; margin-bottom: 20px;">
                 <span style="font-size: 14px; opacity: 0.8;">Sequência Atual</span>
                 <div style="font-size: 50px; font-weight: bold; margin: 10px 0;">1 🔥</div>
-                <span style="font-size: 12px; opacity: 0.8;">Melhor: 1 dias</span>
               </div>
-
-              <div class="card-home">
-                <b>Calorias de Hoje</b>
-                <div style="margin: 15px 0; font-size: 28px; font-weight: bold;">0 <small style="font-size: 14px; color: #aaa;">/ ${usuario.meta} cal</small></div>
-                <div style="width: 100%; background: #f0f0f0; height: 8px; border-radius: 10px;"></div>
-              </div>
-
-              <div class="grid-macros">
-                <div class="macro-box"><small>Proteína</small><br><b>0g</b></div>
-                <div class="macro-box"><small>Carbos</small><br><b>0g</b></div>
-                <div class="macro-box"><small>Gordura</small><br><b>0g</b></div>
-              </div>
-
-              <div class="card-home">
-                <b>Últimos 7 Dias</b>
-                <div style="display: flex; justify-content: space-between; margin-top: 20px; gap: 8px;">
-                    <div class="barra-dia"><div class="progresso-dia"><div class="preenchimento-dia" style="height: 5%;"></div></div><small>9/1</small></div>
-                    <div class="barra-dia"><div class="progresso-dia"><div class="preenchimento-dia" style="height: 5%;"></div></div><small>10/1</small></div>
-                    <div class="barra-dia"><div class="progresso-dia"><div class="preenchimento-dia" style="height: 5%;"></div></div><small>11/1</small></div>
-                    <div class="barra-dia"><div class="progresso-dia"><div class="preenchimento-dia" style="height: 5%;"></div></div><small>12/1</small></div>
-                    <div class="barra-dia"><div class="progresso-dia"><div class="preenchimento-dia" style="height: 5%;"></div></div><small>13/1</small></div>
-                    <div class="barra-dia"><div class="progresso-dia"><div class="preenchimento-dia" style="height: 70%;"></div></div><small>14/1</small></div>
-                    <div class="barra-dia"><div class="progresso-dia"><div class="preenchimento-dia" style="height: 5%;"></div></div><small>15/1</small></div>
-                </div>
-              </div>
-
-              <div class="card-home">
-                <b>Conquistas Desbloqueadas</b>
-                <div style="display: flex; align-items: center; gap: 15px; margin-top: 15px; background: #f8faff; padding: 12px; border-radius: 15px;">
-                    <span style="font-size: 24px;">🍽️</span>
-                    <div><b style="font-size: 14px;">Primeira Refeição</b><br><small style="color: #888;">Registou sua primeira refeição</small></div>
-                </div>
-              </div>
-
               <div class="card-home">
                 <b>Refeições de Hoje</b>
-                <div style="text-align: center; padding: 30px 0; color: #aaa;">
-                    Nenhuma refeição registrada ainda.<br>Adicione sua primeira refeição!
-                </div>
+                <div style="text-align: center; padding: 30px 0; color: #aaa;">Nenhuma refeição registrada ainda.</div>
               </div>
             </div>
             <button class="btn-add-fixo" onclick="navegar('add_refeicao')">+</button>
@@ -160,19 +117,22 @@
               <b style="font-size: 20px;">Adicionar Refeição</b>
             </div>
             <div class="container">
-              <p style="text-align: left; font-weight: bold; margin-bottom: 15px;">Tipo de Refeição</p>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 30px;">
-                <div class="chip ativo">Café Da Manhã</div>
-                <div class="chip">Almoço</div>
-                <div class="chip">Jantar</div>
-                <div class="chip">Lanche</div>
+              <p style="text-align: left; font-weight: bold;">Tipo de Refeição</p>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                <div class="chip ${refeicaoSelecionada === 'Café Da Manhã' ? 'ativo' : ''}" onclick="selecionarRefeicao('Café Da Manhã')">Café Da Manhã</div>
+                <div class="chip ${refeicaoSelecionada === 'Almoço' ? 'ativo' : ''}" onclick="selecionarRefeicao('Almoço')">Almoço</div>
+                <div class="chip ${refeicaoSelecionada === 'Jantar' ? 'ativo' : ''}" onclick="selecionarRefeicao('Jantar')">Jantar</div>
+                <div class="chip ${refeicaoSelecionada === 'Lanche' ? 'ativo' : ''}" onclick="selecionarRefeicao('Lanche')">Lanche</div>
               </div>
               
-              <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
+              <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handleFile(event)">
               <button class="btn-preto" onclick="document.getElementById('cameraInput').click()">📸 Abrir Câmara</button>
               
-              <input type="file" id="galeriaInput" accept="image/*" style="display: none;">
+              <input type="file" id="galeriaInput" accept="image/*" style="display: none;" onchange="handleFile(event)">
               <button class="btn-branco" onclick="document.getElementById('galeriaInput').click()">📁 Escolher da Galeria</button>
+
+              <div id="previewContainer"></div>
+              <button class="btn-preto" style="margin-top: 20px; background: #2ab573; display: none;" id="btnConfirmar">Analisar com IA</button>
             </div>
           `;
         }
