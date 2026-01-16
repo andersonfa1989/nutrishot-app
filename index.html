@@ -3,24 +3,24 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>NutriShot Elements - Cadastro & IMC</title>
+    <title>NutriShot Elements</title>
     <style>
-        body { margin: 0; font-family: -apple-system, sans-serif; background: #f8f9fa; color: #333; }
-        .container { padding: 20px; }
-        .card { background: #fff; padding: 20px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        .input-estilizado { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; font-size: 16px; }
-        .btn-preto { width: 100%; background: #000; color: #fff; border: none; padding: 18px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .label-campo { font-weight: bold; font-size: 14px; margin-bottom: 5px; display: block; }
-        .resultado-imc { background: #f0f4ff; padding: 15px; border-radius: 12px; margin-top: 10px; border: 1px solid #d0d7de; }
+        body { margin: 0; font-family: -apple-system, sans-serif; background: #ffffff; color: #333; }
+        .container { padding: 30px 20px; text-align: center; }
+        .texto-logo { font-size: 35px; font-weight: bold; background: linear-gradient(to right, #2ab573, #2490eb, #f39c12); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 10px 0; }
+        .input-estilizado { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box; font-size: 16px; background: #fdfdfd; }
+        .btn-preto { width: 100%; background: #000; color: #fff; border: none; padding: 18px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-branco { width: 100%; background: #fff; color: #333; border: 1px solid #eee; padding: 15px; border-radius: 30px; font-size: 16px; cursor: pointer; margin-top: 10px; }
+        .card { background: #fff; padding: 20px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); text-align: left; }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script>
-      // Estado Global do App
-      let telaAtual = 'cadastro'; 
-      let dadosUsuario = { nome: '', peso: 0, altura: 0, objetivo: 'perder', imc: 0, metaCalorica: 2000 };
+      // 1. Variáveis de Estado
+      let telaAtual = 'inicial'; 
+      let dados = { nome: 'Isaac Ferreira', peso: 0, altura: 0, objetivo: 'perder', imc: 0, meta: 2500 };
 
       function navegar(tela) {
         telaAtual = tela;
@@ -28,86 +28,103 @@
         window.scrollTo(0,0);
       }
 
-      function calcularSaude() {
-        const peso = parseFloat(document.getElementById('peso').value);
-        const altura = parseFloat(document.getElementById('altura').value) / 100; // converter cm para m
-        const nome = document.getElementById('nome').value;
-        const obj = document.getElementById('objetivo').value;
-
-        if (peso > 0 && altura > 0) {
-          const imc = (peso / (altura * altura)).toFixed(1);
-          let meta = 0;
-
-          // Cálculo simplificado de meta calórica baseada no objetivo
-          if (obj === 'perder') meta = peso * 25;
-          else if (obj === 'ganhar') meta = peso * 35;
-          else meta = peso * 30;
-
-          dadosUsuario = { nome, peso, altura: altura*100, objetivo: obj, imc, metaCalorica: Math.round(meta) };
+      function salvarCadastro() {
+        const p = parseFloat(document.getElementById('p').value);
+        const a = parseFloat(document.getElementById('a').value) / 100;
+        if(p > 0 && a > 0) {
+          dados.peso = p;
+          dados.imc = (p / (a * a)).toFixed(1);
           navegar('home');
-        } else {
-          alert("Por favor, preencha peso e altura corretamente.");
-        }
+        } else { alert("Preencha os dados corretamente"); }
       }
 
       function renderizar() {
         const root = document.getElementById('root');
 
-        // --- TELA DE CADASTRO (Captura Peso/Altura) ---
-        if (telaAtual === 'cadastro') {
+        // --- TELA 1: ESCOLHA INICIAL ---
+        if (telaAtual === 'inicial') {
           root.innerHTML = `
-            <div class="container" style="text-align: center;">
-              <h1 style="font-size: 32px; margin-bottom: 10px;">Criar Conta</h1>
-              <p style="color: #666; margin-bottom: 30px;">Informe seus dados para o cálculo de IMC</p>
-              
-              <div style="text-align: left;">
-                <span class="label-campo">Nome Completo</span>
-                <input type="text" id="nome" class="input-estilizado" placeholder="Ex: Isaac Ferreira">
+            <div class="container" style="padding-top: 80px;">
+              <img src="icone-512.png" style="width: 130px; margin-bottom: 10px;">
+              <h1 class="texto-logo">NutriShot</h1>
+              <p style="color: #666; margin-bottom: 50px;">Seu assistente de nutrição com IA</p>
+              <button class="btn-preto" onclick="navegar('login')">Entrar</button>
+              <button class="btn-branco" onclick="navegar('cadastro_conta')">Criar Nova Conta</button>
+            </div>
+          `;
+        }
 
-                <span class="label-campo">Seu Peso (kg)</span>
-                <input type="number" id="peso" class="input-estilizado" placeholder="Ex: 80">
-
-                <span class="label-campo">Sua Altura (cm)</span>
-                <input type="number" id="altura" class="input-estilizado" placeholder="Ex: 175">
-
-                <span class="label-campo">Seu Objetivo</span>
-                <select id="objetivo" class="input-estilizado">
-                  <option value="perder">Perder Peso</option>
-                  <option value="manter">Manter Peso</option>
-                  <option value="ganhar">Ganhar Massa Muscular</option>
-                </select>
-
-                <button class="btn-preto" onclick="calcularSaude()" style="margin-top: 20px;">Finalizar e Ver IMC</button>
+        // --- TELA 2: LOGIN ---
+        else if (telaAtual === 'login') {
+          root.innerHTML = `
+            <div class="container">
+              <h1 style="font-size: 32px; margin-top: 40px;">Entrar</h1>
+              <div style="margin-top: 30px; text-align: left;">
+                <input type="email" class="input-estilizado" placeholder="Email">
+                <input type="password" class="input-estilizado" placeholder="Senha">
+                <button class="btn-preto" onclick="navegar('home')">Acessar App</button>
+                <button class="btn-branco" onclick="navegar('inicial')">Voltar</button>
               </div>
             </div>
           `;
         }
 
-        // --- TELA HOME (Mostra resultados do IMC) ---
+        // --- TELA 3: CRIAR CONTA (DADOS BÁSICOS) ---
+        else if (telaAtual === 'cadastro_conta') {
+          root.innerHTML = `
+            <div class="container">
+              <h1 style="font-size: 32px; margin-top: 40px;">Criar Conta</h1>
+              <div style="margin-top: 30px; text-align: left;">
+                <input type="text" class="input-estilizado" placeholder="Nome Completo">
+                <input type="email" class="input-estilizado" placeholder="Email">
+                <input type="password" class="input-estilizado" placeholder="Senha">
+                <button class="btn-preto" onclick="navegar('cadastro_saude')">Próximo Passo</button>
+                <button class="btn-branco" onclick="navegar('inicial')">Voltar</button>
+              </div>
+            </div>
+          `;
+        }
+
+        // --- TELA 4: DADOS DE SAÚDE (IMC) ---
+        else if (telaAtual === 'cadastro_saude') {
+          root.innerHTML = `
+            <div class="container">
+              <h1 style="font-size: 28px;">Dados de Saúde</h1>
+              <p style="color: #666;">Precisamos disso para calcular seu IMC</p>
+              <div style="margin-top: 30px; text-align: left;">
+                <label>Peso (kg)</label><input type="number" id="p" class="input-estilizado" placeholder="Ex: 80">
+                <label>Altura (cm)</label><input type="number" id="a" class="input-estilizado" placeholder="Ex: 175">
+                <label>Objetivo</label>
+                <select id="obj" class="input-estilizado">
+                  <option value="perder">Perder Peso</option>
+                  <option value="ganhar">Ganhar Massa</option>
+                </select>
+                <button class="btn-preto" onclick="salvarCadastro()">Finalizar</button>
+              </div>
+            </div>
+          `;
+        }
+
+        // --- TELA 5: HOME PROFISSIONAL ---
         else if (telaAtual === 'home') {
           root.innerHTML = `
-            <div style="padding: 20px; background: #fff; border-bottom: 1px solid #eee;">
-              <b style="font-size: 18px;">Olá, ${dadosUsuario.nome}!</b>
+            <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee;">
+              <div><b>Olá, Isaac!</b><br><span style="font-size: 12px; color: #888;">IMC: ${dados.imc}</span></div>
+              <button onclick="navegar('inicial')" style="border: 1px solid #eee; background: none; padding: 8px 12px; border-radius: 10px;">Sair</button>
             </div>
             <div class="container">
-              <div class="card" style="background: #000; color: #fff;">
-                <b>Seu Status de Saúde</b>
-                <div style="display: flex; justify-content: space-between; margin-top: 15px;">
-                  <div><span style="opacity: 0.7;">IMC</span><br><b style="font-size: 22px;">${dadosUsuario.imc}</b></div>
-                  <div><span style="opacity: 0.7;">Meta Diária</span><br><b style="font-size: 22px;">${dadosUsuario.metaCalorica} cal</b></div>
-                </div>
+              <div style="background: linear-gradient(135deg, #6a11cb, #2575fc); color: #fff; padding: 25px; border-radius: 20px; text-align: left;">
+                <span>Sequência Atual</span><br><b style="font-size: 40px;">1 🔥</b>
               </div>
-
+              <div class="card" style="margin-top: 15px;">
+                <b>Calorias de Hoje</b>
+                <div style="margin: 10px 0; font-size: 24px; font-weight: bold;">0 <span style="font-size: 14px; color: #ccc;">/ ${dados.meta} cal</span></div>
+                <div style="width: 100%; background: #f0f0f0; height: 6px; border-radius: 10px;"></div>
+              </div>
               <div class="card">
-                <b>Sugestão NutriShot</b>
-                <div style="background: #eef2ff; padding: 15px; border-radius: 12px; margin-top: 10px; font-size: 14px;">
-                  ${dadosUsuario.objetivo === 'perder' ? 
-                    'Para o seu IMC de ' + dadosUsuario.imc + ', recomendamos foco em fibras e proteínas magras para queima calórica.' : 
-                    'Seu objetivo é ganhar massa. Priorize carboidratos complexos e proteínas em todas as refeições.'}
-                </div>
+                 <b>Sugestão IA</b>
+                 <p style="font-size: 14px; color: #666;">Baseado no seu IMC de ${dados.imc}, hoje foque em hidratação e proteínas.</p>
               </div>
-
-              <button class="btn-preto" onclick="navegar('cadastro')" style="background: #fff; color: #000; border: 1px solid #ddd; margin-top: 20px;">Editar Dados</button>
             </div>
           `;
         }
