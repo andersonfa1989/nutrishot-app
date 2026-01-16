@@ -5,145 +5,204 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>NutriShot Elements</title>
     <style>
-        :root { --primary: #2ab573; --bg: #ffffff; --text: #333; --gray: #f2f2f2; }
+        :root { --primary: #2ab573; --secondary: #6a11cb; --bg: #ffffff; --text: #333; }
         body { margin: 0; font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 70px; }
         .container { padding: 20px; text-align: center; }
         .texto-logo { font-size: 38px; font-weight: bold; background: linear-gradient(to right, #2ab573, #2490eb, #f39c12); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 15px 0; }
-        
-        /* Botões */
-        .btn-preto { width: 100%; background: #000; color: #fff; border: none; padding: 18px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        .btn-loja { width: 100%; background: var(--primary); color: #fff; border: none; padding: 15px; border-radius: 15px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        
-        /* Cards e Chips */
-        .card-home { background: #fff; padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid var(--gray); text-align: left; }
-        .grid-macros { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .btn-preto { width: 100%; background: #000; color: #fff; border: none; padding: 18px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-branco { width: 100%; background: #fff; color: #333; border: 1px solid #eee; padding: 15px; border-radius: 30px; font-size: 16px; cursor: pointer; margin-top: 10px; }
+        .card-home { background: #fff; padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #f2f2f2; text-align: left; }
+        .grid-macros { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .macro-box { background: #fff; padding: 15px; border-radius: 15px; border: 1px solid #f2f2f2; text-align: center; }
         .chip { padding: 12px 10px; border-radius: 25px; border: 1px solid #eee; font-size: 13px; font-weight: 500; cursor: pointer; text-align: center; background: #fff; }
         .chip.ativo { background: #000 !important; color: #fff !important; }
-        
-        /* Loja */
-        .loja-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
-        .produto-card { background: #fff; border: 1px solid #eee; border-radius: 15px; padding: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .produto-img { width: 100%; height: 100px; object-fit: contain; margin-bottom: 8px; }
-        .btn-comprar { background: #000; color: #fff; border: none; border-radius: 8px; width: 100%; padding: 10px; font-size: 11px; font-weight: bold; cursor: pointer; }
-        
+        .circulo-resultado { width: 180px; height: 180px; border-radius: 50%; border: 8px solid #eefaf3; margin: 20px auto; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; }
+        .dica-header { background: linear-gradient(135deg, #2ab573 0%, #2490eb 100%); padding: 40px 20px; border-radius: 0 0 40px 40px; color: white; margin-bottom: 30px; text-align: center; }
+        .box-dica { background: #fff; padding: 30px 20px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin: -60px 20px 30px 20px; border: 1px solid #f0f0f0; }
+        .btn-add-fixo { position: fixed; bottom: 80px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; border: none; font-size: 35px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 100; }
         .ad-banner-area { position: fixed; bottom: 0; left: 0; width: 100%; height: 55px; background: #fff; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #bbb; z-index: 1000; }
+        #previewContainer img { width: 100%; border-radius: 15px; margin-top: 20px; }
+        .produto-card { min-width: 140px; background: #fff; padding: 12px; border-radius: 18px; border: 1px solid #eee; text-align: center; }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script>
-        // --- CONFIGURAÇÃO ADMOB ---
+        // --- IDs ADMOB ---
         const ADMOB = {
-            banner: "ca-app-pub-6941311170472131/2257554053"
+            appId: "ca-app-pub-6941311170472131~1202658535",
+            banner: "ca-app-pub-6941311170472131/2257554053",
+            interstitial: "ca-app-pub-6941311170472131/2273031775",
+            rewarded: "ca-app-pub-6941311170472131/4221550021"
         };
 
-        // --- LINKS E FOTOS PNG ---
+        // --- DADOS ---
+        let dadosHoje = JSON.parse(localStorage.getItem('dadosHoje')) || { cal: 0, prot: 0, carb: 0, gord: 0, lista: [], objetivo: 'Ganhar Massa' };
+        let telaAtual = localStorage.getItem('logado') === 'true' ? 'home' : 'inicial';
+        let refeicaoSelecionada = 'Café Da Manhã';
+        let ultimoResultado = { nome: '', cal: 0 };
+
+        // --- LINKS DE AFILIADO (Substitua pelos seus links reais) ---
         const linksAfiliado = {
             massa: [
-                { nome: "Creatina Growth 100g", preco: "99,80", foto: "creatina-100g.png", link: "https://amzn.to/4b47g9o" },
-                { nome: "Whey Chocolate", preco: "204,80", foto: "wey-choco.png", link: "https://amzn.to/3LjWMIB" },
-                { nome: "Whey Morango", preco: "209,90", foto: "wey-moran.png", link: "https://amzn.to/4sPsdvg" },
-                { nome: "Whey Creme", preco: "209,80", foto: "wey-creme.png", link: "https://amzn.to/4qq9ODl" },
-                { nome: "Gainer Chocolate", preco: "215,00", foto: "Hipercalórico-choco.png", link: "https://amzn.to/4qpZKKC" },
-                { nome: "Gainer Cookies", preco: "209,00", foto: "Hipercalórico-cooki.png", link: "https://amzn.to/4bC9A7C" }
+                { nome: "Whey Protein", preco: "99,90", link: "https://seulinkdaamazon.com/whey" },
+                { nome: "Creatina Pura", preco: "79,90", link: "https://seulinkdaamazon.com/creatina" }
             ],
             perda: [
-                { nome: "Psyllium (120 cáps)", preco: "29,90", foto: "Psyllium-caps.png", link: "https://amzn.to/4sBfMmq" },
-                { nome: "Psyllium Husk 1kg", preco: "49,90", foto: "Psyllium-po.png", link: "https://amzn.to/3YINEAk" },
-                { nome: "Ultra Burn Lipo HD", preco: "78,89", foto: "termog.png", link: "https://amzn.to/4b5phUQ" },
-                { nome: "L-Carnitina 2000 Max", preco: "93,65", foto: "l-creat2000.png", link: "https://amzn.to/4bBHcCw" },
-                { nome: "L-Carnitina 1000 NOW", preco: "225,76", foto: "l-creat1000.png", link: "https://amzn.to/3LJAv6S" }
+                { nome: "Termogênico", preco: "85,00", link: "https://seulinkdaamazon.com/termo" },
+                { nome: "Chá Seca Barriga", preco: "45,90", link: "https://seulinkdaamazon.com/cha" }
             ]
         };
 
-        let telaAtual = 'inicial'; 
-        let dadosHoje = { cal: 1850, objetivo: 'Ganhar Massa' };
+        function navegar(tela) { telaAtual = tela; renderizar(); window.scrollTo(0,0); }
+        function salvar() { localStorage.setItem('dadosHoje', JSON.stringify(dadosHoje)); }
+        function mudarObjetivo(obj) { dadosHoje.objetivo = obj; salvar(); renderizar(); }
 
-        function navegar(tela) {
-            telaAtual = tela;
-            renderizar();
-            window.scrollTo(0, 0);
+        function handleFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewContainer').innerHTML = `<img src="${e.target.result}" />`;
+                    document.getElementById('botoesSelecao').style.display = 'none';
+                    document.getElementById('botoesAcao').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
-        function mudarObjetivo(obj) { 
-            dadosHoje.objetivo = obj; 
-            renderizar(); 
+        function acaoCalcularIA() {
+            document.body.style.opacity = "0.5";
+            setTimeout(() => {
+                document.body.style.opacity = "1";
+                const ganho = Math.floor(Math.random() * 200 + 250);
+                dadosHoje.cal += ganho;
+                dadosHoje.prot += Math.floor(ganho/15);
+                dadosHoje.carb += Math.floor(ganho/10);
+                dadosHoje.gord += Math.floor(ganho/40);
+                dadosHoje.lista.unshift({ nome: refeicaoSelecionada, cal: ganho });
+                ultimoResultado = { nome: refeicaoSelecionada, cal: ganho };
+                salvar();
+                navegar('resultado');
+            }, 1000);
         }
 
         function renderizar() {
             const root = document.getElementById('root');
 
-            // --- TELA 1: INICIAL ---
-            if (telaAtual === 'inicial') {
-                root.innerHTML = `
-                    <div class="container" style="padding-top: 120px;">
-                        <h1 class="texto-logo">NutriShot</h1>
-                        <p style="color: #666;">Seu assistente de dieta e suplementação</p>
-                        <button class="btn-preto" onclick="navegar('home')">ENTRAR NO APP</button>
-                    </div>
-                `;
-            } 
-            
-            // --- TELA 2: HOME (ANÁLISE) ---
-            else if (telaAtual === 'home') {
-                root.innerHTML = `
-                    <div style="padding: 20px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                            <b style="font-size: 20px; color: var(--primary);">NutriShot</b>
-                            <button onclick="navegar('inicial')" style="background:none; border:1px solid #ccc; border-radius:10px; padding: 5px 10px; font-size:12px;">Sair</button>
-                        </div>
+            if (telaAtual === 'home') {
+                const prodKey = dadosHoje.objetivo === 'Ganhar Massa' ? 'massa' : 'perda';
+                const listaProds = linksAfiliado[prodKey];
 
-                        <div class="grid-macros">
+                root.innerHTML = `
+                    <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+                        <div><b style="font-size: 20px;">Olá, Isaac!</b><br><small style="color:#888;">Foco no seu objetivo</small></div>
+                        <button onclick="localStorage.removeItem('logado'); navegar('inicial')" style="background:none; border:1px solid #eee; padding:10px; border-radius:15px;">Sair</button>
+                    </div>
+                    
+                    <div style="padding: 0 20px;">
+                        <div class="grid-macros" style="margin-bottom: 20px;">
                             <div class="chip ${dadosHoje.objetivo === 'Perder Peso' ? 'ativo' : ''}" onclick="mudarObjetivo('Perder Peso')">Perder Peso</div>
                             <div class="chip ${dadosHoje.objetivo === 'Ganhar Massa' ? 'ativo' : ''}" onclick="mudarObjetivo('Ganhar Massa')">Ganhar Massa</div>
                         </div>
 
+                        <div style="background: linear-gradient(135deg, #6a11cb, #2575fc); color: #fff; padding: 25px; border-radius: 25px; margin-bottom: 20px;">
+                            <span style="font-size: 14px; opacity: 0.8;">Status Atual</span>
+                            <div style="font-size: 32px; font-weight: bold; margin: 5px 0;">${dadosHoje.objetivo}</div>
+                        </div>
+
                         <div class="card-home">
-                            <small>GRÁFICO DE ANÁLISE CALÓRICA</small>
-                            <div style="font-size: 32px; font-weight: 800; margin: 10px 0;">${dadosHoje.cal} <span style="font-size: 14px; color: #999;">/ 2500 kcal</span></div>
-                            <div style="width: 100%; height: 10px; background: #eee; border-radius: 5px; overflow: hidden;">
-                                <div style="width: 74%; height: 100%; background: var(--primary);"></div>
+                            <b style="font-size: 14px; color: #888;">CALORIAS HOJE</b>
+                            <div style="margin: 10px 0; font-size: 32px; font-weight: 800;">${dadosHoje.cal} <small style="font-size: 16px; color: #ccc;">/ 2577</small></div>
+                            <div style="width: 100%; background: #f0f0f0; height: 10px; border-radius: 10px; overflow:hidden;">
+                                <div style="width: ${Math.min((dadosHoje.cal/2577)*100, 100)}%; background: var(--primary); height: 100%;"></div>
                             </div>
-                            
-                            <button class="btn-loja" onclick="navegar('loja')">
-                                🛒 VER SUPLEMENTOS RECOMENDADOS
-                            </button>
+                        </div>
+
+                        <div class="card-home" style="background: #fff9f0; border: 1px solid #ffe8cc;">
+                            <b style="color: #e67e22;">🛒 Recomendados para Você</b>
+                            <div style="display:flex; gap:12px; overflow-x:auto; margin-top:15px; padding-bottom:5px;">
+                                ${listaProds.map(p => `
+                                    <div class="produto-card">
+                                        <small style="color:#666; font-weight:bold;">${p.nome}</small><br>
+                                        <b style="color:var(--primary); font-size:16px;">R$ ${p.preco}</b><br>
+                                        <button onclick="window.open('${p.link}', '_blank')" style="background:var(--primary); color:#fff; border:none; border-radius:10px; margin-top:8px; padding:6px 12px; font-size:11px; font-weight:bold; cursor:pointer;">Comprar Online</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="card-home" style="border: 2px solid var(--primary); cursor: pointer;" onclick="navegar('tela_dica')">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div style="font-size: 30px;">💡</div>
+                                <div><b style="color: var(--primary);">Dica Especial</b><br><small>Assista e libere uma dica!</small></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="ad-banner-area">AD BANNER: ${ADMOB.banner}</div>
-                `;
+                    <button class="btn-add-fixo" onclick="navegar('add_refeicao')">+</button>
+                    <div class="ad-banner-area">BANNER AD: ${ADMOB.banner}</div>`;
             }
 
-            // --- TELA 3: LOJA ---
-            else if (telaAtual === 'loja') {
-                const categoria = dadosHoje.objetivo === 'Ganhar Massa' ? 'massa' : 'perda';
-                const produtos = linksAfiliado[categoria];
-
+            else if (telaAtual === 'add_refeicao') {
                 root.innerHTML = `
-                    <div style="padding: 20px;">
-                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                            <button onclick="navegar('home')" style="background:none; border:none; font-size: 24px; cursor:pointer;">←</button>
-                            <h2 style="margin:0;">Loja de Produtos</h2>
-                        </div>
-                        <p style="font-size: 13px; color:#666;">Melhores ofertas para <b>${dadosHoje.objetivo}</b></p>
-                        
-                        <div class="loja-grid">
-                            ${produtos.map(p => `
-                                <div class="produto-card">
-                                    <img src="img/${p.foto}" class="produto-img" onerror="this.src='https://via.placeholder.com/150?text=Sem+Imagem'">
-                                    <div style="font-size:10px; font-weight:bold; height:25px; overflow:hidden; margin-bottom:5px;">${p.nome}</div>
-                                    <div style="color:var(--primary); font-weight:800; font-size: 14px; margin-bottom:8px;">R$ ${p.preco}</div>
-                                    <button class="btn-comprar" onclick="window.open('${p.link}', '_blank')">COMPRAR</button>
-                                </div>
+                    <div style="padding: 20px; display: flex; align-items: center;"><button onclick="navegar('home')" style="background:none; border:none; font-size: 24px;">←</button><b style="margin-left:15px; font-size: 20px;">Nova Refeição</b></div>
+                    <div class="container">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px;">
+                            ${['Café Da Manhã', 'Almoço', 'Jantar', 'Lanche'].map(tipo => `
+                                <div class="chip ${refeicaoSelecionada === tipo ? 'ativo' : ''}" onclick="refeicaoSelecionada='${tipo}'; renderizar()">${tipo}</div>
                             `).join('')}
                         </div>
+                        <div id="botoesSelecao">
+                            <input type="file" id="cam" accept="image/*" capture="environment" style="display:none" onchange="handleFile(event)">
+                            <button class="btn-preto" onclick="document.getElementById('cam').click()">📸 Tirar Foto</button>
+                            <input type="file" id="gal" accept="image/*" style="display:none" onchange="handleFile(event)">
+                            <button class="btn-branco" onclick="document.getElementById('gal').click()">📁 Galeria</button>
+                        </div>
+                        <div id="previewContainer"></div>
+                        <div id="botoesAcao" style="display:none; margin-top:20px;">
+                            <button class="btn-preto" style="background: var(--primary);" onclick="acaoCalcularIA()">🚀 Calcular Calorias</button>
+                            <button class="btn-branco" style="border:none; color:#ff4d4d;" onclick="navegar('add_refeicao')">Refazer Foto</button>
+                        </div>
+                    </div>`;
+            }
+
+            else if (telaAtual === 'resultado') {
+                root.innerHTML = `
+                    <div class="container" style="padding-top: 50px;">
+                        <h1 style="font-size: 28px;">Análise Pronta!</h1>
+                        <div class="circulo-resultado">
+                            <span style="font-size: 14px; color: #888;">GANHOU</span>
+                            <div style="font-size: 54px; font-weight: 900; color: var(--primary); line-height: 1;">${ultimoResultado.cal}</div>
+                            <span style="font-size: 14px; color: #888;">kcal</span>
+                        </div>
+                        <button class="btn-preto" onclick="navegar('home')" style="margin-top: 40px;">Confirmar e Voltar</button>
+                    </div>`;
+            }
+
+            else if (telaAtual === 'tela_dica') {
+                const dicas = ["Comer fibras antes do carboidrato reduz o pico de insulina.", "Substitua sal por ervas naturais.", "Beber água gelada acelera o metabolismo.", "Proteínas no café reduzem a fome."];
+                const dica = dicas[Math.floor(Math.random()*dicas.length)];
+                root.innerHTML = `
+                    <div class="dica-header">
+                        <div style="font-size: 40px; margin-bottom: 10px;">💡</div>
+                        <h1 style="margin: 0; font-size: 32px; font-weight: 800;">Segue a Dica:</h1>
                     </div>
-                    <div class="ad-banner-area">AD BANNER: ${ADMOB.banner}</div>
-                `;
+                    <div class="box-dica">
+                        <p style="font-size: 24px; font-weight: 700; color: #222; line-height: 1.4; margin: 0;">"${dica}"</p>
+                    </div>
+                    <div class="container"><button class="btn-preto" onclick="navegar('home')">Excelente!</button></div>`;
+            }
+
+            else {
+                root.innerHTML = `
+                    <div class="container" style="padding-top: 100px;">
+                        <img src="icone-512.png" style="width: 150px; margin-bottom: 20px;">
+                        <h1 class="texto-logo">NutriShot</h1>
+                        <button class="btn-preto" onclick="navegar('login')">Entrar na Conta</button>
+                    </div>`;
             }
         }
-
         renderizar();
     </script>
 </body>
