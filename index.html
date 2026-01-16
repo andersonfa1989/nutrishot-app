@@ -27,6 +27,8 @@
     <div id="root"></div>
 
     <script>
+      // Sistema de Dados do Usuário (Persistente)
+      let dadosHoje = JSON.parse(localStorage.getItem('dadosHoje')) || { cal: 0, prot: 0, carb: 0, gord: 0, lista: [] };
       let telaAtual = localStorage.getItem('logado') === 'true' ? 'home' : 'inicial';
       let refeicaoSelecionada = 'Café Da Manhã';
       let usuario = { nome: 'Isaac Ferreira', meta: 2577 };
@@ -37,9 +39,8 @@
         window.scrollTo(0,0);
       }
 
-      function realizarLogin() {
-        localStorage.setItem('logado', 'true');
-        navegar('home');
+      function salvarDados() {
+        localStorage.setItem('dadosHoje', JSON.stringify(dadosHoje));
       }
 
       function realizarSair() {
@@ -58,10 +59,35 @@
           const reader = new FileReader();
           reader.onload = function(e) {
             document.getElementById('previewContainer').innerHTML = `<img src="${e.target.result}" />`;
-            document.getElementById('btnAnalisar').style.display = 'flex';
+            document.getElementById('botoesSelecao').style.display = 'none';
+            document.getElementById('botoesAcao').style.display = 'block';
           };
           reader.readAsDataURL(file);
         }
+      }
+
+      function trocarFoto() {
+        document.getElementById('previewContainer').innerHTML = '';
+        document.getElementById('botoesSelecao').style.display = 'block';
+        document.getElementById('botoesAcao').style.display = 'none';
+      }
+
+      function calcularIA() {
+        // Simulação de cálculo de IA
+        const calAdd = Math.floor(Math.random() * (600 - 200) + 200);
+        const protAdd = Math.floor(calAdd / 15);
+        const carbAdd = Math.floor(calAdd / 10);
+        const gordAdd = Math.floor(calAdd / 40);
+
+        dadosHoje.cal += calAdd;
+        dadosHoje.prot += protAdd;
+        dadosHoje.carb += carbAdd;
+        dadosHoje.gord += gordAdd;
+        dadosHoje.lista.push({ nome: refeicaoSelecionada, cal: calAdd });
+
+        salvarDados();
+        alert(`IA analisou seu ${refeicaoSelecionada}: +${calAdd} cal`);
+        navegar('home');
       }
 
       function renderizar() {
@@ -72,7 +98,7 @@
         }
 
         else if (telaAtual === 'login') {
-          root.innerHTML = `<div class="container"><h1 style="font-size: 32px; margin-top: 40px;">Entrar</h1><input type="email" class="input-estilizado" placeholder="Email"><input type="password" class="input-estilizado" placeholder="Senha"><button class="btn-preto" onclick="realizarLogin()">Entrar</button><button class="btn-branco" onclick="navegar('inicial')">Voltar</button></div>`;
+          root.innerHTML = `<div class="container"><h1 style="font-size: 32px; margin-top: 40px;">Entrar</h1><input type="email" class="input-estilizado" placeholder="Email"><input type="password" class="input-estilizado" placeholder="Senha"><button class="btn-preto" onclick="localStorage.setItem('logado','true'); navegar('home')">Entrar</button></div>`;
         }
 
         else if (telaAtual === 'home') {
@@ -89,36 +115,29 @@
               </div>
               <div class="card-home">
                 <b>Calorias de Hoje</b>
-                <div style="margin: 15px 0; font-size: 28px; font-weight: bold;">0 <small style="font-size: 14px; color: #aaa;">/ ${usuario.meta} cal</small></div>
-                <div style="width: 100%; background: #f0f0f0; height: 8px; border-radius: 10px;"></div>
+                <div style="margin: 15px 0; font-size: 28px; font-weight: bold;">${dadosHoje.cal} <small style="font-size: 14px; color: #aaa;">/ ${usuario.meta} cal</small></div>
+                <div style="width: 100%; background: #f0f0f0; height: 8px; border-radius: 10px;">
+                    <div style="width: ${Math.min((dadosHoje.cal/usuario.meta)*100, 100)}%; background: #2ab573; height: 8px; border-radius: 10px;"></div>
+                </div>
               </div>
               <div class="grid-macros">
-                <div class="macro-box"><small>Proteína</small><br><b>0g</b></div>
-                <div class="macro-box"><small>Carbos</small><br><b>0g</b></div>
-                <div class="macro-box"><small>Gordura</small><br><b>0g</b></div>
+                <div class="macro-box"><small>Proteína</small><br><b>${dadosHoje.prot}g</b></div>
+                <div class="macro-box"><small>Carbos</small><br><b>${dadosHoje.carb}g</b></div>
+                <div class="macro-box"><small>Gordura</small><br><b>${dadosHoje.gord}g</b></div>
               </div>
               <div class="card-home">
                 <b>Últimos 7 Dias</b>
                 <div style="display: flex; justify-content: space-between; margin-top: 20px; gap: 8px;">
                     <div class="barra-dia"><div class="progresso-dia"><div class="preenchimento-dia" style="height: 5%;"></div></div><small>9/1</small></div>
-                    <div class="barra-dia"><div class="progresso-dia"><div class="preenchimento-dia" style="height: 5%;"></div></div><small>10/1</small></div>
-                    <div class="barra-dia"><div class="progresso-dia"><div class="preenchimento-dia" style="height: 5%;"></div></div><small>11/1</small></div>
-                    <div class="barra-dia"><div class="progresso-dia"><div class="preenchimento-dia" style="height: 5%;"></div></div><small>12/1</small></div>
-                    <div class="barra-dia"><div class="progresso-dia"><div class="preenchimento-dia" style="height: 5%;"></div></div><small>13/1</small></div>
                     <div class="barra-dia"><div class="progresso-dia"><div class="preenchimento-dia" style="height: 70%;"></div></div><small>14/1</small></div>
-                    <div class="barra-dia"><div class="progresso-dia"><div class="preenchimento-dia" style="height: 5%;"></div></div><small>15/1</small></div>
-                </div>
-              </div>
-              <div class="card-home">
-                <b>Conquistas Desbloqueadas</b>
-                <div style="display: flex; align-items: center; gap: 15px; margin-top: 15px; background: #f8faff; padding: 12px; border-radius: 15px;">
-                    <span style="font-size: 24px;">🍽️</span>
-                    <div><b style="font-size: 14px;">Primeira Refeição</b><br><small style="color: #888;">Registrou sua primeira refeição</small></div>
+                    <div class="barra-dia"><div class="progresso-dia"><div class="preenchimento-dia" style="height: ${Math.min((dadosHoje.cal/usuario.meta)*100, 100)}%;"></div></div><small>Hoje</small></div>
                 </div>
               </div>
               <div class="card-home">
                 <b>Refeições de Hoje</b>
-                <div style="text-align: center; padding: 30px 0; color: #aaa;">Nenhuma refeição registrada ainda.</div>
+                ${dadosHoje.lista.length === 0 ? '<p style="color:#aaa; text-align:center;">Nenhum registro.</p>' : 
+                  dadosHoje.lista.map(item => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee;"><span>${item.nome}</span><b>${item.cal} cal</b></div>`).join('')
+                }
               </div>
             </div>
             <button class="btn-add-fixo" onclick="navegar('add_refeicao')">+</button>
@@ -129,19 +148,26 @@
           root.innerHTML = `
             <div style="padding: 20px; display: flex; align-items: center;"><button onclick="navegar('home')" style="background:none; border:none; font-size: 24px; margin-right: 15px;">←</button><b style="font-size: 20px;">Adicionar Refeição</b></div>
             <div class="container">
-              <p style="text-align: left; font-weight: bold; margin-bottom: 15px;">Tipo de Refeição</p>
               <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px;">
                 <div class="chip ${refeicaoSelecionada === 'Café Da Manhã' ? 'ativo' : ''}" onclick="selecionarRefeicao('Café Da Manhã')">Café Da Manhã</div>
                 <div class="chip ${refeicaoSelecionada === 'Almoço' ? 'ativo' : ''}" onclick="selecionarRefeicao('Almoço')">Almoço</div>
                 <div class="chip ${refeicaoSelecionada === 'Jantar' ? 'ativo' : ''}" onclick="selecionarRefeicao('Jantar')">Jantar</div>
                 <div class="chip ${refeicaoSelecionada === 'Lanche' ? 'ativo' : ''}" onclick="selecionarRefeicao('Lanche')">Lanche</div>
               </div>
-              <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handleFile(event)">
-              <button class="btn-preto" onclick="document.getElementById('cameraInput').click()">📸 Abrir Câmara</button>
-              <input type="file" id="galeriaInput" accept="image/*" style="display: none;" onchange="handleFile(event)">
-              <button class="btn-branco" onclick="document.getElementById('galeriaInput').click()">📁 Escolher da Galeria</button>
+
+              <div id="botoesSelecao">
+                <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handleFile(event)">
+                <button class="btn-preto" onclick="document.getElementById('cameraInput').click()">📸 Tirar Foto</button>
+                <input type="file" id="galeriaInput" accept="image/*" style="display: none;" onchange="handleFile(event)">
+                <button class="btn-branco" onclick="document.getElementById('galeriaInput').click()">📁 Galeria</button>
+              </div>
+
               <div id="previewContainer"></div>
-              <button class="btn-preto" style="margin-top: 20px; background: #2ab573; display: none;" id="btnAnalisar" onclick="alert('IA Analisando...')">Calcular Calorias</button>
+
+              <div id="botoesAcao" style="display:none; margin-top:20px;">
+                <button class="btn-preto" style="background: #2ab573;" onclick="calcularIA()">Calcular Calorias</button>
+                <button class="btn-branco" onclick="trocarFoto()">❌ Trocar Foto</button>
+              </div>
             </div>
           `;
         }
