@@ -5,41 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#667eea" />
     <title>NutriShot - Contador de Calorias</title>
-
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6941311170472131"></script>
 </head>
-<body>
+<body style="margin: 0; font-family: sans-serif; background: #f9fafb;">
 
     <div id="root"></div>
-    <noscript>Você precisa habilitar JavaScript para usar este app.</noscript>
 
     <script>
-      // 1. Configuração do Anúncio
+      // 1. Configuração AdMob
       (adsbygoogle = window.adsbygoogle || []).push({
         google_ad_client: "ca-pub-6941311170472131",
         enable_page_level_ads: true,
         overlays: {bottom: true}
       });
 
-      // 2. Interface do NutriShot
-      document.getElementById('root').innerHTML = `
-        <div style="font-family: sans-serif; text-align: center; padding: 20px;">
-          <h1 style="color: #667eea;">NutriShot</h1>
-          <p>Tire foto da sua comida e descubra as calorias!</p>
-          <div style="background: #f3f4f6; padding: 20px; border-radius: 15px; margin: 20px 0;">
-            <h2 id="calorias">0 kcal</h2>
-            <p>Total do Dia</p>
-          </div>
-          <button onclick="mostrarAnuncio()" style="background: #667eea; color: white; border: none; padding: 15px 30px; border-radius: 25px; font-size: 16px; cursor: pointer;">
-            📸 Analisar Refeição (Ver Anúncio)
-          </button>
-        </div>
-      `;
+      // 2. Estado do Aplicativo
+      let telaAtual = 'cadastro'; 
 
-      // 3. Função do Botão
-      function mostrarAnuncio() {
-        alert("Carregando anúncio premiado... (Bloco: 4221550021)");
+      // 3. Função para mudar de tela
+      function navegar(tela) {
+        telaAtual = tela;
+        renderizar();
       }
+
+      // 4. Função para mostrar anúncio premiado
+      function mostrarAnuncio() {
+        alert("Exibindo Anúncio Premiado... (Bloco: 4221550021)");
+        // Lógica de recompensa aqui
+      }
+
+      // 5. Renderização das Telas
+      function renderizar() {
+        const root = document.getElementById('root');
+        
+        if (telaAtual === 'cadastro') {
+          root.innerHTML = `
+            <div style="padding: 40px 20px; text-align: center;">
+              <h1 style="color: #667eea;">NutriShot</h1>
+              <p>Crie sua conta para começar</p>
+              <input type="text" placeholder="Nome" style="width: 80%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px;"><br>
+              <input type="email" placeholder="E-mail" style="width: 80%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px;"><br>
+              <button onclick="navegar('home')" style="width: 85%; background: #667eea; color: white; border: none; padding: 15px; border-radius: 25px; margin-top: 20px; font-size: 16px;">Cadastrar</button>
+              <p style="margin-top: 20px;">Já tem conta? <a href="#" onclick="navegar('home')">Entrar</a></p>
+            </div>
+          `;
+        } else if (telaAtual === 'home') {
+          root.innerHTML = `
+            <div style="padding: 20px; text-align: center;">
+              <h2 style="color: #667eea;">Olá, Bem-vindo!</h2>
+              <div style="background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin: 20px 0;">
+                <h1 style="font-size: 48px; margin: 0;">0</h1>
+                <p style="color: #666;">kcal consumidas hoje</p>
+              </div>
+              <button onclick="mostrarAnuncio()" style="background: #667eea; color: white; border: none; padding: 20px; border-radius: 50%; width: 80px; height: 80px; font-size: 30px; cursor: pointer; box-shadow: 0 4px 10px rgba(102, 126, 234, 0.5);">📸</button>
+              <p style="margin-top: 10px; font-weight: bold;">Analisar Refeição</p>
+              <div style="margin-top: 40px; display: flex; justify-content: space-around; border-top: 1px solid #eee; padding-top: 20px;">
+                <span onclick="navegar('home')" style="color: #667eea; cursor: pointer;">🏠 Início</span>
+                <span style="color: #999;">📊 Histórico</span>
+                <span onclick="navegar('cadastro')" style="color: #999; cursor: pointer;">👤 Perfil</span>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // Inicializa o App
+      renderizar();
     </script>
 </body>
 </html>
