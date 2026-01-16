@@ -7,7 +7,17 @@
     <style>
         body { margin: 0; font-family: -apple-system, sans-serif; background: #ffffff; color: #333; }
         .container { padding: 30px 20px; text-align: center; }
-        .texto-logo { font-size: 35px; font-weight: bold; background: linear-gradient(to right, #2ab573, #2490eb, #f39c12); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 10px 0; }
+        
+        /* Nome Colorido (Igual ao anterior) */
+        .texto-logo { 
+            font-size: 38px; 
+            font-weight: bold; 
+            background: linear-gradient(to right, #2ab573, #2490eb, #f39c12); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            margin: 15px 0; 
+        }
+
         .input-estilizado { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box; font-size: 16px; background: #fdfdfd; }
         .btn-preto { width: 100%; background: #000; color: #fff; border: none; padding: 18px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .btn-branco { width: 100%; background: #fff; color: #333; border: 1px solid #eee; padding: 15px; border-radius: 30px; font-size: 16px; cursor: pointer; margin-top: 10px; }
@@ -18,9 +28,8 @@
     <div id="root"></div>
 
     <script>
-      // 1. Variáveis de Estado
       let telaAtual = 'inicial'; 
-      let dados = { nome: 'Isaac Ferreira', peso: 0, altura: 0, objetivo: 'perder', imc: 0, meta: 2500 };
+      let dados = { nome: '', peso: 0, altura: 0, imc: 0, meta: 2500 };
 
       function navegar(tela) {
         telaAtual = tela;
@@ -28,88 +37,43 @@
         window.scrollTo(0,0);
       }
 
-      function salvarCadastro() {
-        const p = parseFloat(document.getElementById('p').value);
-        const a = parseFloat(document.getElementById('a').value) / 100;
-        if(p > 0 && a > 0) {
-          dados.peso = p;
-          dados.imc = (p / (a * a)).toFixed(1);
-          navegar('home');
-        } else { alert("Preencha os dados corretamente"); }
-      }
-
       function renderizar() {
         const root = document.getElementById('root');
 
-        // --- TELA 1: ESCOLHA INICIAL ---
+        // --- TELA INICIAL (Logo maior e Nome colorido) ---
         if (telaAtual === 'inicial') {
           root.innerHTML = `
-            <div class="container" style="padding-top: 80px;">
-              <img src="icone-512.png" style="width: 130px; margin-bottom: 10px;">
-              <h1 class="texto-logo">NutriShot</h1>
-              <p style="color: #666; margin-bottom: 50px;">Seu assistente de nutrição com IA</p>
+            <div class="container" style="padding-top: 60px;">
+              <img src="icone-512.png" style="width: 180px; margin-bottom: 5px;">
+              
+              <h1 class="texto-logo">NutriShot Elements</h1>
+              
+              <p style="color: #666; margin-bottom: 40px;">Seu assistente de saúde com IA</p>
+              
               <button class="btn-preto" onclick="navegar('login')">Entrar</button>
               <button class="btn-branco" onclick="navegar('cadastro_conta')">Criar Nova Conta</button>
             </div>
           `;
         }
 
-        // --- TELA 2: LOGIN ---
+        // --- TELA LOGIN ---
         else if (telaAtual === 'login') {
           root.innerHTML = `
             <div class="container">
               <h1 style="font-size: 32px; margin-top: 40px;">Entrar</h1>
-              <div style="margin-top: 30px; text-align: left;">
-                <input type="email" class="input-estilizado" placeholder="Email">
-                <input type="password" class="input-estilizado" placeholder="Senha">
-                <button class="btn-preto" onclick="navegar('home')">Acessar App</button>
-                <button class="btn-branco" onclick="navegar('inicial')">Voltar</button>
-              </div>
+              <input type="email" class="input-estilizado" placeholder="Email">
+              <input type="password" class="input-estilizado" placeholder="Senha">
+              <button class="btn-preto" onclick="navegar('home')">Acessar</button>
+              <button class="btn-branco" onclick="navegar('inicial')">Voltar</button>
             </div>
           `;
         }
 
-        // --- TELA 3: CRIAR CONTA (DADOS BÁSICOS) ---
-        else if (telaAtual === 'cadastro_conta') {
-          root.innerHTML = `
-            <div class="container">
-              <h1 style="font-size: 32px; margin-top: 40px;">Criar Conta</h1>
-              <div style="margin-top: 30px; text-align: left;">
-                <input type="text" class="input-estilizado" placeholder="Nome Completo">
-                <input type="email" class="input-estilizado" placeholder="Email">
-                <input type="password" class="input-estilizado" placeholder="Senha">
-                <button class="btn-preto" onclick="navegar('cadastro_saude')">Próximo Passo</button>
-                <button class="btn-branco" onclick="navegar('inicial')">Voltar</button>
-              </div>
-            </div>
-          `;
-        }
-
-        // --- TELA 4: DADOS DE SAÚDE (IMC) ---
-        else if (telaAtual === 'cadastro_saude') {
-          root.innerHTML = `
-            <div class="container">
-              <h1 style="font-size: 28px;">Dados de Saúde</h1>
-              <p style="color: #666;">Precisamos disso para calcular seu IMC</p>
-              <div style="margin-top: 30px; text-align: left;">
-                <label>Peso (kg)</label><input type="number" id="p" class="input-estilizado" placeholder="Ex: 80">
-                <label>Altura (cm)</label><input type="number" id="a" class="input-estilizado" placeholder="Ex: 175">
-                <label>Objetivo</label>
-                <select id="obj" class="input-estilizado">
-                  <option value="perder">Perder Peso</option>
-                  <option value="ganhar">Ganhar Massa</option>
-                </select>
-                <button class="btn-preto" onclick="salvarCadastro()">Finalizar</button>
-              </div>
-            </div>
-          `;
-        }
-
-        // --- TELA 5: HOME PROFISSIONAL ---
+        // --- TELA HOME (Interface Profissional) ---
         else if (telaAtual === 'home') {
           root.innerHTML = `
             <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee;">
-              <div><b>Olá, Isaac!</b><br><span style="font-size: 12px; color: #888;">IMC: ${dados.imc}</span></div>
+              <div><b>Olá!</b></div>
               <button onclick="navegar('inicial')" style="border: 1px solid #eee; background: none; padding: 8px 12px; border-radius: 10px;">Sair</button>
             </div>
             <div class="container">
@@ -118,12 +82,7 @@
               </div>
               <div class="card" style="margin-top: 15px;">
                 <b>Calorias de Hoje</b>
-                <div style="margin: 10px 0; font-size: 24px; font-weight: bold;">0 <span style="font-size: 14px; color: #ccc;">/ ${dados.meta} cal</span></div>
-                <div style="width: 100%; background: #f0f0f0; height: 6px; border-radius: 10px;"></div>
-              </div>
-              <div class="card">
-                 <b>Sugestão IA</b>
-                 <p style="font-size: 14px; color: #666;">Baseado no seu IMC de ${dados.imc}, hoje foque em hidratação e proteínas.</p>
+                <div style="margin: 10px 0; font-size: 24px; font-weight: bold;">0 <span style="font-size: 14px; color: #ccc;">/ 2500 cal</span></div>
               </div>
             </div>
           `;
