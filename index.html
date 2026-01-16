@@ -7,7 +7,6 @@
     <title>NutriShot Elements</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6941311170472131"></script>
     <style>
-        /* Efeito de cores no texto (Gradiente) */
         .texto-logo {
             font-size: 32px;
             font-weight: bold;
@@ -15,8 +14,10 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-top: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: sans-serif;
         }
+        input { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; }
+        .btn-principal { width: 93%; background: linear-gradient(to right, #667eea, #764ba2); color: white; border: none; padding: 18px; border-radius: 30px; margin-top: 20px; font-size: 18px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body style="margin: 0; font-family: sans-serif; background: #f9fafb;">
@@ -30,54 +31,65 @@
         overlays: {bottom: true}
       });
 
+      // Agora temos 3 telas: 'cadastro', 'login' e 'home'
       let telaAtual = 'cadastro'; 
 
       function navegar(tela) {
         telaAtual = tela;
         renderizar();
+        window.scrollTo(0,0);
       }
 
       function renderizar() {
         const root = document.getElementById('root');
         
+        // TELA DE CADASTRO
         if (telaAtual === 'cadastro') {
           root.innerHTML = `
             <div style="padding: 50px 20px; text-align: center;">
-              <img src="icone-512.png" style="width: 150px; height: auto; margin-bottom: 5px;" alt="NutriShot">
-              
+              <img src="icone-512.png" style="width: 150px; margin-bottom: 5px;">
               <h1 class="texto-logo">NutriShot Elements</h1>
-              
-              <p style="color: #666; margin-bottom: 30px;">Crie sua conta para começar</p>
-              
-              <input type="text" placeholder="Nome" style="width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; font-size: 16px;">
-              <input type="email" placeholder="E-mail" style="width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; font-size: 16px;">
-              
-              <button onclick="navegar('home')" style="width: 93%; background: linear-gradient(to right, #667eea, #764ba2); color: white; border: none; padding: 18px; border-radius: 30px; margin-top: 20px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
-                Cadastrar
-              </button>
-              
-              <p style="margin-top: 25px; color: #888;">Já possui uma conta? <a href="#" onclick="navegar('home')" style="color: #667eea; text-decoration: none; font-weight: bold;">Entrar</a></p>
+              <p style="color: #666;">Crie sua conta para começar</p>
+              <input type="text" placeholder="Nome">
+              <input type="email" placeholder="E-mail">
+              <button class="btn-principal" onclick="navegar('home')">Cadastrar</button>
+              <p style="margin-top: 25px; color: #888;">Já possui uma conta? <a href="#" onclick="navegar('login')" style="color: #667eea; text-decoration: none; font-weight: bold;">Entrar</a></p>
             </div>
           `;
-        } else if (telaAtual === 'home') {
+        } 
+        
+        // TELA DE LOGIN (NOVA)
+        else if (telaAtual === 'login') {
+          root.innerHTML = `
+            <div style="padding: 50px 20px; text-align: center;">
+              <img src="icone-512.png" style="width: 120px; margin-bottom: 5px;">
+              <h1 class="texto-logo">Acesse sua Conta</h1>
+              <p style="color: #666;">Bem-vindo de volta!</p>
+              <input type="email" placeholder="Seu e-mail">
+              <input type="password" placeholder="Sua senha">
+              <button class="btn-principal" onclick="navegar('home')">Entrar</button>
+              <p style="margin-top: 25px; color: #888;">Não tem conta? <a href="#" onclick="navegar('cadastro')" style="color: #667eea; text-decoration: none; font-weight: bold;">Criar conta</a></p>
+            </div>
+          `;
+        }
+
+        // TELA HOME (PRINCIPAL)
+        else if (telaAtual === 'home') {
           root.innerHTML = `
             <div style="padding: 20px; text-align: center;">
               <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
                 <img src="icone-512.png" style="width: 40px; margin-right: 10px;">
                 <h2 style="color: #667eea; margin: 0;">NutriShot</h2>
               </div>
-
               <div style="background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin: 20px 0;">
                 <p style="color: #999; margin: 0; font-size: 12px;">Consumo de Hoje</p>
                 <h1 style="font-size: 56px; margin: 10px 0;">0 <span style="font-size: 20px; color: #ccc;">kcal</span></h1>
               </div>
-
               <button onclick="alert('Bloco: 4221550021')" style="background: #667eea; color: white; border: none; padding: 25px; border-radius: 50%; width: 90px; height: 90px; font-size: 35px; box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);">📸</button>
               <p style="margin-top: 15px; font-weight: bold;">Analisar Refeição</p>
-
               <div style="position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #eee;">
                 <span onclick="navegar('home')" style="color: #667eea; font-weight: bold;">🏠 Início</span>
-                <span style="color: #ccc;">👤 Perfil</span>
+                <span onclick="navegar('login')" style="color: #ccc; cursor: pointer;">👤 Sair</span>
               </div>
             </div>
           `;
