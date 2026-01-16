@@ -6,30 +6,44 @@
     <title>NutriShot Elements</title>
     <style>
         :root { --primary: #2ab573; --secondary: #6a11cb; --bg: #ffffff; --text: #333; }
-        body { margin: 0; font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 60px; }
+        body { margin: 0; font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 70px; overflow-x: hidden; }
         .container { padding: 20px; text-align: center; }
         .texto-logo { font-size: 38px; font-weight: bold; background: linear-gradient(to right, #2ab573, #2490eb, #f39c12); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 15px 0; }
+        
+        /* Inputs e Botões */
         .input-estilizado { width: 100%; padding: 15px; margin-bottom: 12px; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box; font-size: 16px; background: #fdfdfd; }
         .btn-preto { width: 100%; background: #000; color: #fff; border: none; padding: 18px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-branco { width: 100%; background: #fff; color: #333; border: 1px solid #eee; padding: 15px; border-radius: 30px; font-size: 16px; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .card-home { background: #fff; padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #f2f2f2; text-align: left; }
+        
+        /* Cards da Home */
+        .card-home { background: #fff; padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #f2f2f2; text-align: left; position: relative; }
         .grid-macros { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .macro-box { background: #fff; padding: 15px; border-radius: 15px; border: 1px solid #f2f2f2; text-align: center; }
-        .chip { padding: 12px 10px; border-radius: 25px; border: 1px solid #eee; font-size: 13px; font-weight: 500; cursor: pointer; text-align: center; background: #fff; color: #333; transition: 0.3s; }
-        .chip.ativo { background: #000; color: #fff; border-color: #000; }
+        
+        /* Seleção de Refeição */
+        .chip { padding: 12px 10px; border-radius: 25px; border: 1px solid #eee; font-size: 13px; font-weight: 500; cursor: pointer; text-align: center; background: #fff; color: #333; transition: 0.2s; }
+        .chip.ativo { background: #000 !important; color: #fff !important; border-color: #000; }
+        
+        /* Botão Flutuante */
         .btn-add-fixo { position: fixed; bottom: 80px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; border: none; font-size: 35px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 100; cursor: pointer; }
-        #previewContainer img { width: 100%; border-radius: 15px; margin-top: 20px; border: 1px solid #eee; }
+        
+        /* Gráfico Simples */
         .barra-dia { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
         .progresso-dia { width: 100%; background: #eee; border-radius: 5px; height: 60px; display: flex; align-items: flex-end; }
         .preenchimento-dia { background: var(--secondary); width: 100%; border-radius: 5px; }
-        .ad-banner-mock { position: fixed; bottom: 0; left: 0; width: 100%; height: 50px; background: #fafafa; border-top: 1px solid #ddd; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #bbb; z-index: 1000; }
+        
+        /* Preview de Imagem */
+        #previewContainer img { width: 100%; border-radius: 15px; margin-top: 20px; border: 1px solid #eee; }
+        
+        /* Banner AdMob */
+        .ad-banner-area { position: fixed; bottom: 0; left: 0; width: 100%; height: 55px; background: #fdfdfd; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #bbb; z-index: 1000; }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script>
-        // --- CONFIGURAÇÕES ADMOB ---
+        // --- CONFIGURAÇÃO ADMOB ---
         const ADMOB = {
             appId: "ca-app-pub-6941311170472131~1202658535",     
             banner: "ca-app-pub-6941311170472131/2257554053",   
@@ -37,13 +51,11 @@
             rewarded: "ca-app-pub-6941311170472131/4221550021"  
         };
 
-        // --- ESTADO GLOBAL ---
+        // --- DADOS DO USUÁRIO ---
         let dadosHoje = JSON.parse(localStorage.getItem('dadosHoje')) || { cal: 0, prot: 0, carb: 0, gord: 0, lista: [] };
         let telaAtual = localStorage.getItem('logado') === 'true' ? 'home' : 'inicial';
         let refeicaoSelecionada = 'Café Da Manhã';
         let ultimoResultado = { nome: '', cal: 0 };
-
-        function salvar() { localStorage.setItem('dadosHoje', JSON.stringify(dadosHoje)); }
 
         function navegar(tela) {
             telaAtual = tela;
@@ -51,7 +63,9 @@
             window.scrollTo(0,0);
         }
 
-        // --- LÓGICA DE CÂMERA E GALERIA ---
+        function salvar() { localStorage.setItem('dadosHoje', JSON.stringify(dadosHoje)); }
+
+        // --- LOGICA DE FOTO ---
         function handleFile(event) {
             const file = event.target.files[0];
             if (file) {
@@ -65,33 +79,34 @@
             }
         }
 
-        // --- SIMULAÇÃO DE ANÚNCIOS E IA ---
-        function calcularIA() {
-            // Simulação do Intersticial
+        // --- ANÚNCIOS E IA ---
+        function acaoCalcularIA() {
+            // Simula Intersticial
             document.body.style.opacity = "0.5";
             setTimeout(() => {
                 document.body.style.opacity = "1";
-                const calAdd = Math.floor(Math.random() * 300 + 200);
-                dadosHoje.cal += calAdd;
-                dadosHoje.prot += Math.floor(calAdd / 15);
-                dadosHoje.carb += Math.floor(calAdd / 10);
-                dadosHoje.gord += Math.floor(calAdd / 40);
-                dadosHoje.lista.unshift({ nome: refeicaoSelecionada, cal: calAdd });
-                ultimoResultado = { nome: refeicaoSelecionada, cal: calAdd };
+                const ganhoCal = Math.floor(Math.random() * 250 + 200);
+                dadosHoje.cal += ganhoCal;
+                dadosHoje.prot += Math.floor(ganhoCal / 16);
+                dadosHoje.carb += Math.floor(ganhoCal / 12);
+                dadosHoje.gord += Math.floor(ganhoCal / 42);
+                dadosHoje.lista.unshift({ nome: refeicaoSelecionada, cal: ganhoCal });
+                ultimoResultado = { nome: refeicaoSelecionada, cal: ganhoCal };
                 salvar();
                 navegar('resultado');
-            }, 1200);
+            }, 1000);
         }
 
-        function verDicaPremiada() {
-            // Simulação do Premiado
-            alert("Exibindo vídeo premiado para liberar dica...");
+        function acaoDicaPremiada() {
+            // Simula Premiado
+            document.body.style.opacity = "0.6";
             setTimeout(() => {
-                alert("DICA IA: Adicione fibras como chia ou linhaça no seu " + refeicaoSelecionada + " para reduzir o índice glicêmico!");
-            }, 2000);
+                document.body.style.opacity = "1";
+                navegar('tela_dica');
+            }, 1500);
         }
 
-        // --- RENDERIZAÇÃO ---
+        // --- RENDERIZAR TELAS ---
         function renderizar() {
             const root = document.getElementById('root');
 
@@ -101,7 +116,7 @@
                         <img src="icone-512.png" style="width: 180px;">
                         <h1 class="texto-logo">NutriShot Elements</h1>
                         <button class="btn-preto" onclick="navegar('login')">Entrar</button>
-                        <button class="btn-branco" onclick="navegar('cadastro')">Criar Nova Conta</button>
+                        <button class="btn-branco">Criar Nova Conta</button>
                     </div>`;
             }
 
@@ -119,14 +134,15 @@
             else if (telaAtual === 'home') {
                 root.innerHTML = `
                     <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
-                        <div><b>Olá, Isaac Ferreira!</b><br><small style="color:#888;">Sua saúde hoje</small></div>
-                        <button onclick="localStorage.removeItem('logado'); navegar('inicial')" style="background:none; border:1px solid #eee; padding:8px; border-radius:10px;">Sair</button>
+                        <div><b>Olá, Isaac Ferreira!</b><br><small style="color:#888;">Resumo Nutricional</small></div>
+                        <button onclick="localStorage.removeItem('logado'); navegar('inicial')" style="background:none; border:1px solid #eee; padding:8px 12px; border-radius:12px;">Sair</button>
                     </div>
                     <div style="padding: 0 20px;">
                         <div style="background: linear-gradient(135deg, #6a11cb, #2575fc); color: #fff; padding: 25px; border-radius: 20px; margin-bottom: 20px;">
                             <span style="font-size: 14px; opacity: 0.8;">Sequência Atual</span>
                             <div style="font-size: 50px; font-weight: bold; margin: 10px 0;">1 🔥</div>
                         </div>
+
                         <div class="card-home">
                             <b>Calorias de Hoje</b>
                             <div style="margin: 15px 0; font-size: 28px; font-weight: bold;">${dadosHoje.cal} <small style="font-size: 14px; color: #aaa;">/ 2577 cal</small></div>
@@ -134,45 +150,48 @@
                                 <div style="width: ${Math.min((dadosHoje.cal/2577)*100, 100)}%; background: var(--primary); height: 8px; border-radius: 10px;"></div>
                             </div>
                         </div>
+
                         <div class="grid-macros">
                             <div class="macro-box"><small>Proteína</small><br><b>${dadosHoje.prot}g</b></div>
                             <div class="macro-box"><small>Carbos</small><br><b>${dadosHoje.carb}g</b></div>
                             <div class="macro-box"><small>Gordura</small><br><b>${dadosHoje.gord}g</b></div>
                         </div>
-                        <div class="card-home" style="border: 1px solid var(--primary);">
-                            <b style="color: var(--primary);">Dica Especial da IA</b>
-                            <p style="font-size: 12px; color: #666;">Assista um vídeo para liberar uma dica de nutrição.</p>
-                            <button class="btn-branco" style="padding: 8px; font-size: 12px;" onclick="verDicaPremiada()">📺 Liberar Dica</button>
+
+                        <div class="card-home" style="border: 2px solid var(--primary); background: #fafffc;">
+                            <b style="color: var(--primary);">Dica Especial</b>
+                            <p style="font-size: 13px; color: #666; margin: 10px 0;">Assista a um vídeo curto para liberar uma dica de saúde exclusiva.</p>
+                            <button class="btn-preto" style="background: var(--primary); padding: 12px; font-size: 14px;" onclick="acaoDicaPremiada()">📺 Assistir para Ver</button>
                         </div>
+
                         <div class="card-home">
                             <b>Refeições de Hoje</b>
-                            ${dadosHoje.lista.length === 0 ? '<p style="color:#aaa; text-align:center;">Nenhum registro.</p>' : 
-                                dadosHoje.lista.map(item => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f9f9f9;"><span>${item.nome}</span><b>${item.cal} cal</b></div>`).join('')
+                            ${dadosHoje.lista.length === 0 ? '<p style="color:#aaa; text-align:center; padding: 20px 0;">Nenhuma refeição ainda.</p>' : 
+                                dadosHoje.lista.map(item => `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #f9f9f9;"><span>${item.nome}</span><b>${item.cal} cal</b></div>`).join('')
                             }
                         </div>
                     </div>
                     <button class="btn-add-fixo" onclick="navegar('add_refeicao')">+</button>
-                    <div class="ad-banner-mock">BANNER AD: ${ADMOB.banner}</div>`;
+                    <div class="ad-banner-area">BANNER AD: ${ADMOB.banner}</div>`;
             }
 
             else if (telaAtual === 'add_refeicao') {
                 root.innerHTML = `
-                    <div style="padding: 20px; display: flex; align-items: center;"><button onclick="navegar('home')" style="background:none; border:none; font-size: 24px;">←</button><b style="margin-left:15px; font-size: 20px;">Nova Refeição</b></div>
+                    <div style="padding: 20px; display: flex; align-items: center;"><button onclick="navegar('home')" style="background:none; border:none; font-size: 24px; cursor:pointer;">←</button><b style="margin-left:15px; font-size: 20px;">Adicionar Refeição</b></div>
                     <div class="container">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px;">
                             ${['Café Da Manhã', 'Almoço', 'Jantar', 'Lanche'].map(tipo => `
                                 <div class="chip ${refeicaoSelecionada === tipo ? 'ativo' : ''}" onclick="refeicaoSelecionada='${tipo}'; renderizar()">${tipo}</div>
                             `).join('')}
                         </div>
                         <div id="botoesSelecao">
-                            <input type="file" id="camIn" accept="image/*" capture="environment" style="display:none" onchange="handleFile(event)">
-                            <button class="btn-preto" onclick="document.getElementById('camIn').click()">📸 Abrir Câmara</button>
-                            <input type="file" id="galIn" accept="image/*" style="display:none" onchange="handleFile(event)">
-                            <button class="btn-branco" onclick="document.getElementById('galIn').click()">📁 Galeria</button>
+                            <input type="file" id="cam" accept="image/*" capture="environment" style="display:none" onchange="handleFile(event)">
+                            <button class="btn-preto" onclick="document.getElementById('cam').click()">📸 Abrir Câmara</button>
+                            <input type="file" id="gal" accept="image/*" style="display:none" onchange="handleFile(event)">
+                            <button class="btn-branco" onclick="document.getElementById('gal').click()">📁 Escolher da Galeria</button>
                         </div>
                         <div id="previewContainer"></div>
                         <div id="botoesAcao" style="display:none; margin-top:20px;">
-                            <button class="btn-preto" style="background: var(--primary);" onclick="calcularIA()">Calcular Calorias</button>
+                            <button class="btn-preto" style="background: var(--primary);" onclick="acaoCalcularIA()">Calcular Calorias</button>
                             <button class="btn-branco" onclick="navegar('add_refeicao')">❌ Trocar Foto</button>
                         </div>
                     </div>`;
@@ -181,11 +200,30 @@
             else if (telaAtual === 'resultado') {
                 root.innerHTML = `
                     <div class="container" style="padding-top: 80px;">
-                        <span style="color: #888;">${ultimoResultado.nome}</span>
+                        <span style="color: #888; font-weight: 500;">${ultimoResultado.nome}</span>
                         <h1 style="margin: 10px 0;">Análise Concluída</h1>
-                        <div style="font-size: 64px; font-weight: bold; color: var(--primary);">+${ultimoResultado.cal}</div>
-                        <p style="color: #666;">Calorias somadas ao seu dia!</p>
-                        <button class="btn-preto" onclick="navegar('home')" style="margin-top: 40px;">Confirmar e Voltar</button>
+                        <div style="font-size: 72px; font-weight: bold; color: var(--primary); margin: 20px 0;">+${ultimoResultado.cal}</div>
+                        <p style="color: #666; font-size: 18px;">Calorias adicionadas com sucesso!</p>
+                        <button class="btn-preto" onclick="navegar('home')" style="margin-top: 50px;">Confirmar e Voltar</button>
+                    </div>`;
+            }
+
+            else if (telaAtual === 'tela_dica') {
+                const dicas = [
+                    "Beba 1 copo de água antes de cada refeição para aumentar a saciedade.",
+                    "Substituir o arroz branco por integral ajuda a manter a energia por mais tempo.",
+                    "Comer uma fruta cítrica após o almoço ajuda na absorção do ferro.",
+                    "Evite líquidos durante a refeição para melhorar sua digestão."
+                ];
+                const dica = dicas[Math.floor(Math.random() * dicas.length)];
+                root.innerHTML = `
+                    <div class="container" style="padding-top: 80px;">
+                        <h2 style="color: #888;">Dica Especial</h2>
+                        <h1 style="font-size: 36px; margin: 20px 0;">Segue a Dica:</h1>
+                        <div style="background: #f0f7f4; padding: 40px 20px; border-radius: 25px; border: 1px solid #d1e7dd; margin: 30px 0;">
+                            <p style="font-size: 26px; font-weight: 600; line-height: 1.4; color: #1a1a1a;">"${dica}"</p>
+                        </div>
+                        <button class="btn-preto" onclick="navegar('home')">Entendido!</button>
                     </div>`;
             }
         }
