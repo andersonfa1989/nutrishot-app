@@ -6,7 +6,7 @@
     <title>NutriShot Elements</title>
     <style>
         body { margin: 0; font-family: -apple-system, sans-serif; background: #ffffff; color: #333; }
-        .container { padding: 30px 20px; text-align: center; }
+        .container { padding: 25px 20px; text-align: center; }
         .texto-logo { 
             font-size: 38px; font-weight: bold; 
             background: linear-gradient(to right, #2ab573, #2490eb, #f39c12); 
@@ -17,7 +17,12 @@
         .btn-preto { width: 100%; background: #000; color: #fff; border: none; padding: 18px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .btn-branco { width: 100%; background: #fff; color: #333; border: 1px solid #eee; padding: 15px; border-radius: 30px; font-size: 16px; cursor: pointer; margin-top: 10px; }
         .label-campo { text-align: left; display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px; color: #555; }
-        .card { background: #fff; padding: 20px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); text-align: left; }
+        
+        /* Estilos da Home conforme imagem */
+        .card-home { background: #fff; padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #f0f0f0; text-align: left; }
+        .grid-macros { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .macro-box { background: #fff; padding: 15px; border-radius: 15px; border: 1px solid #f0f0f0; text-align: center; }
+        .btn-flutuante { position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; background: #000; color: #fff; border-radius: 50%; border: none; font-size: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
@@ -25,7 +30,7 @@
 
     <script>
       let telaAtual = 'inicial'; 
-      let usuario = { nome: '', email: '', localidade: '', peso: 0, altura: 0, imc: 0 };
+      let usuario = { nome: 'Isaac Ferreira', localidade: '', imc: 0, meta: 2577 };
 
       function navegar(tela) {
         telaAtual = tela;
@@ -33,38 +38,26 @@
         window.scrollTo(0,0);
       }
 
-      // Função para salvar a primeira parte do cadastro
       function proximoPasso() {
-        usuario.nome = document.getElementById('reg_nome').value;
-        usuario.email = document.getElementById('reg_email').value;
+        usuario.nome = document.getElementById('reg_nome').value || 'Usuário';
         usuario.localidade = document.getElementById('reg_local').value;
-        
-        if(usuario.nome && usuario.email) {
-            navegar('cadastro_saude');
-        } else {
-            alert("Por favor, preencha o Nome e E-mail.");
-        }
+        navegar('cadastro_saude');
       }
 
-      // Função para finalizar o cadastro com IMC
-      function finalizarTudo() {
+      function finalizarCadastro() {
         const p = parseFloat(document.getElementById('p_saude').value);
         const a = parseFloat(document.getElementById('a_saude').value) / 100;
-        
         if(p > 0 && a > 0) {
-          usuario.peso = p;
-          usuario.altura = a * 100;
           usuario.imc = (p / (a * a)).toFixed(1);
-          navegar('home');
-        } else {
-          alert("Preencha Peso e Altura corretamente.");
-        }
+          alert("Cadastro realizado com sucesso! Faça login para entrar.");
+          navegar('login'); // Volta para o login após cadastro
+        } else { alert("Preencha os dados corretamente."); }
       }
 
       function renderizar() {
         const root = document.getElementById('root');
 
-        // 1. TELA INICIAL
+        // --- TELA INICIAL ---
         if (telaAtual === 'inicial') {
           root.innerHTML = `
             <div class="container" style="padding-top: 60px;">
@@ -77,79 +70,100 @@
           `;
         }
 
-        // 2. TELA DE LOGIN
+        // --- TELA LOGIN ---
         else if (telaAtual === 'login') {
           root.innerHTML = `
             <div class="container">
               <h1 style="font-size: 32px; margin-top: 40px;">Entrar</h1>
               <input type="email" class="input-estilizado" placeholder="Email">
               <input type="password" class="input-estilizado" placeholder="Senha">
-              <button class="btn-preto" onclick="navegar('home')">Acessar</button>
+              <button class="btn-preto" onclick="navegar('home')">Acessar App</button>
               <button class="btn-branco" onclick="navegar('inicial')">Voltar</button>
             </div>
           `;
         }
 
-        // 3. TELA DE CADASTRO - PARTE 1 (DADOS PESSOAIS)
+        // --- CADASTRO ETAPA 1 ---
         else if (telaAtual === 'cadastro_dados') {
           root.innerHTML = `
             <div class="container">
-              <h1 style="font-size: 32px; margin-top: 20px;">Criar Conta</h1>
+              <h1 style="font-size: 30px;">Criar Conta</h1>
               <div style="text-align: left; margin-top: 20px;">
                 <span class="label-campo">Nome Completo</span>
-                <input type="text" id="reg_nome" class="input-estilizado" placeholder="Ex: Isaac Ferreira">
-                
-                <span class="label-campo">E-mail</span>
-                <input type="email" id="reg_email" class="input-estilizado" placeholder="seu@email.com">
-                
+                <input type="text" id="reg_nome" class="input-estilizado" placeholder="Nome">
+                <span class="label-campo">Email</span>
+                <input type="email" class="input-estilizado" placeholder="Email">
                 <span class="label-campo">Senha</span>
-                <input type="password" class="input-estilizado" placeholder="Crie uma senha">
-                
-                <span class="label-campo">Localidade (Cidade/UF)</span>
-                <input type="text" id="reg_local" class="input-estilizado" placeholder="Ex: São Paulo, SP">
-                
+                <input type="password" class="input-estilizado" placeholder="Senha">
+                <span class="label-campo">Localidade</span>
+                <input type="text" id="reg_local" class="input-estilizado" placeholder="Cidade/UF">
                 <button class="btn-preto" onclick="proximoPasso()">Próximo Passo</button>
-                <button class="btn-branco" onclick="navegar('inicial')">Voltar</button>
               </div>
             </div>
           `;
         }
 
-        // 4. TELA DE CADASTRO - PARTE 2 (SAÚDE)
+        // --- CADASTRO ETAPA 2 (SAÚDE) ---
         else if (telaAtual === 'cadastro_saude') {
           root.innerHTML = `
             <div class="container">
-              <h1 style="font-size: 28px; margin-top: 20px;">Quase lá, ${usuario.nome.split(' ')[0]}!</h1>
-              <p style="color: #666; margin-bottom: 30px;">Agora seus dados físicos para o IMC</p>
-              <div style="text-align: left;">
+              <h1 style="font-size: 28px;">Dados de Saúde</h1>
+              <div style="text-align: left; margin-top: 20px;">
                 <span class="label-campo">Peso (kg)</span>
                 <input type="number" id="p_saude" class="input-estilizado" placeholder="Ex: 80">
-                
                 <span class="label-campo">Altura (cm)</span>
                 <input type="number" id="a_saude" class="input-estilizado" placeholder="Ex: 175">
-                
-                <button class="btn-preto" onclick="finalizarTudo()">Finalizar Cadastro</button>
+                <button class="btn-preto" onclick="finalizarCadastro()">Finalizar Cadastro</button>
               </div>
             </div>
           `;
         }
 
-        // 5. TELA HOME
+        // --- HOME (CONFORME IMAGEM DO WHATSAPP) ---
         else if (telaAtual === 'home') {
           root.innerHTML = `
-            <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee;">
-              <div><b>Olá, ${usuario.nome}!</b><br><span style="font-size:12px; color:#888;">${usuario.localidade} | IMC: ${usuario.imc}</span></div>
-              <button onclick="navegar('inicial')" style="border: 1px solid #eee; background: none; padding: 8px 12px; border-radius: 10px;">Sair</button>
-            </div>
-            <div class="container">
-              <div style="background: linear-gradient(135deg, #6a11cb, #2575fc); color: #fff; padding: 25px; border-radius: 20px; text-align: left;">
-                <span>Sequência Atual</span><br><b style="font-size: 40px;">1 🔥</b>
+            <div style="padding: 20px; display: flex; justify-content: space-between; align-items: flex-start; background: #fff;">
+              <div>
+                <b style="font-size: 20px;">Olá, ${usuario.nome}!</b><br>
+                <span style="color: #888; font-size: 14px;">Como está sua alimentação hoje?</span>
               </div>
-              <div class="card" style="margin-top: 15px;">
-                <b>Meta de Calorias Diária</b>
-                <div style="margin: 10px 0; font-size: 24px; font-weight: bold;">0 <span style="font-size: 14px; color: #ccc;">/ 2500 cal</span></div>
+              <button onclick="navegar('login')" style="border: 1px solid #eee; background: none; padding: 10px 15px; border-radius: 12px;">Sair</button>
+            </div>
+
+            <div style="padding: 0 20px;">
+              <div style="background: linear-gradient(135deg, #6a11cb, #2575fc); color: #fff; padding: 25px; border-radius: 20px; margin-bottom: 20px; text-align: left;">
+                <span style="font-size: 14px; opacity: 0.8;">Sequência Atual</span>
+                <div style="font-size: 50px; font-weight: bold; margin: 10px 0;">1 🔥</div>
+                <span style="font-size: 12px; opacity: 0.8;">Melhor: 1 dias</span>
+              </div>
+
+              <div class="card-home">
+                <b>Calorias de Hoje</b>
+                <div style="margin: 15px 0; display: flex; align-items: baseline; justify-content: space-between;">
+                  <span style="font-size: 32px; font-weight: bold;">0 <small style="font-size: 14px; color: #aaa; font-weight: normal;">/ ${usuario.meta} cal</small></span>
+                  <span style="color: #2ab573; font-weight: bold;">0%</span>
+                </div>
+                <div style="width: 100%; background: #f0f0f0; height: 8px; border-radius: 10px;"></div>
+              </div>
+
+              <div class="grid-macros">
+                <div class="macro-box"><span style="font-size: 11px; color: #888;">Proteína</span><br><b>0g</b></div>
+                <div class="macro-box"><span style="font-size: 11px; color: #888;">Carboidratos</span><br><b>0g</b></div>
+                <div class="macro-box"><span style="font-size: 11px; color: #888;">Gordura</span><br><b>0g</b></div>
+              </div>
+
+              <div class="card-home">
+                <b>Últimos 7 Dias</b>
+                <div style="height: 80px; display: flex; align-items: flex-end; justify-content: space-around; margin-top: 15px;">
+                  <div style="text-align: center; font-size: 10px; color: #888;"><div style="width: 25px; height: 5px; background: #eee; border-radius: 5px; margin-bottom: 5px;"></div>9/1</div>
+                  <div style="text-align: center; font-size: 10px; color: #888;"><div style="width: 25px; height: 5px; background: #eee; border-radius: 5px; margin-bottom: 5px;"></div>10/1</div>
+                  <div style="text-align: center; font-size: 10px; color: #888;"><div style="width: 25px; height: 5px; background: #eee; border-radius: 5px; margin-bottom: 5px;"></div>11/1</div>
+                  <div style="text-align: center; font-size: 10px; color: #888;"><div style="width: 25px; height: 35px; background: #6a11cb; border-radius: 5px; margin-bottom: 5px;"></div>14/1</div>
+                </div>
               </div>
             </div>
+
+            <button class="btn-flutuante" onclick="alert('IA Ativada!')">+</button>
           `;
         }
       }
