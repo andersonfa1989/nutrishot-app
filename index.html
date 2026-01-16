@@ -12,7 +12,7 @@
     <div id="root"></div>
 
     <script>
-      // 1. Configuração AdMob (Seu ID de editor)
+      // 1. Configuração AdMob
       (adsbygoogle = window.adsbygoogle || []).push({
         google_ad_client: "ca-pub-6941311170472131",
         enable_page_level_ads: true,
@@ -22,7 +22,6 @@
       // 2. Estado do Aplicativo
       let telaAtual = 'cadastro'; 
 
-      // 3. Funções de Navegação e Anúncio
       function navegar(tela) {
         telaAtual = tela;
         renderizar();
@@ -31,27 +30,26 @@
 
       function mostrarAnuncio() {
         alert("Carregando anúncio premiado... (ID: 4221550021)");
-        // O AdMob premiado é acionado aqui
       }
 
-      // 4. Renderização das Telas
+      // 3. Renderização das Telas
       function renderizar() {
         const root = document.getElementById('root');
         
         if (telaAtual === 'cadastro') {
           root.innerHTML = `
             <div style="padding: 50px 20px; text-align: center;">
-              <img src="logo.jpg" style="width: 150px; height: auto; margin-bottom: 10px; border-radius: 20px;" alt="NutriShot Elements">
+              <img src="icone-512.png" style="width: 180px; height: auto; margin-bottom: 10px;" alt="NutriShot Elements">
               
-              <h1 style="color: #667eea; margin-top: 0;">NutriShot Elements</h1>
+              <h1 style="color: #667eea; margin-top: 0; font-size: 28px;">NutriShot Elements</h1>
               <p style="color: #666;">Crie sua conta para começar</p>
               
               <div style="margin-top: 30px;">
-                <input type="text" placeholder="Nome Completo" style="width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; font-size: 16px;">
-                <input type="email" placeholder="Seu melhor e-mail" style="width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; font-size: 16px;">
+                <input type="text" placeholder="Nome" style="width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; font-size: 16px;">
+                <input type="email" placeholder="E-mail" style="width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; font-size: 16px;">
                 
                 <button onclick="navegar('home')" style="width: 93%; background: #667eea; color: white; border: none; padding: 18px; border-radius: 30px; margin-top: 20px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
-                  Começar Agora
+                  Cadastrar
                 </button>
               </div>
               
@@ -62,7 +60,7 @@
           root.innerHTML = `
             <div style="padding: 20px; text-align: center;">
               <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
-                <img src="logo.jpg" style="width: 40px; margin-right: 10px; border-radius: 5px;">
+                <img src="icone-512.png" style="width: 40px; margin-right: 10px;">
                 <h2 style="color: #667eea; margin: 0;">NutriShot</h2>
               </div>
 
@@ -77,7 +75,6 @@
               <div style="margin: 40px 0;">
                 <button onclick="mostrarAnuncio()" style="background: #667eea; color: white; border: none; padding: 25px; border-radius: 50%; width: 90px; height: 90px; font-size: 35px; cursor: pointer; box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);">📸</button>
                 <p style="margin-top: 15px; font-weight: bold; color: #444;">Analisar Refeição</p>
-                <p style="font-size: 12px; color: #999;">Ganhe pontos analisando seu prato</p>
               </div>
 
               <div style="position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #eee;">
@@ -90,7 +87,6 @@
         }
       }
 
-      // Iniciar Aplicativo
       renderizar();
     </script>
 </body>
