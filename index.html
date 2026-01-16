@@ -3,47 +3,55 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <title>NutriShot Pro</title>
+    <title>NutriShot Full</title>
     <style>
-        :root { --primary: #2ab573; --secondary: #6a11cb; --bg: #f8f9fa; --text: #333; }
-        body { margin: 0; font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 80px; }
+        :root { --primary: #2ab573; --secondary: #6a11cb; --bg: #fdfdfd; --text: #333; }
+        body { margin: 0; font-family: -apple-system, sans-serif; background: #f8f9fa; color: var(--text); padding-bottom: 90px; }
         .container { padding: 15px; }
         
-        /* Estilo dos Cards das Imagens */
-        .card-white { background: #fff; border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #eee; }
-        .card-title { font-size: 18px; font-weight: 600; margin-bottom: 15px; display: block; }
+        /* Estilo dos Cards (conforme imagem) */
+        .card-branco { background: #fff; border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid #f0f0f0; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .titulo-card { font-size: 18px; font-weight: 600; margin-bottom: 15px; display: block; color: #444; }
 
-        /* Gráfico de 7 dias */
-        .chart-7days { display: flex; justify-content: space-between; align-items: flex-end; height: 80px; padding-top: 10px; }
-        .bar-group { display: flex; flex-direction: column; align-items: center; width: 12%; }
-        .bar-val { font-size: 10px; color: #bbb; margin-bottom: 4px; }
-        .bar-fill { width: 100%; background: #e0e0e0; height: 4px; border-radius: 10px; }
-        .bar-fill.active { background: var(--secondary); }
+        /* Gráfico 7 Dias */
+        .chart-container { display: flex; justify-content: space-between; align-items: flex-end; height: 80px; padding: 10px 5px; }
+        .bar-stack { display: flex; flex-direction: column; align-items: center; width: 12%; }
+        .bar-label { font-size: 10px; color: #ccc; margin-bottom: 5px; }
+        .bar-line { width: 100%; height: 4px; background: #eee; border-radius: 10px; transition: 0.3s; }
+        .bar-line.active { background: var(--secondary); }
         .bar-date { font-size: 10px; color: #bbb; margin-top: 8px; }
 
+        /* Botão Loja (Abaixo do gráfico) */
+        .btn-loja { width: 100%; background: var(--primary); color: #fff; border: none; padding: 16px; border-radius: 15px; font-size: 14px; font-weight: bold; cursor: pointer; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
         /* Conquistas */
-        .conquista-item { background: #f0f2f8; border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px; }
-        .conquista-icon { width: 40px; height: 40px; background: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-        .conquista-info b { font-size: 14px; display: block; }
-        .conquista-info small { font-size: 12px; color: #888; }
+        .conquista-box { background: #f5f7ff; border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 12px; }
+        .conquista-icon { width: 45px; height: 45px; background: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .conquista-txt b { font-size: 15px; display: block; color: #333; }
+        .conquista-txt small { font-size: 12px; color: #999; }
 
-        /* Loja */
-        .btn-loja { width: 100%; background: var(--primary); color: #fff; border: none; padding: 16px; border-radius: 15px; font-size: 14px; font-weight: bold; cursor: pointer; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        /* Refeições de Hoje */
+        .empty-state { text-align: center; padding: 30px 10px; color: #aaa; font-size: 14px; }
+
+        /* Elementos do código original */
+        .btn-add-fixo { position: fixed; bottom: 85px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; border: none; font-size: 35px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 100; }
+        .fire-card { background: linear-gradient(135deg, #6a11cb, #2575fc); color: #fff; padding: 25px; border-radius: 25px; margin-bottom: 15px; }
+        
+        /* Loja Grid */
         .loja-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .produto-card { background: #fff; border: 1px solid #eee; border-radius: 15px; padding: 10px; text-align: center; }
-        .produto-img { width: 100%; height: 80px; object-fit: contain; }
-
-        .btn-add { position: fixed; bottom: 80px; right: 20px; width: 60px; height: 60px; background: #000; color: #fff; border-radius: 50%; border: none; font-size: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .prod-card { background: #fff; border-radius: 15px; padding: 10px; text-align: center; border: 1px solid #eee; }
+        .prod-img { width: 100%; height: 90px; object-fit: contain; }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script>
+        // Dados sincronizados
         let dadosHoje = JSON.parse(localStorage.getItem('dadosHoje')) || { cal: 0, lista: [] };
-        let telaAtual = 'home';
+        let telaAtual = localStorage.getItem('logado') === 'true' ? 'home' : 'inicial';
 
-        function navegar(t) { telaAtual = t; renderizar(); }
+        function navegar(t) { telaAtual = t; renderizar(); window.scrollTo(0,0); }
 
         function renderizar() {
             const root = document.getElementById('root');
@@ -51,15 +59,23 @@
             if (telaAtual === 'home') {
                 root.innerHTML = `
                     <div class="container">
-                        <h2 style="margin-left: 5px;">Olá, Isaac!</h2>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                            <h2 style="margin:0;">Olá, Isaac!</h2>
+                            <button onclick="localStorage.removeItem('logado'); navegar('inicial')" style="background:none; border:1px solid #ddd; padding:8px 12px; border-radius:12px; font-size:12px;">Sair</button>
+                        </div>
 
-                        <div class="card-white">
-                            <span class="card-title">Últimos 7 Dias</span>
-                            <div class="chart-7days">
+                        <div class="fire-card">
+                            <span style="opacity:0.8; font-size:14px;">Fogo na Sequência</span>
+                            <div style="font-size: 42px; font-weight: bold; margin-top:5px;">1 🔥</div>
+                        </div>
+
+                        <div class="card-branco">
+                            <span class="titulo-card">Últimos 7 Dias</span>
+                            <div class="chart-container">
                                 ${['9/1','10/1','11/1','12/1','13/1','14/1','15/1'].map((d, i) => `
-                                    <div class="bar-group">
-                                        <span class="bar-val">${i === 5 ? '400' : '0'}</span>
-                                        <div class="bar-fill ${i === 5 ? 'active' : ''}"></div>
+                                    <div class="bar-stack">
+                                        <span class="bar-label">${i === 5 ? '400' : '0'}</span>
+                                        <div class="bar-line ${i === 5 ? 'active' : ''}"></div>
                                         <span class="bar-date">${d}</span>
                                     </div>
                                 `).join('')}
@@ -68,62 +84,86 @@
 
                         <button class="btn-loja" onclick="navegar('loja')">🛒 VER SUPLEMENTOS RECOMENDADOS</button>
 
-                        <div class="card-white">
-                            <span class="card-title">Conquistas Desbloqueadas</span>
-                            <div class="conquista-item">
+                        <div class="card-branco">
+                            <span class="titulo-card">Conquistas Desbloqueadas</span>
+                            <div class="conquista-box">
                                 <div class="conquista-icon">🍽️</div>
-                                <div class="conquista-info">
+                                <div class="conquista-txt">
                                     <b>Primeira Refeição</b>
                                     <small>Registrou sua primeira refeição</small>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card-white">
-                            <span class="card-title">Refeições de Hoje</span>
-                            <div style="text-align: center; padding: 20px 0;">
-                                ${dadosHoje.lista.length === 0 ? `
-                                    <p style="color: #888; margin: 0;">Nenhuma refeição registrada ainda.</p>
-                                    <small style="color: #bbb;">Adicione sua primeira refeição!</small>
-                                ` : dadosHoje.lista.map(item => `
-                                    <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f9f9f9;">
-                                        <span>${item.nome}</span><b>+${item.cal} kcal</b>
-                                    </div>
-                                `).join('')}
-                            </div>
+                        <div class="card-branco">
+                            <span class="titulo-card">Refeições de Hoje</span>
+                            ${dadosHoje.lista.length === 0 ? `
+                                <div class="empty-state">
+                                    Nenhuma refeição registrada ainda.<br>
+                                    <span style="font-size:12px; color:#ccc;">Adicione sua primeira refeição!</span>
+                                </div>
+                            ` : `
+                                <div style="margin-top:10px;">
+                                    ${dadosHoje.lista.map(item => `
+                                        <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #f5f5f5;">
+                                            <span style="font-weight:500;">${item.nome}</span>
+                                            <b style="color:var(--primary);">+${item.cal} kcal</b>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `}
                         </div>
                     </div>
-                    <button class="btn-add" onclick="adicionarSimulado()">+</button>
+
+                    <button class="btn-add-fixo" onclick="navegar('camera')">+</button>
                 `;
-            } 
-            
+            }
+
             else if (telaAtual === 'loja') {
                 root.innerHTML = `
                     <div class="container">
-                        <button onclick="navegar('home')" style="background:none; border:none; font-size:18px; margin-bottom:15px;">← Voltar</button>
-                        <div class="loja-grid">
-                            <div class="produto-card">
-                                <img src="https://m.media-amazon.com/images/I/61M-F8pS6XL._AC_SL1500_.jpg" class="produto-img">
-                                <p style="font-size:12px; font-weight:bold;">Hipercalórico 3kg</p>
-                                <p style="color:var(--primary); font-weight:800;">R$ 215,00</p>
-                                <button style="width:100%; background:#000; color:#fff; border:none; padding:8px; border-radius:5px; font-size:10px;">COMPRAR</button>
-                            </div>
-                            <div class="produto-card">
-                                <img src="https://m.media-amazon.com/images/I/51Hk8I+GZkL._AC_SL1000_.jpg" class="produto-img">
-                                <p style="font-size:12px; font-weight:bold;">Psyllium 1kg</p>
-                                <p style="color:var(--primary); font-weight:800;">R$ 49,90</p>
-                                <button style="width:100%; background:#000; color:#fff; border:none; padding:8px; border-radius:5px; font-size:10px;">COMPRAR</button>
-                            </div>
+                        <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
+                            <button onclick="navegar('home')" style="background:none; border:none; font-size:24px;">←</button>
+                            <h2 style="margin:0;">Recomendados</h2>
                         </div>
+                        <div class="loja-grid">
+                            <div class="prod-card">
+                                <img src="https://m.media-amazon.com/images/I/61M-F8pS6XL._AC_SL1500_.jpg" class="prod-img">
+                                <p style="font-size:11px; font-weight:bold; height:30px; overflow:hidden;">Hipercalórico 3kg</p>
+                                <p style="color:var(--primary); font-weight:bold;">R$ 215,00</p>
+                                <button style="width:100%; background:#000; color:#fff; border:none; padding:8px; border-radius:8px; font-size:10px;" onclick="window.open('https://amzn.to/4qpZKKC', '_blank')">COMPRAR</button>
+                            </div>
+                            </div>
+                    </div>
+                `;
+            }
+
+            else if (telaAtual === 'camera') {
+                root.innerHTML = `
+                    <div class="container" style="text-align:center; padding-top:50px;">
+                        <button onclick="navegar('home')" style="position:absolute; left:20px; top:20px; background:none; border:none; font-size:24px;">←</button>
+                        <h2>Análise de IA</h2>
+                        <div style="width:100%; height:300px; background:#eee; border-radius:20px; display:flex; align-items:center; justify-content:center; margin-bottom:20px;">📸 Área da Câmera</div>
+                        <button class="btn-loja" style="background:#000;" onclick="simularAnalise()">CALCULAR AGORA</button>
+                    </div>
+                `;
+            }
+
+            else {
+                root.innerHTML = `
+                    <div class="container" style="text-align:center; padding-top:120px;">
+                        <h1 style="font-size:40px; background:linear-gradient(to right, #2ab573, #2490eb); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">NutriShot</h1>
+                        <button class="btn-loja" style="background:#000; margin-top:40px;" onclick="localStorage.setItem('logado', 'true'); navegar('home')">Entrar no App</button>
                     </div>
                 `;
             }
         }
 
-        function adicionarSimulado() {
-            dadosHoje.lista.push({ nome: 'Lanche', cal: 150 });
+        function simularAnalise() {
+            const cal = 450;
+            dadosHoje.lista.unshift({ nome: 'Refeição IA', cal: cal });
             localStorage.setItem('dadosHoje', JSON.stringify(dadosHoje));
-            renderizar();
+            navegar('home');
         }
 
         renderizar();
