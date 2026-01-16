@@ -8,16 +8,15 @@
         body { margin: 0; font-family: -apple-system, sans-serif; background: #ffffff; color: #333; }
         .container { padding: 30px 20px; text-align: center; }
         .texto-logo { 
-            font-size: 38px; 
-            font-weight: bold; 
+            font-size: 38px; font-weight: bold; 
             background: linear-gradient(to right, #2ab573, #2490eb, #f39c12); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
             margin: 15px 0; 
         }
-        .input-estilizado { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box; font-size: 16px; background: #fdfdfd; }
+        .input-estilizado { width: 100%; padding: 15px; margin-bottom: 12px; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box; font-size: 16px; background: #fdfdfd; }
         .btn-preto { width: 100%; background: #000; color: #fff; border: none; padding: 18px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .btn-branco { width: 100%; background: #fff; color: #333; border: 1px solid #eee; padding: 15px; border-radius: 30px; font-size: 16px; cursor: pointer; margin-top: 10px; }
+        .label-campo { text-align: left; display: block; font-weight: bold; font-size: 14px; margin-bottom: 5px; color: #555; }
         .card { background: #fff; padding: 20px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); text-align: left; }
     </style>
 </head>
@@ -26,7 +25,7 @@
 
     <script>
       let telaAtual = 'inicial'; 
-      let dados = { nome: '', peso: 0, altura: 0, imc: 0, meta: 2500 };
+      let usuario = { nome: '', email: '', localidade: '', peso: 0, altura: 0, imc: 0 };
 
       function navegar(tela) {
         telaAtual = tela;
@@ -34,22 +33,38 @@
         window.scrollTo(0,0);
       }
 
-      function finalizarCadastro() {
+      // Função para salvar a primeira parte do cadastro
+      function proximoPasso() {
+        usuario.nome = document.getElementById('reg_nome').value;
+        usuario.email = document.getElementById('reg_email').value;
+        usuario.localidade = document.getElementById('reg_local').value;
+        
+        if(usuario.nome && usuario.email) {
+            navegar('cadastro_saude');
+        } else {
+            alert("Por favor, preencha o Nome e E-mail.");
+        }
+      }
+
+      // Função para finalizar o cadastro com IMC
+      function finalizarTudo() {
         const p = parseFloat(document.getElementById('p_saude').value);
         const a = parseFloat(document.getElementById('a_saude').value) / 100;
+        
         if(p > 0 && a > 0) {
-          dados.peso = p;
-          dados.imc = (p / (a * a)).toFixed(1);
+          usuario.peso = p;
+          usuario.altura = a * 100;
+          usuario.imc = (p / (a * a)).toFixed(1);
           navegar('home');
         } else {
-          alert("Por favor, preencha Peso e Altura corretamente.");
+          alert("Preencha Peso e Altura corretamente.");
         }
       }
 
       function renderizar() {
         const root = document.getElementById('root');
 
-        // TELA INICIAL
+        // 1. TELA INICIAL
         if (telaAtual === 'inicial') {
           root.innerHTML = `
             <div class="container" style="padding-top: 60px;">
@@ -57,12 +72,12 @@
               <h1 class="texto-logo">NutriShot Elements</h1>
               <p style="color: #666; margin-bottom: 40px;">Seu assistente de saúde com IA</p>
               <button class="btn-preto" onclick="navegar('login')">Entrar</button>
-              <button class="btn-branco" onclick="navegar('cadastro_saude')">Criar Nova Conta</button>
+              <button class="btn-branco" onclick="navegar('cadastro_dados')">Criar Nova Conta</button>
             </div>
           `;
         }
 
-        // TELA LOGIN
+        // 2. TELA DE LOGIN
         else if (telaAtual === 'login') {
           root.innerHTML = `
             <div class="container">
@@ -75,29 +90,55 @@
           `;
         }
 
-        // TELA CADASTRO DE SAÚDE (AQUI ERA O ERRO)
-        else if (telaAtual === 'cadastro_saude') {
+        // 3. TELA DE CADASTRO - PARTE 1 (DADOS PESSOAIS)
+        else if (telaAtual === 'cadastro_dados') {
           root.innerHTML = `
             <div class="container">
-              <h1 style="font-size: 28px; margin-top: 20px;">Dados de Saúde</h1>
-              <p style="color: #666; margin-bottom: 30px;">Informe para calcularmos seu IMC</p>
-              <div style="text-align: left;">
-                <label>Peso (kg)</label>
-                <input type="number" id="p_saude" class="input-estilizado" placeholder="Ex: 80">
-                <label>Altura (cm)</label>
-                <input type="number" id="a_saude" class="input-estilizado" placeholder="Ex: 175">
-                <button class="btn-preto" onclick="finalizarCadastro()">Finalizar e Calcular</button>
-                <button class="btn-branco" onclick="navegar('inicial')">Cancelar</button>
+              <h1 style="font-size: 32px; margin-top: 20px;">Criar Conta</h1>
+              <div style="text-align: left; margin-top: 20px;">
+                <span class="label-campo">Nome Completo</span>
+                <input type="text" id="reg_nome" class="input-estilizado" placeholder="Ex: Isaac Ferreira">
+                
+                <span class="label-campo">E-mail</span>
+                <input type="email" id="reg_email" class="input-estilizado" placeholder="seu@email.com">
+                
+                <span class="label-campo">Senha</span>
+                <input type="password" class="input-estilizado" placeholder="Crie uma senha">
+                
+                <span class="label-campo">Localidade (Cidade/UF)</span>
+                <input type="text" id="reg_local" class="input-estilizado" placeholder="Ex: São Paulo, SP">
+                
+                <button class="btn-preto" onclick="proximoPasso()">Próximo Passo</button>
+                <button class="btn-branco" onclick="navegar('inicial')">Voltar</button>
               </div>
             </div>
           `;
         }
 
-        // TELA HOME
+        // 4. TELA DE CADASTRO - PARTE 2 (SAÚDE)
+        else if (telaAtual === 'cadastro_saude') {
+          root.innerHTML = `
+            <div class="container">
+              <h1 style="font-size: 28px; margin-top: 20px;">Quase lá, ${usuario.nome.split(' ')[0]}!</h1>
+              <p style="color: #666; margin-bottom: 30px;">Agora seus dados físicos para o IMC</p>
+              <div style="text-align: left;">
+                <span class="label-campo">Peso (kg)</span>
+                <input type="number" id="p_saude" class="input-estilizado" placeholder="Ex: 80">
+                
+                <span class="label-campo">Altura (cm)</span>
+                <input type="number" id="a_saude" class="input-estilizado" placeholder="Ex: 175">
+                
+                <button class="btn-preto" onclick="finalizarTudo()">Finalizar Cadastro</button>
+              </div>
+            </div>
+          `;
+        }
+
+        // 5. TELA HOME
         else if (telaAtual === 'home') {
           root.innerHTML = `
             <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee;">
-              <div><b>Olá!</b><br><span style="font-size:12px; color:#888;">IMC: ${dados.imc}</span></div>
+              <div><b>Olá, ${usuario.nome}!</b><br><span style="font-size:12px; color:#888;">${usuario.localidade} | IMC: ${usuario.imc}</span></div>
               <button onclick="navegar('inicial')" style="border: 1px solid #eee; background: none; padding: 8px 12px; border-radius: 10px;">Sair</button>
             </div>
             <div class="container">
@@ -105,7 +146,7 @@
                 <span>Sequência Atual</span><br><b style="font-size: 40px;">1 🔥</b>
               </div>
               <div class="card" style="margin-top: 15px;">
-                <b>Calorias de Hoje</b>
+                <b>Meta de Calorias Diária</b>
                 <div style="margin: 10px 0; font-size: 24px; font-weight: bold;">0 <span style="font-size: 14px; color: #ccc;">/ 2500 cal</span></div>
               </div>
             </div>
