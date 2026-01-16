@@ -1,0 +1,21 @@
+{
+  "name": "NutriShot",
+  "short_name": "NutriShot",
+  "start_url": "/nutrishot-app/index.html",
+  "display": "standalone",
+  "background_color": "#667eea",
+  "theme_color": "#667eea",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://andersonfa1989.github.io/nutrishot-app/icone-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://andersonfa1989.github.io/nutrishot-app/icone-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
