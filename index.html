@@ -9,17 +9,22 @@
         body { margin: 0; font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 70px; }
         .container { padding: 20px; text-align: center; }
         .texto-logo { font-size: 38px; font-weight: bold; background: linear-gradient(to right, #2ab573, #2490eb, #f39c12); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 15px 0; }
+        
+        /* Botões */
+        .btn-preto { width: 100%; background: #000; color: #fff; border: none; padding: 18px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .btn-loja { width: 100%; background: var(--primary); color: #fff; border: none; padding: 15px; border-radius: 15px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
+        /* Cards e Chips */
         .card-home { background: #fff; padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid var(--gray); text-align: left; }
         .grid-macros { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .chip { padding: 12px 10px; border-radius: 25px; border: 1px solid #eee; font-size: 13px; font-weight: 500; cursor: pointer; text-align: center; background: #fff; }
         .chip.ativo { background: #000 !important; color: #fff !important; }
         
-        /* Estilo da Loja */
+        /* Loja */
         .loja-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
         .produto-card { background: #fff; border: 1px solid #eee; border-radius: 15px; padding: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .produto-img { width: 100%; height: 100px; object-fit: contain; margin-bottom: 8px; }
         .btn-comprar { background: #000; color: #fff; border: none; border-radius: 8px; width: 100%; padding: 10px; font-size: 11px; font-weight: bold; cursor: pointer; }
-        .btn-preto { width: 100%; background: #000; color: #fff; border: none; padding: 18px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
         
         .ad-banner-area { position: fixed; bottom: 0; left: 0; width: 100%; height: 55px; background: #fff; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #bbb; z-index: 1000; }
     </style>
@@ -33,7 +38,7 @@
             banner: "ca-app-pub-6941311170472131/2257554053"
         };
 
-        // --- LINKS E FOTOS (Agora em .png) ---
+        // --- LINKS E FOTOS PNG ---
         const linksAfiliado = {
             massa: [
                 { nome: "Creatina Growth 100g", preco: "99,80", foto: "creatina-100g.png", link: "https://amzn.to/4b47g9o" },
@@ -52,7 +57,7 @@
             ]
         };
 
-        let telaAtual = 'inicial'; // 'inicial' ou 'home'
+        let telaAtual = 'inicial'; 
         let dadosHoje = { cal: 1850, objetivo: 'Ganhar Massa' };
 
         function navegar(tela) {
@@ -69,53 +74,71 @@
         function renderizar() {
             const root = document.getElementById('root');
 
+            // --- TELA 1: INICIAL ---
             if (telaAtual === 'inicial') {
                 root.innerHTML = `
-                    <div class="container" style="padding-top: 100px;">
+                    <div class="container" style="padding-top: 120px;">
                         <h1 class="texto-logo">NutriShot</h1>
-                        <p>IA para sua Dieta e Suplementação</p>
+                        <p style="color: #666;">Seu assistente de dieta e suplementação</p>
                         <button class="btn-preto" onclick="navegar('home')">ENTRAR NO APP</button>
                     </div>
                 `;
-            } else {
-                const categoria = dadosHoje.objetivo === 'Ganhar Massa' ? 'massa' : 'perda';
-                const produtos = linksAfiliado[categoria];
-
+            } 
+            
+            // --- TELA 2: HOME (ANÁLISE) ---
+            else if (telaAtual === 'home') {
                 root.innerHTML = `
                     <div style="padding: 20px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                            <button onclick="navegar('inicial')" style="background:none; border:1px solid #ccc; border-radius:10px; padding: 5px 12px; font-size:12px;">← Início</button>
-                            <b style="font-size: 18px; color: var(--primary);">NutriShot</b>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <b style="font-size: 20px; color: var(--primary);">NutriShot</b>
+                            <button onclick="navegar('inicial')" style="background:none; border:1px solid #ccc; border-radius:10px; padding: 5px 10px; font-size:12px;">Sair</button>
                         </div>
-                        
+
                         <div class="grid-macros">
                             <div class="chip ${dadosHoje.objetivo === 'Perder Peso' ? 'ativo' : ''}" onclick="mudarObjetivo('Perder Peso')">Perder Peso</div>
                             <div class="chip ${dadosHoje.objetivo === 'Ganhar Massa' ? 'ativo' : ''}" onclick="mudarObjetivo('Ganhar Massa')">Ganhar Massa</div>
                         </div>
 
                         <div class="card-home">
-                            <small>ANÁLISE DE CALORIAS</small>
+                            <small>GRÁFICO DE ANÁLISE CALÓRICA</small>
                             <div style="font-size: 32px; font-weight: 800; margin: 10px 0;">${dadosHoje.cal} <span style="font-size: 14px; color: #999;">/ 2500 kcal</span></div>
-                            <div style="width: 100%; height: 8px; background: #eee; border-radius: 4px;">
-                                <div style="width: 74%; height: 100%; background: var(--primary); border-radius: 4px;"></div>
+                            <div style="width: 100%; height: 10px; background: #eee; border-radius: 5px; overflow: hidden;">
+                                <div style="width: 74%; height: 100%; background: var(--primary);"></div>
                             </div>
-                        </div>
-
-                        <div class="loja-container">
-                            <b style="font-size: 18px;">🛒 Loja Recomendada</b>
-                            <div class="loja-grid">
-                                ${produtos.map(p => `
-                                    <div class="produto-card">
-                                        <img src="img/${p.foto}" class="produto-img" onerror="this.src='https://via.placeholder.com/150?text=Erro+PNG'">
-                                        <div style="font-size:10px; font-weight:bold; height:25px; overflow:hidden; margin-bottom:5px;">${p.nome}</div>
-                                        <div style="color:var(--primary); font-weight:800; font-size: 14px; margin-bottom:8px;">R$ ${p.preco}</div>
-                                        <button class="btn-comprar" onclick="window.open('${p.link}', '_blank')">COMPRAR</button>
-                                    </div>
-                                `).join('')}
-                            </div>
+                            
+                            <button class="btn-loja" onclick="navegar('loja')">
+                                🛒 VER SUPLEMENTOS RECOMENDADOS
+                            </button>
                         </div>
                     </div>
+                    <div class="ad-banner-area">AD BANNER: ${ADMOB.banner}</div>
+                `;
+            }
 
+            // --- TELA 3: LOJA ---
+            else if (telaAtual === 'loja') {
+                const categoria = dadosHoje.objetivo === 'Ganhar Massa' ? 'massa' : 'perda';
+                const produtos = linksAfiliado[categoria];
+
+                root.innerHTML = `
+                    <div style="padding: 20px;">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                            <button onclick="navegar('home')" style="background:none; border:none; font-size: 24px; cursor:pointer;">←</button>
+                            <h2 style="margin:0;">Loja de Produtos</h2>
+                        </div>
+                        <p style="font-size: 13px; color:#666;">Melhores ofertas para <b>${dadosHoje.objetivo}</b></p>
+                        
+                        <div class="loja-grid">
+                            ${produtos.map(p => `
+                                <div class="produto-card">
+                                    <img src="img/${p.foto}" class="produto-img" onerror="this.src='https://via.placeholder.com/150?text=Sem+Imagem'">
+                                    <div style="font-size:10px; font-weight:bold; height:25px; overflow:hidden; margin-bottom:5px;">${p.nome}</div>
+                                    <div style="color:var(--primary); font-weight:800; font-size: 14px; margin-bottom:8px;">R$ ${p.preco}</div>
+                                    <button class="btn-comprar" onclick="window.open('${p.link}', '_blank')">COMPRAR</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
                     <div class="ad-banner-area">AD BANNER: ${ADMOB.banner}</div>
                 `;
             }
