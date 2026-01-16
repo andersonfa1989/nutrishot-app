@@ -49,9 +49,19 @@
     <div id="root"></div>
     <noscript>Você precisa habilitar JavaScript para usar este app.</noscript>
 
-    <script>
-        // ... todo o seu código JavaScript (AdMob + Interface) ...
-        document.getElementById('root').innerHTML = ` ... `;
+ <script>
+      // Interface do NutriShot
+      document.getElementById('root').innerHTML = `
+        <div style="font-family: sans-serif; text-align: center; padding: 20px;">
+          <h1 style="color: #667eea;">NutriShot</h1>
+          <p>Tire foto da sua comida e descubra as calorias!</p>
+          <div style="background: #f3f4f6; padding: 20px; border-radius: 15px; margin: 20px 0;">
+            <h2 id="calorias">0 kcal</h2>
+            <p>Total do Dia</p>
+          </div>
+          <button onclick="mostrarAnuncio()" style="background: #667eea; color: white; border: none; padding: 15px 30px; border-radius: 25px; font-size: 16px; cursor: pointer;">
+            📸 Analisar Refeição (Ver Anúncio)
+          </button>
+        </div>
+      `;
     </script>
-</body>
-</html>
