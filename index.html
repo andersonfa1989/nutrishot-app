@@ -8,29 +8,29 @@
         :root { --primary: #2ab573; --secondary: #6a11cb; --bg: #f8f9fa; --text: #333; }
         body { margin: 0; font-family: -apple-system, sans-serif; background: #f8f9fa; color: var(--text); padding-bottom: 100px; }
         
-        /* Dashboard */
         .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; }
         .card { background: #fff; border-radius: 15px; padding: 20px; margin: 10px 20px; border: 1px solid #f0f0f0; }
         .card-streak { background: linear-gradient(135deg, #4e54c8, #8f94fb); color: #fff; border: none; }
         
-        /* Botões */
+        /* Grid de Macros */
+        .grid-macros { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 0 20px 10px 20px; }
+        .macro-box { background: #fff; padding: 15px; border-radius: 15px; border: 1px solid #f2f2f2; text-align: center; }
+        .macro-box small { color: #888; font-size: 11px; display: block; margin-bottom: 4px; }
+        .macro-box b { font-size: 16px; }
+
         .btn-green { background: var(--primary); color: #fff; border: none; width: calc(100% - 40px); margin: 10px 20px; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-black { background: #111; color: #fff; border: none; padding: 18px; border-radius: 30px; width: 100%; font-size: 16px; font-weight: 500; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-outline { background: #fff; color: #333; border: 1px solid #eee; padding: 18px; border-radius: 30px; width: 100%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
 
-        /* Grid Tipo Refeição */
         .meal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
-        .meal-option { background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 25px; text-align: center; cursor: pointer; font-size: 15px; transition: 0.3s; }
+        .meal-option { background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 25px; text-align: center; cursor: pointer; font-size: 15px; }
         .meal-option.active { background: #111; color: #fff; border-color: #111; }
 
-        /* Gráfico */
         .chart { display: flex; justify-content: space-between; align-items: flex-end; height: 60px; margin-top: 15px; }
         .bar-container { display: flex; flex-direction: column; align-items: center; width: 12%; }
         .bar { width: 100%; height: 6px; background: #eee; border-radius: 10px; margin-bottom: 5px; }
         .bar.active { background: #6a11cb; }
-        .bar-label { font-size: 10px; color: #aaa; }
-
-        /* Botão Flutuante */
+        
         .fab { position: fixed; bottom: 80px; right: 20px; width: 60px; height: 60px; background: #000; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: none; cursor: pointer; z-index: 999; }
     </style>
 </head>
@@ -42,26 +42,26 @@
     <input type="file" id="gal-input" accept="image/*" style="display:none" onchange="finalizarUpload()">
 
     <script>
+        // Estado inicial com soma de macros
         let estado = {
             tela: 'home',
             calorias: 450,
+            proteina: 30,
+            carbos: 45,
+            gordura: 12,
             refeicoes: [{ nome: 'Almoço', cal: 450 }],
             tipoSelecionado: 'Café Da Manhã'
         };
 
-        function navegar(tela) {
-            estado.tela = tela;
-            render();
-            window.scrollTo(0,0);
-        }
-
-        function selecionarTipo(tipo) {
-            estado.tipoSelecionado = tipo;
-            render();
-        }
+        function navegar(tela) { estado.tela = tela; render(); window.scrollTo(0,0); }
+        function selecionarTipo(tipo) { estado.tipoSelecionado = tipo; render(); }
 
         function finalizarUpload() {
+            // Simulando valores de macros vindo da IA
             estado.calorias += 450;
+            estado.proteina += 25;
+            estado.carbos += 40;
+            estado.gordura += 10;
             estado.refeicoes.unshift({ nome: estado.tipoSelecionado, cal: 450 });
             navegar('home');
         }
@@ -88,7 +88,7 @@
                                 <div class="bar-container">
                                     <span style="font-size:9px; color:#ccc;">${i===5?'400':'0'}</span>
                                     <div class="bar ${i===5?'active':''}"></div>
-                                    <span class="bar-label">${d}</span>
+                                    <span style="font-size:10px; color:#aaa;">${d}</span>
                                 </div>
                             `).join('')}
                         </div>
@@ -104,6 +104,12 @@
                         <div style="width:100%; height:8px; background:#f0f0f0; border-radius:10px;">
                             <div style="width:${(estado.calorias/2577)*100}%; height:100%; background:var(--primary); border-radius:10px;"></div>
                         </div>
+                    </div>
+
+                    <div class="grid-macros">
+                        <div class="macro-box"><small>Proteína</small><b>${estado.proteina}g</b></div>
+                        <div class="macro-box"><small>Carbos</small><b>${estado.carbos}g</b></div>
+                        <div class="macro-box"><small>Gordura</small><b>${estado.gordura}g</b></div>
                     </div>
 
                     <div class="card" style="border: 1px solid var(--primary); background: #fafffb;">
@@ -123,8 +129,7 @@
                     <div class="card">
                         <b style="font-size:14px; color:#555;">Refeições</b>
                         <div style="margin-top:10px;">
-                            ${estado.refeicoes.length === 0 ? '<p style="color:#ccc; text-align:center;">Nenhuma refeição ainda.</p>' : 
-                                estado.refeicoes.map(r => `
+                            ${estado.refeicoes.map(r => `
                                 <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #fcfcfc;">
                                     <span style="font-size:14px;">${r.nome}</span>
                                     <b style="font-size:14px;">+${r.cal} cal</b>
@@ -140,13 +145,12 @@
             else if (estado.tela === 'add') {
                 root.innerHTML = `
                     <div style="padding: 20px;">
-                        <div style="display:flex; align-items:center; gap:15px; margin-bottom:25px;">
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:25px;">
                             <span onclick="navegar('home')" style="font-size:24px; cursor:pointer;">←</span>
                             <b style="font-size:20px;">Adicionar Refeição</b>
                         </div>
 
-                        <p style="font-size:15px; font-weight:600; margin-bottom:15px;">Tipo de Refeição</p>
-                        
+                        <p style="font-size:15px; font-weight:600;">Tipo de Refeição</p>
                         <div class="meal-grid">
                             <div class="meal-option ${estado.tipoSelecionado === 'Café Da Manhã' ? 'active' : ''}" onclick="selecionarTipo('Café Da Manhã')">Café Da Manhã</div>
                             <div class="meal-option ${estado.tipoSelecionado === 'Almoço' ? 'active' : ''}" onclick="selecionarTipo('Almoço')">Almoço</div>
