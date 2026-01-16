@@ -32,9 +32,19 @@
         .bar.active { background: #6a11cb; }
         
         .fab { position: fixed; bottom: 80px; right: 20px; width: 60px; height: 60px; background: #000; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: none; cursor: pointer; z-index: 999; }
+        
+        /* Overlay de Carregamento (Anúncio) */
+        #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; flex-direction: column; align-items: center; justify-content: center; color: white; }
     </style>
 </head>
 <body>
+
+    <div id="loading-overlay">
+        <div style="font-size: 20px; margin-bottom: 10px;">Carregando vídeo...</div>
+        <div style="width: 200px; height: 10px; background: #333; border-radius: 10px; overflow: hidden;">
+            <div id="progress-bar" style="width: 0%; height: 100%; background: var(--primary);"></div>
+        </div>
+    </div>
 
     <div id="app"></div>
 
@@ -42,7 +52,6 @@
     <input type="file" id="gal-input" accept="image/*" style="display:none" onchange="finalizarUpload()">
 
     <script>
-        // Estado inicial com soma de macros
         let estado = {
             tela: 'home',
             calorias: 450,
@@ -56,8 +65,25 @@
         function navegar(tela) { estado.tela = tela; render(); window.scrollTo(0,0); }
         function selecionarTipo(tipo) { estado.tipoSelecionado = tipo; render(); }
 
+        // Lógica para Simular Anúncio
+        function assistirAnuncio() {
+            const overlay = document.getElementById('loading-overlay');
+            const bar = document.getElementById('progress-bar');
+            overlay.style.display = 'flex';
+            let progresso = 0;
+            
+            const intervalo = setInterval(() => {
+                progresso += 5;
+                bar.style.width = progresso + '%';
+                if (progresso >= 100) {
+                    clearInterval(intervalo);
+                    overlay.style.display = 'none';
+                    alert("Dica Liberada: Consuma fibras para melhorar a digestão!");
+                }
+            }, 100);
+        }
+
         function finalizarUpload() {
-            // Simulando valores de macros vindo da IA
             estado.calorias += 450;
             estado.proteina += 25;
             estado.carbos += 40;
@@ -73,7 +99,7 @@
                 root.innerHTML = `
                     <div class="header">
                         <div><b>Olá, Isaac!</b><br><small style="color:#888;">Resumo de hoje</small></div>
-                        <button style="background:white; border:1px solid #eee; padding:5px 15px; border-radius:10px;">Sair</button>
+                        <button onclick="alert('Saindo...')" style="background:white; border:1px solid #eee; padding:5px 15px; border-radius:10px;">Sair</button>
                     </div>
 
                     <div class="card card-streak">
@@ -94,7 +120,7 @@
                         </div>
                     </div>
 
-                    <button class="btn-green">🛒 VER SUPLEMENTOS RECOMENDADOS</button>
+                    <button class="btn-green" onclick="navegar('loja')">🛒 VER SUPLEMENTOS RECOMENDADOS</button>
 
                     <div class="card">
                         <b style="font-size:14px; color:#555;">Calorias Consumidas</b>
@@ -115,7 +141,7 @@
                     <div class="card" style="border: 1px solid var(--primary); background: #fafffb;">
                         <b style="color:var(--primary); font-size:14px;">Dica Especial</b>
                         <p style="font-size:12px; color:#666; margin: 5px 0 15px 0;">Assista ao vídeo e libere uma dica nutricional!</p>
-                        <button class="btn-green" style="margin:0; width:100%; padding:10px; font-size:14px;">📺 Assistir Anúncio</button>
+                        <button class="btn-green" style="margin:0; width:100%; padding:10px; font-size:14px;" onclick="assistirAnuncio()">📺 Assistir Anúncio</button>
                     </div>
 
                     <div class="card">
@@ -149,7 +175,6 @@
                             <span onclick="navegar('home')" style="font-size:24px; cursor:pointer;">←</span>
                             <b style="font-size:20px;">Adicionar Refeição</b>
                         </div>
-
                         <p style="font-size:15px; font-weight:600;">Tipo de Refeição</p>
                         <div class="meal-grid">
                             <div class="meal-option ${estado.tipoSelecionado === 'Café Da Manhã' ? 'active' : ''}" onclick="selecionarTipo('Café Da Manhã')">Café Da Manhã</div>
@@ -157,11 +182,20 @@
                             <div class="meal-option ${estado.tipoSelecionado === 'Jantar' ? 'active' : ''}" onclick="selecionarTipo('Jantar')">Jantar</div>
                             <div class="meal-option ${estado.tipoSelecionado === 'Lanche' ? 'active' : ''}" onclick="selecionarTipo('Lanche')">Lanche</div>
                         </div>
-
                         <div style="margin-top:30px;">
                             <button class="btn-black" onclick="document.getElementById('cam-input').click()">📸 Abrir Câmera</button>
                             <button class="btn-outline" onclick="document.getElementById('gal-input').click()">📁 Escolher da Galeria</button>
                         </div>
+                    </div>
+                `;
+            }
+
+            else if (estado.tela === 'loja') {
+                root.innerHTML = `
+                    <div style="padding: 20px;">
+                        <span onclick="navegar('home')" style="font-size:24px; cursor:pointer;">← Voltar</span>
+                        <h2 style="margin-top:20px;">Suplementos</h2>
+                        <div class="card">Em breve: Produtos Recomendados aqui.</div>
                     </div>
                 `;
             }
