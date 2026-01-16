@@ -8,14 +8,12 @@
         :root { --primary: #2ab573; --secondary: #6a11cb; --bg: #f8f9fa; --text: #333; }
         body { margin: 0; font-family: -apple-system, sans-serif; background: #f8f9fa; color: var(--text); padding-bottom: 100px; }
         
-        /* Cabeçalho */
+        /* Dashboard */
         .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; }
-        
-        /* Cards do Dashboard */
         .card { background: #fff; border-radius: 15px; padding: 20px; margin: 10px 20px; border: 1px solid #f0f0f0; }
         .card-streak { background: linear-gradient(135deg, #4e54c8, #8f94fb); color: #fff; border: none; }
         
-        /* Botões de Ação */
+        /* Botões */
         .btn-green { background: var(--primary); color: #fff; border: none; width: calc(100% - 40px); margin: 10px 20px; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-black { background: #111; color: #fff; border: none; padding: 18px; border-radius: 30px; width: 100%; font-size: 16px; font-weight: 500; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-outline { background: #fff; color: #333; border: 1px solid #eee; padding: 18px; border-radius: 30px; width: 100%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
@@ -25,14 +23,14 @@
         .meal-option { background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 25px; text-align: center; cursor: pointer; font-size: 15px; transition: 0.3s; }
         .meal-option.active { background: #111; color: #fff; border-color: #111; }
 
-        /* Gráfico de Barras */
+        /* Gráfico */
         .chart { display: flex; justify-content: space-between; align-items: flex-end; height: 60px; margin-top: 15px; }
         .bar-container { display: flex; flex-direction: column; align-items: center; width: 12%; }
         .bar { width: 100%; height: 6px; background: #eee; border-radius: 10px; margin-bottom: 5px; }
         .bar.active { background: #6a11cb; }
         .bar-label { font-size: 10px; color: #aaa; }
 
-        /* FAB - Botão Flutuante */
+        /* Botão Flutuante */
         .fab { position: fixed; bottom: 80px; right: 20px; width: 60px; height: 60px; background: #000; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: none; cursor: pointer; z-index: 999; }
     </style>
 </head>
@@ -63,7 +61,6 @@
         }
 
         function finalizarUpload() {
-            // Simula o processamento da IA
             estado.calorias += 450;
             estado.refeicoes.unshift({ nome: estado.tipoSelecionado, cal: 450 });
             navegar('home');
@@ -112,7 +109,7 @@
                     <div class="card" style="border: 1px solid var(--primary); background: #fafffb;">
                         <b style="color:var(--primary); font-size:14px;">Dica Especial</b>
                         <p style="font-size:12px; color:#666; margin: 5px 0 15px 0;">Assista ao vídeo e libere uma dica nutricional!</p>
-                        <button class="btn-green" style="margin:0; width:100%; padding:10px;">📺 Assistir Anúncio</button>
+                        <button class="btn-green" style="margin:0; width:100%; padding:10px; font-size:14px;">📺 Assistir Anúncio</button>
                     </div>
 
                     <div class="card">
@@ -126,7 +123,8 @@
                     <div class="card">
                         <b style="font-size:14px; color:#555;">Refeições</b>
                         <div style="margin-top:10px;">
-                            ${estado.refeicoes.map(r => `
+                            ${estado.refeicoes.length === 0 ? '<p style="color:#ccc; text-align:center;">Nenhuma refeição ainda.</p>' : 
+                                estado.refeicoes.map(r => `
                                 <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #fcfcfc;">
                                     <span style="font-size:14px;">${r.nome}</span>
                                     <b style="font-size:14px;">+${r.cal} cal</b>
