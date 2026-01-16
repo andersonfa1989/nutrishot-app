@@ -4,54 +4,57 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#667eea" />
-    <title>NutriShot Elements - Contador de Calorias</title>
+    <title>NutriShot Elements</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6941311170472131"></script>
+    <style>
+        /* Efeito de cores no texto (Gradiente) */
+        .texto-logo {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(to right, #2ab573, #2490eb, #f39c12);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+    </style>
 </head>
-<body style="margin: 0; font-family: sans-serif; background: #f9fafb; color: #333;">
+<body style="margin: 0; font-family: sans-serif; background: #f9fafb;">
 
     <div id="root"></div>
 
     <script>
-      // 1. Configuração AdMob
       (adsbygoogle = window.adsbygoogle || []).push({
         google_ad_client: "ca-pub-6941311170472131",
         enable_page_level_ads: true,
         overlays: {bottom: true}
       });
 
-      // 2. Estado do Aplicativo
       let telaAtual = 'cadastro'; 
 
       function navegar(tela) {
         telaAtual = tela;
         renderizar();
-        window.scrollTo(0,0);
       }
 
-      function mostrarAnuncio() {
-        alert("Carregando anúncio premiado... (ID: 4221550021)");
-      }
-
-      // 3. Renderização das Telas
       function renderizar() {
         const root = document.getElementById('root');
         
         if (telaAtual === 'cadastro') {
           root.innerHTML = `
             <div style="padding: 50px 20px; text-align: center;">
-              <img src="icone-512.png" style="width: 180px; height: auto; margin-bottom: 10px;" alt="NutriShot Elements">
+              <img src="icone-512.png" style="width: 150px; height: auto; margin-bottom: 5px;" alt="NutriShot">
               
-              <h1 style="color: #667eea; margin-top: 0; font-size: 28px;">NutriShot Elements</h1>
-              <p style="color: #666;">Crie sua conta para começar</p>
+              <h1 class="texto-logo">NutriShot Elements</h1>
               
-              <div style="margin-top: 30px;">
-                <input type="text" placeholder="Nome" style="width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; font-size: 16px;">
-                <input type="email" placeholder="E-mail" style="width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; font-size: 16px;">
-                
-                <button onclick="navegar('home')" style="width: 93%; background: #667eea; color: white; border: none; padding: 18px; border-radius: 30px; margin-top: 20px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
-                  Cadastrar
-                </button>
-              </div>
+              <p style="color: #666; margin-bottom: 30px;">Crie sua conta para começar</p>
+              
+              <input type="text" placeholder="Nome" style="width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; font-size: 16px;">
+              <input type="email" placeholder="E-mail" style="width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; font-size: 16px;">
+              
+              <button onclick="navegar('home')" style="width: 93%; background: linear-gradient(to right, #667eea, #764ba2); color: white; border: none; padding: 18px; border-radius: 30px; margin-top: 20px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+                Cadastrar
+              </button>
               
               <p style="margin-top: 25px; color: #888;">Já possui uma conta? <a href="#" onclick="navegar('home')" style="color: #667eea; text-decoration: none; font-weight: bold;">Entrar</a></p>
             </div>
@@ -65,22 +68,16 @@
               </div>
 
               <div style="background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin: 20px 0;">
-                <p style="color: #999; margin: 0; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Consumo de Hoje</p>
-                <h1 style="font-size: 56px; margin: 10px 0; color: #333;">0 <span style="font-size: 20px; color: #999;">kcal</span></h1>
-                <div style="width: 100%; background: #eee; height: 8px; border-radius: 4px;">
-                  <div style="width: 5%; background: #667eea; height: 8px; border-radius: 4px;"></div>
-                </div>
+                <p style="color: #999; margin: 0; font-size: 12px;">Consumo de Hoje</p>
+                <h1 style="font-size: 56px; margin: 10px 0;">0 <span style="font-size: 20px; color: #ccc;">kcal</span></h1>
               </div>
 
-              <div style="margin: 40px 0;">
-                <button onclick="mostrarAnuncio()" style="background: #667eea; color: white; border: none; padding: 25px; border-radius: 50%; width: 90px; height: 90px; font-size: 35px; cursor: pointer; box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);">📸</button>
-                <p style="margin-top: 15px; font-weight: bold; color: #444;">Analisar Refeição</p>
-              </div>
+              <button onclick="alert('Bloco: 4221550021')" style="background: #667eea; color: white; border: none; padding: 25px; border-radius: 50%; width: 90px; height: 90px; font-size: 35px; box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);">📸</button>
+              <p style="margin-top: 15px; font-weight: bold;">Analisar Refeição</p>
 
               <div style="position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #eee;">
-                <span onclick="navegar('home')" style="color: #667eea; font-weight: bold; cursor: pointer;">🏠 Início</span>
-                <span style="color: #ccc;">📊 Diário</span>
-                <span onclick="navegar('cadastro')" style="color: #ccc; cursor: pointer;">👤 Perfil</span>
+                <span onclick="navegar('home')" style="color: #667eea; font-weight: bold;">🏠 Início</span>
+                <span style="color: #ccc;">👤 Perfil</span>
               </div>
             </div>
           `;
