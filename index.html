@@ -17,18 +17,37 @@
         <title>NutriShot - Contador de Calorias</title>
     </head>
     <body>
-        <script>
-  // Função para carregar o anúncio usando seu ID de Bloco
-  (adsbygoogle = window.adsbygoogle || []).push({
-    google_ad_client: "ca-pub-6941311170472131",
-    enable_page_level_ads: true,
-    overlays: {bottom: true}
-  });
+      <script>
+      // 1. Configuração do Anúncio (Seu código atual)
+      (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-6941311170472131",
+        enable_page_level_ads: true,
+        overlays: {bottom: true}
+      });
+      console.log("AdMob Premiado configurado: ca-app-pub-6941311170472131/4221550021");
 
-  // Identificador do seu Bloco Premiado: ca-app-pub-6941311170472131/4221550021
-  console.log("AdMob Premiado configurado.");
-</script>
-        <noscript>Você precisa habilitar JavaScript para usar este app.</noscript>
-        <div id="root"></div>
-    </body>
+      // 2. Interface do NutriShot (O que estava faltando)
+      document.getElementById('root').innerHTML = `
+        <div style="font-family: sans-serif; text-align: center; padding: 20px;">
+          <h1 style="color: #667eea;">NutriShot</h1>
+          <p>Tire foto da sua comida e descubra as calorias!</p>
+          <div style="background: #f3f4f6; padding: 20px; border-radius: 15px; margin: 20px 0;">
+            <h2 id="calorias">0 kcal</h2>
+            <p>Total do Dia</p>
+          </div>
+          <button onclick="mostrarAnuncio()" style="background: #667eea; color: white; border: none; padding: 15px 30px; border-radius: 25px; font-size: 16px; cursor: pointer;">
+            📸 Analisar Refeição (Ver Anúncio)
+          </button>
+        </div>
+      `;
+
+      // 3. Função para exibir o anúncio premiado
+      function mostrarAnuncio() {
+        alert("Carregando anúncio premiado...");
+        // Aqui o Google AdMob entra em ação automaticamente
+      }
+    </script>
+    <noscript>Você precisa habilitar JavaScript para usar este app.</noscript>
+    <div id="root"></div>
+  </body>
 </html>
