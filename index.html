@@ -15,9 +15,6 @@
         .btn-preto:active { transform: scale(0.98); }
         .btn-branco { width: 100%; background: #fff; color: #333; border: 1px solid #eee; padding: 15px; border-radius: 30px; font-size: 16px; cursor: pointer; margin-top: 10px; }
         
-        /* Botão Loja */
-        .btn-loja { width: 100%; background: var(--primary); color: #fff; border: none; padding: 16px; border-radius: 20px; font-size: 15px; font-weight: bold; cursor: pointer; margin: 10px 0 20px 0; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(42, 181, 115, 0.2); }
-
         /* Cards e Layout */
         .card-home { background: #fff; padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #f2f2f2; text-align: left; }
         .grid-macros { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
@@ -25,19 +22,15 @@
         .chip { padding: 12px 10px; border-radius: 25px; border: 1px solid #eee; font-size: 13px; font-weight: 500; cursor: pointer; text-align: center; background: #fff; }
         .chip.ativo { background: #000 !important; color: #fff !important; }
 
-        /* Estilo Loja */
-        .loja-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
-        .produto-card { background: #fff; border: 1px solid #eee; border-radius: 15px; padding: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .produto-img { width: 100%; height: 100px; object-fit: contain; margin-bottom: 8px; }
-        .btn-comprar { background: #000; color: #fff; border: none; border-radius: 8px; width: 100%; padding: 10px; font-size: 11px; font-weight: bold; cursor: pointer; }
-
         /* Estilo Premium: Tela de Resultado */
         .circulo-resultado { width: 200px; height: 200px; border-radius: 50%; border: 10px solid #eefaf3; margin: 30px auto; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; box-shadow: 0 10px 25px rgba(42, 181, 115, 0.1); animation: bounceIn 0.8s; }
         .val-calorias { font-size: 54px; font-weight: 900; color: var(--primary); line-height: 1; }
         
+        /* Estilo Premium: Tela de Dica */
         .dica-header { background: linear-gradient(135deg, #2ab573 0%, #2490eb 100%); padding: 40px 20px; border-radius: 0 0 40px 40px; color: white; margin-bottom: 30px; }
         .box-dica { background: #fff; padding: 30px 20px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); margin: -60px 20px 30px 20px; border: 1px solid #f0f0f0; animation: fadeInUp 0.6s; }
         
+        /* Animações */
         @keyframes bounceIn { 0% { transform: scale(0.3); opacity: 0; } 50% { transform: scale(1.05); } 70% { transform: scale(0.9); } 100% { transform: scale(1); opacity: 1; } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -56,14 +49,6 @@
             interstitial: "ca-app-pub-6941311170472131/2273031775",
             rewarded: "ca-app-pub-6941311170472131/4221550021"
         };
-
-        const produtosLoja = [
-            { nome: "Creatina Growth 100g", preco: "99,80", foto: "creatina-100g.png", link: "https://amzn.to/4b47g9o" },
-            { nome: "Whey Chocolate", preco: "204,80", foto: "wey-choco.png", link: "https://amzn.to/3LjWMIB" },
-            { nome: "Whey Morango", preco: "209,90", foto: "wey-moran.png", link: "https://amzn.to/4sPsdvg" },
-            { nome: "Psyllium (120 cáps)", preco: "29,90", foto: "Psyllium-caps.png", link: "https://amzn.to/4sBfMmq" },
-            { nome: "Ultra Burn Lipo HD", preco: "78,89", foto: "termog.png", link: "https://amzn.to/4b5phUQ" }
-        ];
 
         let dadosHoje = JSON.parse(localStorage.getItem('dadosHoje')) || { cal: 0, prot: 0, carb: 0, gord: 0, lista: [] };
         let telaAtual = localStorage.getItem('logado') === 'true' ? 'home' : 'inicial';
@@ -104,7 +89,10 @@
 
         function acaoDicaPremiada() {
             document.body.style.opacity = "0.6";
-            setTimeout(() => { document.body.style.opacity = "1"; navegar('tela_dica'); }, 1200);
+            setTimeout(() => {
+                document.body.style.opacity = "1";
+                navegar('tela_dica');
+            }, 1200);
         }
 
         function renderizar() {
@@ -128,27 +116,26 @@
                                 <div style="width: ${Math.min((dadosHoje.cal/2577)*100, 100)}%; background: var(--primary); height: 100%; border-radius: 10px;"></div>
                             </div>
                         </div>
-                        
                         <div class="grid-macros">
                             <div class="macro-box" style="border-bottom: 4px solid #ff4d4d;"><small style="color:#888;">Proteína</small><br><b>${dadosHoje.prot}g</b></div>
                             <div class="macro-box" style="border-bottom: 4px solid #2490eb;"><small style="color:#888;">Carbos</small><br><b>${dadosHoje.carb}g</b></div>
                             <div class="macro-box" style="border-bottom: 4px solid #f39c12;"><small style="color:#888;">Gordura</small><br><b>${dadosHoje.gord}g</b></div>
                         </div>
-
-                        <button class="btn-loja" onclick="navegar('loja')">🛒 VER SUPLEMENTOS RECOMENDADOS</button>
-
                         <div class="card-home" style="border: 2px solid var(--primary); background: #f6fff9; cursor: pointer;" onclick="acaoDicaPremiada()">
                             <div style="display:flex; align-items:center; gap:10px;">
                                 <div style="font-size: 30px;">💡</div>
-                                <div><b style="color: var(--primary);">Dica Especial</b><br><small style="color: #666;">Assista ao vídeo e libere uma dica agora!</small></div>
+                                <div>
+                                    <b style="color: var(--primary);">Dica Especial</b><br>
+                                    <small style="color: #666;">Assista ao vídeo e libere uma dica agora!</small>
+                                </div>
                             </div>
                         </div>
-
                         <div class="card-home">
-                            <b style="font-size: 16px;">Refeições de Hoje</b>
+                            <b style="font-size: 16px;">Refeições</b>
                             <div style="margin-top: 15px;">
                                 ${dadosHoje.lista.length === 0 ? '<div style="text-align:center; color:#ccc; padding:20px;">Tire uma foto para começar!</div>' : 
-                                dadosHoje.lista.map(item => `<div style="display:flex; justify-content:space-between; padding:15px 0; border-bottom:1px solid #f9f9f9;"><span>${item.nome}</span><b>+${item.cal} kcal</b></div>`).join('')}
+                                    dadosHoje.lista.map(item => `<div style="display:flex; justify-content:space-between; padding:15px 0; border-bottom:1px solid #f9f9f9;"><span>${item.nome}</span><b>+${item.cal} kcal</b></div>`).join('')
+                                }
                             </div>
                         </div>
                     </div>
@@ -156,32 +143,14 @@
                     <div class="ad-banner-area">BANNER AD: ${ADMOB.banner}</div>`;
             }
 
-            else if (telaAtual === 'loja') {
-                root.innerHTML = `
-                    <div style="padding: 20px; display: flex; align-items: center; gap: 15px;">
-                        <button onclick="navegar('home')" style="background:none; border:none; font-size: 24px; cursor:pointer;">←</button>
-                        <h2 style="margin:0;">Loja de Suplementos</h2>
-                    </div>
-                    <div style="padding: 0 20px;">
-                        <div class="loja-grid">
-                            ${produtosLoja.map(p => `
-                                <div class="produto-card">
-                                    <img src="img/${p.foto}" class="produto-img" onerror="this.src='https://via.placeholder.com/150?text=PNG'">
-                                    <div style="font-size:10px; font-weight:bold; height:25px; overflow:hidden; margin-bottom:5px;">${p.nome}</div>
-                                    <div style="color:var(--primary); font-weight:800; font-size: 14px; margin-bottom:8px;">R$ ${p.preco}</div>
-                                    <button class="btn-comprar" onclick="window.open('${p.link}', '_blank')">COMPRAR</button>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>`;
-            }
-
             else if (telaAtual === 'add_refeicao') {
                 root.innerHTML = `
                     <div style="padding: 20px; display: flex; align-items: center;"><button onclick="navegar('home')" style="background:none; border:none; font-size: 24px;">←</button><b style="margin-left:15px; font-size: 20px;">Nova Refeição</b></div>
                     <div class="container">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px;">
-                            ${['Café Da Manhã', 'Almoço', 'Jantar', 'Lanche'].map(tipo => `<div class="chip ${refeicaoSelecionada === tipo ? 'ativo' : ''}" onclick="refeicaoSelecionada='${tipo}'; renderizar()">${tipo}</div>`).join('')}
+                            ${['Café Da Manhã', 'Almoço', 'Jantar', 'Lanche'].map(tipo => `
+                                <div class="chip ${refeicaoSelecionada === tipo ? 'ativo' : ''}" onclick="refeicaoSelecionada='${tipo}'; renderizar()">${tipo}</div>
+                            `).join('')}
                         </div>
                         <div id="botoesSelecao">
                             <input type="file" id="cam" accept="image/*" capture="environment" style="display:none" onchange="handleFile(event)">
@@ -207,23 +176,37 @@
                             <div class="val-calorias">${ultimoResultado.cal}</div>
                             <span style="font-size: 14px; color: #888;">kcal</span>
                         </div>
-                        <button class="btn-preto" onclick="navegar('home')">Confirmar e Voltar</button>
+                        <p style="color: #666; padding: 0 40px; line-height: 1.5;">A IA identificou sua refeição e atualizou seus macros com sucesso.</p>
+                        <div style="padding: 20px;">
+                            <button class="btn-preto" onclick="navegar('home')">Confirmar e Voltar</button>
+                        </div>
                     </div>`;
             }
 
             else if (telaAtual === 'tela_dica') {
+                const dicas = ["Comer fibras antes do carboidrato reduz o pico de insulina.", "Substitua temperos prontos por ervas naturais para reduzir o sódio.", "Beber água gelada pode acelerar levemente o metabolismo.", "Proteínas no café da manhã reduzem a fome ao longo do dia."];
+                const dica = dicas[Math.floor(Math.random()*dicas.length)];
                 root.innerHTML = `
-                    <div class="dica-header"><div style="font-size: 40px; margin-bottom: 10px;">💡</div><h1 style="margin: 0; font-size: 32px; font-weight: 800;">Segue a Dica:</h1></div>
-                    <div class="box-dica"><p style="font-size: 24px; font-weight: 700; color: #222; line-height: 1.4; margin: 0;">"Proteínas no café da manhã reduzem a fome ao longo do dia."</p></div>
-                    <div class="container"><button class="btn-preto" onclick="navegar('home')">Excelente, obrigado!</button></div>`;
+                    <div class="dica-header">
+                        <div style="font-size: 40px; margin-bottom: 10px;">💡</div>
+                        <h1 style="margin: 0; font-size: 32px; font-weight: 800;">Segue a Dica:</h1>
+                    </div>
+                    <div class="box-dica">
+                        <p style="font-size: 24px; font-weight: 700; color: #222; line-height: 1.4; margin: 0;">"${dica}"</p>
+                    </div>
+                    <div class="container">
+                        <p style="color: #888; margin-bottom: 30px;">Essa dica foi gerada com base no seu perfil atual.</p>
+                        <button class="btn-preto" onclick="navegar('home')">Excelente, obrigado!</button>
+                    </div>`;
             }
 
             else {
                 root.innerHTML = `
                     <div class="container" style="padding-top: 100px;">
+                        <img src="icone-512.png" style="width: 150px; margin-bottom: 20px;">
                         <h1 class="texto-logo">NutriShot</h1>
                         <p style="color:#888; margin-bottom: 40px;">Sua dieta inteligente em um clique.</p>
-                        <button class="btn-preto" onclick="localStorage.setItem('logado', 'true'); navegar('home')">Entrar na Conta</button>
+                        <button class="btn-preto" onclick="navegar('login')">Entrar na Conta</button>
                     </div>`;
             }
         }
