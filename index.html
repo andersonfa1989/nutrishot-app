@@ -3,128 +3,137 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <title>NutriShot Pro</title>
+    <title>NutriShot Elements</title>
     <style>
-        :root { --primary: #2ab573; --secondary: #6a11cb; --bg: #f8f9fa; --text: #333; }
-        body { margin: 0; font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 140px; }
-        .container { padding: 15px; }
+        :root { --primary: #2ab573; --secondary: #6a11cb; --bg: #ffffff; --text: #333; }
+        body { margin: 0; font-family: -apple-system, sans-serif; background: #f8f9fa; color: var(--text); padding-bottom: 80px; overflow-x: hidden; }
+        .container { padding: 20px; text-align: center; }
+        .texto-logo { font-size: 38px; font-weight: bold; background: linear-gradient(to right, #2ab573, #2490eb, #f39c12); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 15px 0; }
         
-        /* Cards Estilo Imagem */
-        .card-branco { background: #fff; border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid #f0f0f0; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-        .titulo-card { font-size: 18px; font-weight: 600; margin-bottom: 15px; display: block; color: #444; }
-
+        /* Botões */
+        .btn-preto { width: 100%; background: #000; color: #fff; border: none; padding: 18px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-branco { width: 100%; background: #fff; color: #333; border: 1px solid #eee; padding: 15px; border-radius: 30px; font-size: 16px; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        
+        /* Cards */
+        .card-home { background: #fff; padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #f2f2f2; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .grid-macros { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .macro-box { background: #fff; padding: 15px; border-radius: 15px; border: 1px solid #f2f2f2; text-align: center; }
+        
         /* Gráfico 7 Dias */
-        .chart-container { display: flex; justify-content: space-between; align-items: flex-end; height: 80px; padding: 10px 5px; }
-        .bar-stack { display: flex; flex-direction: column; align-items: center; width: 12%; }
-        .bar-label { font-size: 10px; color: #ccc; margin-bottom: 5px; }
-        .bar-line { width: 100%; height: 5px; background: #eee; border-radius: 10px; }
-        .bar-line.active { background: var(--secondary); }
+        .chart-7days { display: flex; justify-content: space-between; align-items: flex-end; height: 80px; padding-top: 10px; }
+        .bar-group { display: flex; flex-direction: column; align-items: center; width: 12%; }
+        .bar-fill { width: 100%; background: #eee; height: 5px; border-radius: 10px; position: relative; }
+        .bar-fill.active { background: var(--secondary); height: 10px; }
+        .bar-val { font-size: 10px; color: #bbb; margin-bottom: 4px; }
         .bar-date { font-size: 10px; color: #bbb; margin-top: 8px; }
 
         /* Conquistas */
-        .conquista-box { background: #f5f7ff; border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 12px; }
-        .conquista-icon { width: 45px; height: 45px; background: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; border: 1px solid #eee; }
-        .conquista-txt b { font-size: 15px; display: block; }
-        .conquista-txt small { font-size: 12px; color: #999; }
+        .conquista-box { background: #f0f2f8; border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 12px; }
+        .conquista-icon { width: 45px; height: 45px; background: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
 
-        /* Botão Loja */
-        .btn-loja { width: 100%; background: var(--primary); color: #fff; border: none; padding: 16px; border-radius: 15px; font-size: 14px; font-weight: bold; cursor: pointer; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 10px rgba(42, 181, 115, 0.2); }
-
-        /* Banner de Anúncio Fixo */
-        .ad-banner-fixo { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: #fff; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: center; z-index: 1000; font-size: 10px; color: #bbb; }
-
-        /* Botão Flutuante */
-        .btn-add-fixo { position: fixed; bottom: 75px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; border: none; font-size: 35px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 100; }
-        
-        .fire-card { background: linear-gradient(135deg, #6a11cb, #2575fc); color: #fff; padding: 25px; border-radius: 25px; margin-bottom: 15px; }
+        .chip { padding: 12px 10px; border-radius: 25px; border: 1px solid #eee; font-size: 13px; font-weight: 500; cursor: pointer; text-align: center; background: #fff; transition: 0.2s; }
+        .chip.ativo { background: #000 !important; color: #fff !important; }
+        .btn-add-fixo { position: fixed; bottom: 85px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; border: none; font-size: 35px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 100; }
+        .ad-banner-area { position: fixed; bottom: 0; left: 0; width: 100%; height: 55px; background: #fff; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #bbb; z-index: 1000; }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
-    <div class="ad-banner-fixo">
-        BANNER AD: ca-app-pub-6941311170472131/2257554053
-    </div>
-
     <script>
-        let dadosHoje = JSON.parse(localStorage.getItem('dadosHoje')) || { cal: 0, lista: [] };
+        const ADMOB = { banner: "ca-app-pub-6941311170472131/2257554053" };
+        let dadosHoje = JSON.parse(localStorage.getItem('dadosHoje')) || { cal: 0, prot: 0, carb: 0, gord: 0, lista: [] };
         let telaAtual = localStorage.getItem('logado') === 'true' ? 'home' : 'inicial';
 
-        function navegar(t) { telaAtual = t; renderizar(); window.scrollTo(0,0); }
+        function navegar(tela) { telaAtual = tela; renderizar(); window.scrollTo(0,0); }
+        function salvar() { localStorage.setItem('dadosHoje', JSON.stringify(dadosHoje)); }
 
         function renderizar() {
             const root = document.getElementById('root');
 
             if (telaAtual === 'home') {
                 root.innerHTML = `
-                    <div class="container">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:15px; padding: 0 5px;">
-                            <h2 style="margin:0;">Olá, Isaac!</h2>
+                    <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+                        <div><b>Olá, Isaac!</b><br><small style="color:#888;">Resumo Nutricional</small></div>
+                        <button onclick="localStorage.removeItem('logado'); navegar('inicial')" style="background:none; border:1px solid #eee; padding:8px 12px; border-radius:12px;">Sair</button>
+                    </div>
+
+                    <div style="padding: 0 20px;">
+                        <div style="background: linear-gradient(135deg, #6a11cb, #2575fc); color: #fff; padding: 25px; border-radius: 20px; margin-bottom: 20px;">
+                            <span style="font-size: 14px; opacity: 0.8;">Sequência Atual</span>
+                            <div style="font-size: 48px; font-weight: bold; margin: 5px 0;">1 🔥</div>
                         </div>
 
-                        <div class="fire-card">
-                            <span style="opacity:0.8; font-size:14px;">Fogo na Sequência</span>
-                            <div style="font-size: 42px; font-weight: bold; margin-top:5px;">1 🔥</div>
-                        </div>
-
-                        <div class="card-branco">
-                            <span class="titulo-card">Últimos 7 Dias</span>
-                            <div class="chart-container">
+                        <div class="card-home">
+                            <b>Últimos 7 Dias</b>
+                            <div class="chart-7days">
                                 ${['9/1','10/1','11/1','12/1','13/1','14/1','15/1'].map((d, i) => `
-                                    <div class="bar-stack">
-                                        <span class="bar-label">${i === 5 ? '400' : '0'}</span>
-                                        <div class="bar-line ${i === 5 ? 'active' : ''}"></div>
+                                    <div class="bar-group">
+                                        <span class="bar-val">${i === 5 ? '400' : '0'}</span>
+                                        <div class="bar-fill ${i === 5 ? 'active' : ''}"></div>
                                         <span class="bar-date">${d}</span>
                                     </div>
                                 `).join('')}
                             </div>
                         </div>
 
-                        <button class="btn-loja" onclick="navegar('loja')">🛒 VER SUPLEMENTOS RECOMENDADOS</button>
+                        <div class="card-home">
+                            <b>Calorias de Hoje</b>
+                            <div style="margin: 15px 0; font-size: 28px; font-weight: bold;">${dadosHoje.cal} <small style="font-size: 14px; color: #aaa;">/ 2577 cal</small></div>
+                            <div style="width: 100%; background: #f0f0f0; height: 8px; border-radius: 10px;">
+                                <div style="width: ${Math.min((dadosHoje.cal/2577)*100, 100)}%; background: var(--primary); height: 8px; border-radius: 10px;"></div>
+                            </div>
+                        </div>
 
-                        <div class="card-branco">
-                            <span class="titulo-card">Conquistas Desbloqueadas</span>
-                            <div class="conquista-box">
+                        <div class="grid-macros">
+                            <div class="macro-box"><small>Proteína</small><br><b>${dadosHoje.prot}g</b></div>
+                            <div class="macro-box"><small>Carbos</small><br><b>${dadosHoje.carb}g</b></div>
+                            <div class="macro-box"><small>Gordura</small><br><b>${dadosHoje.gord}g</b></div>
+                        </div>
+
+                        <div class="card-home">
+                            <b>Conquistas Desbloqueadas</b>
+                            <div class="conquista-box" style="margin-top:10px;">
                                 <div class="conquista-icon">🍽️</div>
-                                <div class="conquista-txt">
-                                    <b>Primeira Refeição</b>
-                                    <small>Registrou sua primeira refeição</small>
+                                <div>
+                                    <b style="font-size:14px; display:block;">Primeira Refeição</b>
+                                    <small style="color:#888;">Você registrou sua primeira refeição!</small>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card-branco">
-                            <span class="titulo-card">Refeições de Hoje</span>
-                            <div style="text-align: center; padding: 10px 0;">
-                                ${dadosHoje.lista.length === 0 ? `
-                                    <div style="color: #aaa; padding: 20px;">
-                                        Nenhuma refeição registrada ainda.<br>
-                                        <span style="font-size:12px; color:#ccc;">Adicione sua primeira refeição!</span>
-                                    </div>
-                                ` : dadosHoje.lista.map(item => `
-                                    <div style="display:flex; justify-content:space-between; padding:15px 0; border-bottom:1px solid #f9f9f9;">
-                                        <span style="font-weight:500;">${item.nome}</span>
-                                        <b style="color:var(--primary);">+${item.cal} kcal</b>
-                                    </div>
-                                `).join('')}
+                        <div class="card-home">
+                            <b>Refeições de Hoje</b>
+                            <div style="margin-top: 10px;">
+                                ${dadosHoje.lista.length === 0 ? '<p style="color:#aaa; text-align:center;">Nenhuma refeição ainda.</p>' : 
+                                    dadosHoje.lista.map(item => `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #f9f9f9;"><span>${item.nome}</span><b>+${item.cal} cal</b></div>`).join('')
+                                }
                             </div>
                         </div>
                     </div>
 
-                    <button class="btn-add-fixo" onclick="simularAdd()">+</button>
+                    <button class="btn-add-fixo" onclick="navegar('add_refeicao')">+</button>
+                    <div class="ad-banner-area">BANNER AD: ${ADMOB.banner}</div>
                 `;
-            } else if (telaAtual === 'loja') {
-                root.innerHTML = `<div class="container"><button onclick="navegar('home')" style="border:none; background:none; font-size:20px; cursor:pointer;">← Voltar</button><h2 style="margin-top:20px;">Suplementos Recomendados</h2></div>`;
-            } else {
-                root.innerHTML = `<div class="container" style="text-align:center; padding-top:100px;"><h1>NutriShot</h1><button class="btn-loja" style="background:#000" onclick="localStorage.setItem('logado', 'true'); navegar('home')">Entrar</button></div>`;
+            }
+
+            else if (telaAtual === 'add_refeicao') {
+                root.innerHTML = `<div class="container"><h2>Nova Refeição</h2><button class="btn-preto" onclick="simularAdd()">📸 Simular Foto</button><button class="btn-branco" onclick="navegar('home')">Voltar</button></div>`;
+            }
+
+            else {
+                root.innerHTML = `<div class="container" style="padding-top:100px;"><h1 class="texto-logo">NutriShot</h1><button class="btn-preto" onclick="localStorage.setItem('logado','true'); navegar('home')">Entrar</button></div>`;
             }
         }
 
         function simularAdd() {
-            const cal = 400;
-            dadosHoje.lista.unshift({ nome: 'Café da Manhã', cal: cal });
-            localStorage.setItem('dadosHoje', JSON.stringify(dadosHoje));
-            renderizar();
+            dadosHoje.cal += 400;
+            dadosHoje.prot += 25;
+            dadosHoje.carb += 40;
+            dadosHoje.gord += 10;
+            dadosHoje.lista.unshift({ nome: 'Almoço Simulado', cal: 400 });
+            salvar();
+            navegar('home');
         }
 
         renderizar();
