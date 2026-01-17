@@ -6,7 +6,7 @@
     <title>NutriShot Elements</title>
     <style>
         :root { --primary: #2ab573; --secondary: #667eea; --bg: #f9fafb; }
-        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 150px; }
+        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 160px; }
         
         .texto-logo {
             font-size: 32px; font-weight: bold;
@@ -14,78 +14,66 @@
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             margin: 10px 0;
         }
-        .input-nutri { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; transition: 0.3s; }
+        .input-nutri { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; }
         
-        /* DASHBOARD */
+        /* CARDS */
         .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
         .card-fogo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; }
-        .grid-7 { display: flex; justify-content: space-between; align-items: flex-end; height: 50px; margin-top: 15px; }
-        .col-dia { display: flex; flex-direction: column; align-items: center; flex: 1; }
-        .barra { width: 30px; height: 4px; background: #eee; border-radius: 2px; }
-        .barra.active { background: #6a11cb; width: 40px; }
-        .dia-txt { font-size: 10px; color: #aaa; margin-top: 5px; }
+        
+        /* GRAFICO CALORIAS */
+        .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--primary); transition: width 0.5s ease; }
 
+        /* SELETORES */
         .selector-objetivo { display: flex; gap: 10px; margin: 0 20px 15px 20px; }
-        .opt-obj { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #eee; background: #fff; text-align: center; font-weight: bold; cursor: pointer; font-size: 13px; transition: 0.3s; }
+        .opt-obj { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #eee; background: #fff; text-align: center; font-weight: bold; cursor: pointer; font-size: 13px; }
         .opt-obj.active { border-color: var(--primary); background: #f0fff7; color: var(--primary); }
 
         /* BOTÕES */
         .btn-principal { width: calc(100% - 40px); background: linear-gradient(to right, #667eea, #764ba2); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer; }
         .btn-loja { background: #2ab573; color: white; border: none; padding: 15px; border-radius: 12px; width: calc(100% - 40px); margin: 0 20px; font-weight: bold; cursor: pointer; font-size: 14px; }
         .btn-outline { background: transparent; color: #666; border: 1px solid #ddd; padding: 12px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 500; }
-        .fab { position: fixed; bottom: 90px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; }
+        
+        .fab { position: fixed; bottom: 95px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; }
 
-        /* BANNER ANÚNCIO FIXO */
-        .banner-ads { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: #eee; border-top: 1px solid #ddd; display: flex; align-items: center; justify-content: center; z-index: 100; overflow: hidden; }
-        .banner-ads-content { font-size: 12px; color: #999; text-align: center; }
-
-        /* LOJA */
-        .prod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 10px; }
-        .prod-card { background: #fff; border-radius: 16px; padding: 12px; text-align: center; border: 1px solid #eee; display: flex; flex-direction: column; height: 200px; }
-        .prod-card img { width: 100%; height: 80px; object-fit: contain; margin-bottom: 10px; }
-        .prod-card b { font-size: 12px; flex-grow: 1; }
-        .prod-card button { width: 100%; background: var(--primary); color: #fff; border: none; padding: 8px; border-radius: 8px; font-weight: bold; }
-
-        /* OVERLAY */
+        /* ADS */
+        .banner-ads { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background: #f0f0f0; border-top: 1px solid #ddd; display: flex; align-items: center; justify-content: center; z-index: 100; }
         .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
         .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; overflow: hidden; }
         #bar-progress { width: 0%; height: 100%; background: #2ab573; transition: width 0.1s linear; }
+
+        /* LOJA */
+        .prod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 10px; }
+        .prod-card { background: #fff; border-radius: 16px; padding: 12px; text-align: center; border: 1px solid #eee; }
+        .prod-card img { width: 100%; height: 80px; object-fit: contain; }
     </style>
 </head>
 <body>
 
     <div id="ads-overlay" class="ads-overlay">
-        <div id="ad-text" style="font-size: 18px; font-weight: bold;">Processando...</div>
+        <div id="ad-text" style="font-size: 18px; font-weight: bold;">Analisando...</div>
         <div class="bar-container"><div id="bar-progress"></div></div>
     </div>
 
     <div id="app"></div>
 
-    <div class="banner-ads" id="footer-banner">
-        <div class="banner-ads-content">
-            <small>ANÚNCIO GOOGLE</small><br>
-            <b>Espaço para Banner de Publicidade 320x50</b>
+    <div class="banner-ads">
+        <div style="text-align: center; color: #999; font-size: 12px;">
+            <small>PUBLICIDADE</small><br>
+            <b>ANÚNCIO GOOGLE ADSENSE</b>
         </div>
     </div>
 
     <script>
         const LOGO_URL = "icone-512.png";
-
         const SUPLEMENTOS = {
             ganho: [
                 { nome:"Creatina Growth 100g", foto:"creatina-100g.png", link:"https://amzn.to/4b47g9o" },
-                { nome:"Whey Chocolate", foto:"wey-choco.png", link:"https://amzn.to/3LjWMIB" },
-                { nome:"Whey Morango", foto:"wey-moran.png", link:"https://amzn.to/4sPsdvg" },
-                { nome:"Whey Creme", foto:"wey-creme.png", link:"https://amzn.to/4qq9ODl" },
-                { nome:"Gainer Chocolate", foto:"Hipercalórico-choco.png", link:"https://amzn.to/4qpZKKC" },
-                { nome:"Gainer Cookies", foto:"Hipercalórico-cooki.png", link:"https://amzn.to/4bC9A7C" }
+                { nome:"Whey Chocolate", foto:"wey-choco.png", link:"https://amzn.to/3LjWMIB" }
             ],
             perda: [
                 { nome:"Psyllium Cápsulas", foto:"Psyllium-caps.png", link:"https://amzn.to/4sBfMmq" },
-                { nome:"Psyllium em Pó", foto:"Psyllium-po.png", link:"https://amzn.to/3YINEAk" },
-                { nome:"Ultra Burn Termogênico", foto:"termog.png", link:"https://amzn.to/4b5phUQ" },
-                { nome:"L-Carnitina 2000mg", foto:"l-creat2000.png", link:"https://amzn.to/4bBHcCw" },
-                { nome:"L-Carnitina 1000mg", foto:"l-creat1000.png", link:"https://amzn.to/3LJAv6S" }
+                { nome:"Ultra Burn Termogênico", foto:"termog.png", link:"https://amzn.to/4b5phUQ" }
             ]
         };
 
@@ -134,9 +122,14 @@
         }
 
         function confirmarAnalise() {
-            rodarAnuncio("Analisando nutrientes...", () => {
+            rodarAnuncio("Analisando Nutrientes...", () => {
                 const cal = Math.floor(Math.random() * 200 + 350);
+                // Soma de macronutrientes proporcional à caloria
                 estado.calorias += cal;
+                estado.prot += Math.floor(cal * 0.05);
+                estado.carb += Math.floor(cal * 0.10);
+                estado.gord += Math.floor(cal * 0.02);
+                
                 estado.historico.unshift({tipo: estado.tempRefeicao, cal: cal});
                 estado.fotoSelecionada = false;
                 navegar('home');
@@ -149,7 +142,7 @@
             if (!estado.logado) {
                 root.innerHTML = `
                     <div style="padding: 60px 20px; text-align: center;">
-                        <img src="${LOGO_URL}" style="width: 150px;" onerror="this.src='https://i.ibb.co/Lz0D7Yd/icone-512.png'">
+                        <img src="${LOGO_URL}" style="width: 140px;" onerror="this.src='https://i.ibb.co/Lz0D7Yd/icone-512.png'">
                         <h1 class="texto-logo">NutriShot</h1>
                         <p>${estado.tela === 'cadastro' ? 'Crie sua conta' : 'Entrar'}</p>
                         ${estado.tela === 'cadastro' ? '<input type="text" id="nome-f" class="input-nutri" placeholder="Nome">' : ''}
@@ -157,7 +150,7 @@
                         <input type="password" id="pass-f" class="input-nutri" placeholder="Senha">
                         <button class="btn-principal" onclick="validarEEntrar()">Acessar</button>
                         <p onclick="navegar('${estado.tela === 'cadastro' ? 'login' : 'cadastro'}')" style="cursor:pointer; color:#888;">
-                            ${estado.tela === 'cadastro' ? 'Já tem conta? Entrar' : 'Novo aqui? Criar conta'}
+                            ${estado.tela === 'cadastro' ? 'Já tem conta? Entrar' : 'Novo aqui? Cadastrar'}
                         </p>
                     </div>
                 `;
@@ -165,28 +158,32 @@
             }
 
             if (estado.tela === 'home') {
+                const perc = Math.min((estado.calorias / 2577) * 100, 100);
                 root.innerHTML = `
                     <div style="padding: 20px; display: flex; justify-content: space-between;">
-                        <b>Olá, ${estado.nomeUsuario}!</b>
+                        <b>Olá, ${estado.nomeUsuario}</b>
                         <span onclick="estado.logado=false; render()" style="opacity:0.4">Sair</span>
                     </div>
 
                     <div class="card card-fogo">
-                        <small>Fogo na Sequência</small>
-                        <div style="font-size: 32px; font-weight: bold;">1 🔥</div>
+                        <small>Meta de Hoje</small>
+                        <div style="font-size: 32px; font-weight: bold;">1 Dia 🔥</div>
                     </div>
 
-                    <div style="margin: 0 20px 5px 20px; font-size: 14px; font-weight: bold;">Qual seu foco hoje?</div>
+                    <div style="margin: 20px 20px 5px 20px; font-size: 14px; font-weight: bold;">Foco atual:</div>
                     <div class="selector-objetivo">
-                        <div class="opt-obj ${estado.objetivo === 'perda' ? 'active' : ''}" onclick="estado.objetivo='perda'; render()">🔥 Emagrecer</div>
-                        <div class="opt-obj ${estado.objetivo === 'ganho' ? 'active' : ''}" onclick="estado.objetivo='ganho'; render()">💪 Massa</div>
+                        <div class="opt-obj ${estado.objetivo === 'perda' ? 'active' : ''}" onclick="estado.objetivo='perda'; render()">Emagrecer</div>
+                        <div class="opt-obj ${estado.objetivo === 'ganho' ? 'active' : ''}" onclick="estado.objetivo='ganho'; render()">Massa Muscular</div>
                     </div>
 
-                    <button class="btn-loja" onclick="navegar('catalogo')">🛒 VER SUPLEMENTOS RECOMENDADOS</button>
+                    <button class="btn-loja" onclick="navegar('catalogo')">🛒 VER SUPLEMENTOS</button>
 
                     <div class="card">
-                        <small>Calorias Diárias</small>
+                        <small>Calorias Consumidas</small>
                         <div style="font-size: 26px; font-weight: bold;">${estado.calorias} <span style="font-size:14px; color:#ccc">/ 2577 kcal</span></div>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: ${perc}%"></div>
+                        </div>
                     </div>
 
                     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin:0 20px;">
@@ -196,15 +193,15 @@
                     </div>
 
                     <div class="card" style="border: 1px solid var(--primary); background: #fafffb;">
-                        <b style="color:var(--primary)">Dica Nutricional ✨</b><br>
-                        <button onclick="rodarAnuncio('Buscando Dica...', ()=>navegar('dica'))" style="width:100%; background:var(--primary); color:white; border:none; padding:12px; border-radius:12px; margin-top:10px; font-weight:bold;">📺 Assistir e Ganhar Dica</button>
+                        <b style="color:var(--primary)">Dica de Ouro ✨</b><br>
+                        <button onclick="rodarAnuncio('Buscando Dica...', ()=>navegar('dica'))" style="width:100%; background:var(--primary); color:white; border:none; padding:12px; border-radius:12px; margin-top:10px; font-weight:bold;">📺 Assistir para Ganhar Dica</button>
                     </div>
 
                     <div class="card">
-                        <b>Refeições de Hoje</b>
+                        <b>Refeições</b>
                         <div style="margin-top:10px;">
-                            ${estado.historico.length === 0 ? '<small style="color:#ccc">Nenhuma refeição.</small>' : 
-                                estado.historico.map(r => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee"><span>${r.tipo}</span><b>+${r.cal} kcal</b></div>`).join('')}
+                            ${estado.historico.length === 0 ? '<small>Nenhuma refeição.</small>' : 
+                                estado.historico.map(r => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee"><span>${r.tipo}</span><b>+${r.cal} kcal</b></div>`).join('')}
                         </div>
                     </div>
                     <button class="fab" onclick="navegar('add_refeicao')">+</button>
@@ -217,17 +214,21 @@
                     <div style="padding: 20px;">
                         <div onclick="navegar('home')">← Voltar</div>
                         <h2 style="text-align:center; margin-top:30px;">O que vamos comer?</h2>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                            ${['Café', 'Almoço', 'Jantar', 'Lanche'].map(t => `<div onclick="estado.tempRefeicao='${t}'; render()" style="padding:20px; border-radius:15px; text-align:center; border: 2px solid ${estado.tempRefeicao===t?'#2ab573':'#eee'}; background: ${estado.tempRefeicao===t?'#f0fff7':'#fff'}"><b>${t}</b></div>`).join('')}
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            ${['Café', 'Almoço', 'Jantar', 'Lanche'].map(t => `<div onclick="estado.tempRefeicao='${t}'; render()" style="padding:20px; border-radius:15px; text-align:center; border: 2px solid ${estado.tempRefeicao===t?'var(--primary)':'#eee'}; background: ${estado.tempRefeicao===t?'#f0fff7':'#fff'}"><b>${t}</b></div>`).join('')}
                         </div>
+                        
                         <div class="card" style="text-align:center; margin-top: 40px;">
                             ${!estado.fotoSelecionada ? `
-                                <button class="btn-principal" style="width:100%; margin:0" onclick="document.getElementById('f-in').click()">📸 Tirar ou Anexar Foto</button>
-                                <input type="file" id="f-in" accept="image/*" style="display:none" onchange="prepararFoto(event)">
+                                <button class="btn-principal" style="width:100%; margin: 10px 0" onclick="document.getElementById('take-photo').click()">📸 Tirar Foto Agora</button>
+                                <button class="btn-outline" onclick="document.getElementById('pick-gallery').click()">📁 Escolher da Galeria</button>
+                                
+                                <input type="file" id="take-photo" capture="environment" accept="image/*" style="display:none" onchange="prepararFoto(event)">
+                                <input type="file" id="pick-gallery" accept="image/*" style="display:none" onchange="prepararFoto(event)">
                             ` : `
-                                <div style="color:var(--primary); font-weight:bold; margin-bottom:10px;">✅ Foto Pronta!</div>
-                                <button class="btn-principal" style="width:100%; margin:0" onclick="confirmarAnalise()">🚀 ANALISAR COM IA</button>
-                                <button class="btn-outline" style="margin-top:10px" onclick="estado.fotoSelecionada=false; render()">🗑️ Limpar e Anexar Outra</button>
+                                <div style="color:var(--primary); font-weight:bold; margin-bottom:10px;">✅ Imagem Pronta!</div>
+                                <button class="btn-principal" style="width:100%; margin:0" onclick="confirmarAnalise()">🚀 ANALISAR AGORA</button>
+                                <button class="btn-outline" style="margin-top:15px" onclick="estado.fotoSelecionada=false; render()">🗑️ Limpar e Anexar Outra</button>
                             `}
                         </div>
                     </div>
@@ -240,13 +241,13 @@
                 root.innerHTML = `
                     <div style="padding: 20px;">
                         <div onclick="navegar('home')">← Voltar</div>
-                        <h2 style="margin:20px 0;">Recomendados para seu objetivo</h2>
+                        <h2 style="margin:20px 0;">Sugestões de hoje</h2>
                         <div class="prod-grid">
                             ${lista.map(p => `
                                 <div class="prod-card">
                                     <img src="${p.foto}" onerror="this.src='https://via.placeholder.com/150'">
-                                    <b>${p.nome}</b>
-                                    <a href="${p.link}" target="_blank" style="text-decoration:none"><button>Ver na Loja</button></a>
+                                    <div style="font-size:12px; font-weight:bold; margin:10px 0;">${p.nome}</div>
+                                    <a href="${p.link}" target="_blank" style="text-decoration:none"><button style="width:100%; background:var(--primary); color:white; border:none; padding:8px; border-radius:5px;">Ver Oferta</button></a>
                                 </div>
                             `).join("")}
                         </div>
@@ -258,9 +259,9 @@
             if (estado.tela === 'dica') {
                 root.innerHTML = `
                     <div style="text-align:center; padding:60px 20px;">
-                        <h2>Dica do Dia!</h2>
-                        <div class="card" style="padding:30px;">"Trocar o açúcar por canela no café ajuda a controlar os picos de insulina e acelera o metabolismo!"</div>
-                        <button class="btn-principal" onclick="navegar('home')">Voltar</button>
+                        <h2>Sua Dica 💡</h2>
+                        <div class="card" style="padding:30px;">"Consumir gorduras boas como abacate e azeite ajuda a manter a saciedade por muito mais tempo!"</div>
+                        <button class="btn-principal" onclick="navegar('home')">Voltar ao Início</button>
                     </div>
                 `;
             }
