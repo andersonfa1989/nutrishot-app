@@ -45,6 +45,7 @@
         .opt-obj.active { border-color: var(--primary); background: #f0fff7; color: var(--primary); }
 
         .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; cursor: pointer; }
+        .refeicao-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
 
         .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
         .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; overflow: hidden; }
@@ -63,7 +64,6 @@
     <script>
         const LOGO_URL = "icone-512.png";
         
-        // CATÁLOGO COMPLETO CONFORME DEFINIDO POR VOCÊ
         const SUPLEMENTOS = {
             ganho: [
                 { nome:"Creatina Growth 100g", foto:"creatina-100g.png", link:"https://amzn.to/4b47g9o" },
@@ -82,66 +82,84 @@
             ]
         };
 
-        let estado = JSON.parse(localStorage.getItem('nutrishot_final_v1')) || {
+        let estado = JSON.parse(localStorage.getItem('nutrishot_v5')) || {
             logado: false, tela: 'cadastro', nomeUsuario: '', objetivo: 'perda',
             peso: 0, altura: 0, imc: 0, classification: '-',
             calorias: 0, prot: 0, carb: 0, gord: 0, aguaAtual: 0,
             historico: [], tempRefeicao: 'Almoço', fotoSelecionada: null
         };
 
-        function salvar() { localStorage.setItem('nutrishot_final_v1', JSON.stringify(estado)); }
+        function salvar() { localStorage.setItem('nutrishot_v5', JSON.stringify(estado)); }
         function navegar(tela) { estado.tela = tela; salvar(); render(); window.scrollTo(0,0); }
 
-        function infoIMC(p, a) {
-            if(!p || !a) return { valor: 0, texto: '-' };
-            const altM = a / 100;
-            const imc = (p / (altM * altM)).toFixed(1);
-            let classe = imc < 18.5 ? "Magreza" : imc < 25 ? "Normal" : imc < 30 ? "Sobrepeso" : "Obesidade";
+        function infoIMC(peso, altura) {
+            if(!peso || !altura) return { valor: 0, texto: '-' };
+            const altM = altura / 100;
+            const imc = (peso / (altM * altM)).toFixed(1);
+            let classe = imc < 18.5 ? "Magreza" : imc < 25 ? "Normal" : imc < 30 ? "Sobrepeso" : imc < 35 ? "Obesidade I" : "Obesidade II";
             return { valor: imc, texto: classe };
         }
 
         function validarEEntrar() {
-            estado.nomeUsuario = document.getElementById('nome-f').value || 'Usuário';
-            estado.peso = parseFloat(document.getElementById('peso-f').value) || 70;
-            estado.altura = parseFloat(document.getElementById('altura-f').value) || 170;
+            const nomeInput = document.getElementById('nome-f').value;
+            const pesoInput = parseFloat(document.getElementById('peso-f').value);
+            const alturaInput = parseFloat(document.getElementById('altura-f').value);
+
+            if(!nomeInput || !pesoInput || !alturaInput) {
+                alert("Por favor, preencha nome, peso e altura.");
+                return;
+            }
+
+            estado.nomeUsuario = nomeInput;
+            estado.peso = pesoInput;
+            estado.altura = alturaInput;
             const res = infoIMC(estado.peso, estado.altura);
-            estado.imc = res.valor; estado.classification = res.texto;
-            estado.logado = true;
-            navegar('home');
+            estado.imc = res.valor; 
+            estado.classification = res.texto;
+            estado.logado = true; 
+            estado.tela = 'home'; 
+            salvar(); 
+            render();
         }
 
         function render() {
             const root = document.getElementById('app');
 
+            // TELA DE CADASTRO / LOGIN
             if (!estado.logado) {
                 root.innerHTML = `
                     <div style="padding: 50px 20px; text-align: center;">
-                        <img src="${LOGO_URL}" class="img-logo-principal" onerror="this.src='https://via.placeholder.com/170x170?text=NutriShot'">
+                        <img src="${LOGO_URL}" class="img-logo-principal" onerror="this.src='https://i.ibb.co/Lz0D7Yd/icone-512.png'">
                         <h1 class="texto-logo">NutriShot Elements</h1>
-                        <input type="text" id="nome-f" class="input-nutri" placeholder="Nome">
+                        <input type="text" id="nome-f" class="input-nutri" placeholder="Nome Completo">
                         <div style="display:flex; justify-content:center; gap:10px;">
                             <input type="number" id="peso-f" class="input-nutri input-metade" placeholder="Peso (kg)">
                             <input type="number" id="altura-f" class="input-nutri input-metade" placeholder="Altura (cm)">
                         </div>
+                        <input type="email" class="input-nutri" placeholder="Seu melhor e-mail">
+                        <input type="password" class="input-nutri" placeholder="Crie uma senha">
                         <button class="btn-azul" onclick="validarEEntrar()">CRIAR MINHA CONTA</button>
+                        <p style="font-size: 13px; color: #888; margin-top: 15px;">Ao clicar, você concorda com os Termos de Uso.</p>
                     </div>
                 `; return;
             }
 
+            // TELA HOME
             if (estado.tela === 'home') {
                 const metaAgua = Math.round(estado.peso * 35);
                 const percAgua = Math.min((estado.aguaAtual / metaAgua) * 100, 100);
+                const percCal = Math.min((estado.calorias / 2577) * 100, 100);
 
                 root.innerHTML = `
                     <div style="padding: 20px; display: flex; justify-content: space-between; align-items:center;">
-                        <div><small style="color:#888;">Olá,</small><br><b style="font-size:18px;">${estado.nomeUsuario}</b></div>
-                        <span onclick="estado.logado=false; render()" style="cursor:pointer; color: #888; font-size: 12px;">Sair</span>
+                        <div><small style="color:#888;">Bem-vindo,</small><br><b style="font-size:18px;">${estado.nomeUsuario}</b></div>
+                        <span onclick="estado.logado=false; render()" style="background:#eee; padding:5px 12px; border-radius:10px; font-size:12px; cursor:pointer;">Sair</span>
                     </div>
 
                     <div class="card card-fogo">
-                        <div><small>Foco do Dia</small><div style="font-size: 24px; font-weight: bold;">Ativo 🔥</div></div>
+                        <div><small>Status de Hoje</small><div style="font-size: 26px; font-weight: bold;">Ativo 🔥</div></div>
                         <div class="imc-info">
-                            <div class="imc-label">Perfil IMC</div>
+                            <div class="imc-label">Meu IMC</div>
                             <div style="font-size: 22px; font-weight: bold;">${estado.imc}</div>
                             <span class="imc-status">${estado.classification}</span>
                         </div>
@@ -152,30 +170,37 @@
                         <div class="opt-obj ${estado.objetivo==='ganho'?'active':''}" onclick="estado.objetivo='ganho'; render()">Ganho Massa</div>
                     </div>
 
-                    <button class="btn-loja" onclick="navegar('catalogo')">🛒 VER SUPLEMENTOS PARA ${estado.objetivo.toUpperCase()}</button>
+                    <button class="btn-loja" onclick="navegar('catalogo')">🛒 VER SUPLEMENTOS</button>
 
                     <div class="card" style="border-left: 5px solid var(--water);">
-                        <b>Meta de Água 💧</b><br>
-                        <small>${estado.aguaAtual} / ${metaAgua}ml</small>
+                        <b>Hidratação 💧</b><br>
+                        <small>${estado.aguaAtual}ml / ${metaAgua}ml</small>
                         <div class="progress-container"><div class="progress-bar water" style="width: ${percAgua}%"></div></div>
                         <button class="btn-water" onclick="estado.aguaAtual+=250; render()">+ 250ml</button>
                     </div>
 
-                    <button class="fab" onclick="alert('Funcionalidade de câmera em breve!')">+</button>
-                `;
+                    <div class="card">
+                        <small>Calorias Diárias</small>
+                        <div style="font-size: 26px; font-weight: bold;">${estado.calorias} <span style="font-size:14px; color:#ccc">/ 2577 kcal</span></div>
+                        <div class="progress-container"><div class="progress-bar" style="width: ${percCal}%"></div></div>
+                    </div>
+
+                    <button class="fab" onclick="alert('Funcionalidade de análise em breve!')">+</button>
+                `; return;
             }
 
+            // TELA CATÁLOGO
             if (estado.tela === 'catalogo') {
                 const lista = estado.objetivo === 'ganho' ? SUPLEMENTOS.ganho : SUPLEMENTOS.perda;
                 root.innerHTML = `
                     <div style="padding: 20px;">
                         <div onclick="navegar('home')" style="margin-bottom:15px; cursor:pointer; color:var(--blue-action); font-weight:bold;">← Voltar</div>
-                        <h2 style="margin:10px 0;">Catálogo Completo</h2>
+                        <h2 style="margin:10px 0;">Suplementação</h2>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                             ${lista.map(p => `
-                                <div style="background:#fff; border-radius:16px; padding:12px; text-align:center; border:1px solid #eee; display:flex; flex-direction:column; justify-content:space-between;">
-                                    <img src="${p.foto}" style="width:100%; height:90px; object-fit:contain;" onerror="this.src='https://via.placeholder.com/150?text=Suplemento'">
-                                    <b style="font-size:11px; margin: 8px 0;">${p.nome}</b>
+                                <div style="background:#fff; border-radius:16px; padding:12px; text-align:center; border:1px solid #eee; height:230px; display:flex; flex-direction:column; justify-content:space-between;">
+                                    <img src="${p.foto}" style="width:100%; height:85px; object-fit:contain;" onerror="this.src='https://via.placeholder.com/150'">
+                                    <b style="font-size:11px;">${p.nome}</b>
                                     <a href="${p.link}" target="_blank" style="text-decoration:none"><button style="width:100%; background:var(--primary); color:#fff; border:none; padding:8px; border-radius:8px; font-weight:bold; cursor:pointer;">Ver Oferta</button></a>
                                 </div>
                             `).join("")}
