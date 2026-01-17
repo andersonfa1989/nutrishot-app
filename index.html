@@ -8,7 +8,6 @@
         :root { --primary: #2ab573; --secondary: #6a11cb; --bg: #f8f9fa; --text: #333; }
         body { margin: 0; font-family: -apple-system, sans-serif; background: #f8f9fa; color: var(--text); padding-bottom: 100px; }
         
-        /* Dashboard */
         .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
         .card { background: #fff; border-radius: 15px; padding: 20px; margin: 10px 20px; border: 1px solid #f0f0f0; }
         .card-streak { background: linear-gradient(135deg, #4e54c8, #8f94fb); color: #fff; border: none; }
@@ -21,20 +20,25 @@
 
         /* Botões */
         .btn-green { background: var(--primary); color: #fff; border: none; width: calc(100% - 40px); margin: 10px 20px; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-black { background: #111; color: #fff; border: none; padding: 18px; border-radius: 30px; width: 100%; font-size: 16px; font-weight: 500; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-outline { background: #fff; color: #333; border: 1px solid #eee; padding: 18px; border-radius: 30px; width: 100%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
-
-        .meal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
-        .meal-option { background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 25px; text-align: center; cursor: pointer; }
-        .meal-option.active { background: #111; color: #fff; }
-
+        .btn-black { background: #111; color: #fff; border: none; padding: 18px; border-radius: 30px; width: 100%; font-size: 16px; font-weight: 500; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        
+        /* Overlay de Anúncio */
+        #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; flex-direction: column; align-items: center; justify-content: center; color: white; }
+        
         .fab { position: fixed; bottom: 80px; right: 20px; width: 60px; height: 60px; background: #000; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: none; z-index: 999; }
         
-        /* Loader de IA */
         #ai-loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 3000; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
+
+    <div id="loading-overlay">
+        <div style="font-size: 18px; margin-bottom: 20px; font-weight: bold;">Carregando Dica Especial...</div>
+        <div style="width: 70%; height: 6px; background: #333; border-radius: 10px; overflow: hidden;">
+            <div id="progress-bar" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.1s linear;"></div>
+        </div>
+        <div style="margin-top: 15px; font-size: 12px; color: #888;">Aguarde o vídeo terminar</div>
+    </div>
 
     <div id="ai-loader">
         <div style="font-size: 50px;">🤖</div>
@@ -47,47 +51,51 @@
     <input type="file" id="gal-input" accept="image/*" style="display:none" onchange="processarAnaliseIA()">
 
     <script>
-        // Começamos com zero e vamos somando conforme as fotos
         let estado = {
             tela: 'home',
             calorias: 0,
             proteina: 0,
             carbos: 0,
             gordura: 0,
-            refeicoes: [],
-            tipoSelecionado: 'Almoço'
+            refeicoes: []
         };
 
-        function navegar(tela) { estado.tela = tela; render(); window.scrollTo(0,0); }
-        function selecionarTipo(tipo) { estado.tipoSelecionado = tipo; render(); }
+        function navegar(tela) { 
+            estado.tela = tela; 
+            render(); 
+            window.scrollTo(0,0); 
+        }
 
-        // ESSA FUNÇÃO FAZ O CÁLCULO AUTOMÁTICO
+        // FUNÇÃO DO ANÚNCIO DISFARÇADO
+        function iniciarAnuncioDica() {
+            const overlay = document.getElementById('loading-overlay');
+            const bar = document.getElementById('progress-bar');
+            overlay.style.display = 'flex';
+            let progresso = 0;
+            
+            const intervalo = setInterval(() => {
+                progresso += 2;
+                bar.style.width = progresso + '%';
+                if (progresso >= 100) {
+                    clearInterval(intervalo);
+                    overlay.style.display = 'none';
+                    navegar('tela_dica'); // Abre a dica após o "anúncio"
+                }
+            }, 60); // Simula 3 segundos de vídeo
+        }
+
         function processarAnaliseIA() {
-            const loader = document.getElementById('ai-loader');
-            loader.style.display = 'flex';
-
+            document.getElementById('ai-loader').style.display = 'flex';
             setTimeout(() => {
-                // Simula a IA detectando valores diferentes para cada prato
-                const calGerada = Math.floor(Math.random() * (600 - 300) + 300);
-                const protGerada = Math.floor(calGerada * 0.05);
-                const carbGerada = Math.floor(calGerada * 0.1);
-                const gordGerada = Math.floor(calGerada * 0.02);
-
-                // SOMA AO TOTAL EXISTENTE
+                const calGerada = Math.floor(Math.random() * (500 - 300) + 300);
                 estado.calorias += calGerada;
-                estado.proteina += protGerada;
-                estado.carbos += carbGerada;
-                estado.gordura += gordGerada;
-
-                // ADICIONA À LISTA
-                estado.refeicoes.unshift({ 
-                    nome: estado.tipoSelecionado, 
-                    cal: calGerada 
-                });
-
-                loader.style.display = 'none';
+                estado.proteina += Math.floor(calGerada * 0.05);
+                estado.carbos += Math.floor(calGerada * 0.1);
+                estado.gordura += Math.floor(calGerada * 0.02);
+                estado.refeicoes.unshift({ nome: 'Nova Refeição', cal: calGerada });
+                document.getElementById('ai-loader').style.display = 'none';
                 navegar('home');
-            }, 2000); // 2 segundos de "análise"
+            }, 1500);
         }
 
         function render() {
@@ -125,39 +133,44 @@
 
                     <div class="card" style="border: 1px solid var(--primary); background: #fafffb;">
                         <b style="color:var(--primary); font-size:14px;">Dica Especial</b>
-                        <button class="btn-green" style="margin:10px 0 0 0; width:100%; padding:10px;" onclick="assistirAnuncio()">📺 Assistir Anúncio</button>
+                        <p style="font-size:12px; color:#666; margin: 5px 0 10px 0;">Conteúdo exclusivo para sua dieta.</p>
+                        <button class="btn-green" style="margin:0; width:100%; padding:10px;" onclick="iniciarAnuncioDica()">💡 Ver aqui a dica especial</button>
                     </div>
 
                     <div class="card">
                         <b style="font-size:14px; color:#555;">Refeições de Hoje</b>
                         <div style="margin-top:10px;">
                             ${estado.refeicoes.length === 0 ? '<p style="color:#ccc; text-align:center;">Nenhuma foto ainda.</p>' : 
-                                estado.refeicoes.map(r => `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #fcfcfc;"><span>${r.nome}</span><b>+${r.cal} cal</b></div>`).join('')
+                                estado.refeicoes.map(r => `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #fcfcfc;"><span>Refeição</span><b>+${r.cal} cal</b></div>`).join('')
                             }
                         </div>
                     </div>
 
-                    <button class="fab" onclick="navegar('add')">+</button>
+                    <button class="fab" onclick="document.getElementById('cam-input').click()">+</button>
                 `;
             } 
-            
-            else if (estado.tela === 'add') {
+
+            else if (estado.tela === 'tela_dica') {
+                root.innerHTML = `
+                    <div style="padding: 40px 20px; text-align: center;">
+                        <div style="font-size: 60px; margin-bottom: 20px;">🥗</div>
+                        <h2 style="color: var(--primary);">Dica Liberada!</h2>
+                        <div class="card" style="box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding:30px;">
+                            <p style="font-size: 18px; line-height: 1.6; color: #333; font-weight: 500;">
+                                "Comer fibras (como saladas) antes do prato principal reduz o pico de insulina e ajuda a controlar o peso!"
+                            </p>
+                        </div>
+                        <button class="btn-black" onclick="navegar('home')" style="margin-top:20px; width: 100%;">Voltar ao Dashboard</button>
+                    </div>
+                `;
+            }
+
+            else if (estado.tela === 'loja') {
                 root.innerHTML = `
                     <div style="padding: 20px;">
                         <span onclick="navegar('home')" style="font-size:24px; cursor:pointer;">← Voltar</span>
-                        <h2 style="margin-top:20px;">Análise por Foto</h2>
-                        
-                        <p style="font-size:15px; font-weight:600;">Selecione o tipo:</p>
-                        <div class="meal-grid">
-                            ${['Café Da Manhã','Almoço','Jantar','Lanche'].map(t => `
-                                <div class="meal-option ${estado.tipoSelecionado === t ? 'active' : ''}" onclick="selecionarTipo('${t}')">${t}</div>
-                            `).join('')}
-                        </div>
-
-                        <div style="margin-top:30px;">
-                            <button class="btn-black" onclick="document.getElementById('cam-input').click()">📸 Tirar Foto do Prato</button>
-                            <button class="btn-outline" onclick="document.getElementById('gal-input').click()">📁 Galeria de Imagens</button>
-                        </div>
+                        <h2 style="margin-top:20px;">Suplementos</h2>
+                        <div class="card">Carregando produtos...</div>
                     </div>
                 `;
             }
