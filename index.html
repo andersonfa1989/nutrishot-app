@@ -1,140 +1,33 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>NutriShot Elements</title>
-    <style>
-        :root { --primary:#2ab573; --secondary:#667eea; --bg:#f9fafb; }
-        body { margin:0; font-family:'Segoe UI', Roboto, sans-serif; background:var(--bg); color:#333; padding-bottom:80px; }
-        
-        /* Estilos do Dashboard */
-        .card { background:#fff; border-radius:20px; padding:20px; margin:15px 20px; box-shadow:0 4px 15px rgba(0,0,0,0.03); border: 1px solid #eee; }
-        .card-fogo { background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; }
-        .btn-loja { width:calc(100% - 40px); margin:10px 20px; padding:14px; border:none; border-radius:14px; font-weight:bold; cursor:pointer; background:var(--primary); color:#fff; }
-        .fab { position:fixed; bottom:20px; right:20px; width:65px; height:65px; border-radius:50%; background:#000; color:#fff; font-size:30px; border:none; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+<script>
+function processarFoto() {
+    rodarAnuncio("Analisando com IA NutriShot...", () => {
 
-        /* Estilos da Loja */
-        .prod-grid { display:grid; grid-template-columns:1fr 1fr; gap:15px; padding: 0 5px; }
-        .prod-card { background:#fff; border-radius:16px; padding:12px; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee; }
-        .prod-card img { width:100%; max-height:120px; object-fit:contain; margin-bottom: 8px; }
-        .prod-card b { font-size: 13px; display: block; height: 35px; overflow: hidden; }
-        .prod-card button { width:100%; margin-top:8px; background:var(--primary); color:#fff; border:none; padding:10px; border-radius:10px; font-weight:bold; }
-        
-        /* Login */
-        .input-nutri { width: 80%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; }
-    </style>
-</head>
-<body>
-    <div id="app"></div>
+        // Calorias estimadas
+        const calorias = Math.floor(Math.random() * 200 + 350);
 
-    <script>
-        // =================== BANCO DE DADOS DE SUPLEMENTOS ===================
-        const SUPLEMENTOS = {
-            ganho: [
-                { nome:"Creatina Growth 100g", preco:"R$ 99,80", foto:"creatina-100g.png", link:"https://amzn.to/4b47g9o" },
-                { nome:"Whey Chocolate", preco:"R$ 204,80", foto:"wey-choco.png", link:"https://amzn.to/3LjWMIB" },
-                { nome:"Whey Morango", preco:"R$ 209,90", foto:"wey-moran.png", link:"https://amzn.to/4sPsdvg" },
-                { nome:"Whey Creme", preco:"R$ 209,80", foto:"wey-creme.png", link:"https://amzn.to/4qq9ODl" },
-                { nome:"Gainer Chocolate", preco:"R$ 215,00", foto:"Hipercalórico-choco.png", link:"https://amzn.to/4qpZKKC" },
-                { nome:"Gainer Cookies", preco:"R$ 209,00", foto:"Hipercalórico-cooki.png", link:"https://amzn.to/4bC9A7C" }
-            ],
-            perda: [
-                { nome:"Psyllium Cápsulas", preco:"R$ 29,90", foto:"Psyllium-caps.png", link:"https://amzn.to/4sBfMmq" },
-                { nome:"Psyllium em Pó", preco:"R$ 49,90", foto:"Psyllium-po.png", link:"https://amzn.to/3YINEAk" },
-                { nome:"Ultra Burn Termogênico", preco:"R$ 78,89", foto:"termog.png", link:"https://amzn.to/4b5phUQ" },
-                { nome:"L-Carnitina 2000mg", preco:"R$ 93,65", foto:"l-creat2000.png", link:"https://amzn.to/4bBHcCw" },
-                { nome:"L-Carnitina 1000mg", preco:"R$ 225,76", foto:"l-creat1000.png", link:"https://amzn.to/3LJAv6S" }
-            ]
-        };
+        // Distribuição nutricional
+        const proteina = Math.round((calorias * 0.20) / 4); // 20%
+        const carbo = Math.round((calorias * 0.50) / 4);    // 50%
+        const gordura = Math.round((calorias * 0.30) / 9);  // 30%
 
-        // =================== ESTADO INICIAL ===================
-        let estado = JSON.parse(localStorage.getItem('nutri_v1')) || {
-            tela: 'login',
-            logado: false,
-            nome: 'Isaac',
-            objetivo: 'ganho', // 'ganho' ou 'perda'
-            calorias: 931,
-            prot: 45, carb: 0, gord: 0
-        };
+        // Atualiza totais
+        estado.calorias += calorias;
+        estado.prot += proteina;
+        estado.carb += carbo;
+        estado.gord += gordura;
 
-        function salvar() { localStorage.setItem('nutri_v1', JSON.stringify(estado)); }
-        function navegar(tela) { estado.tela = tela; salvar(); render(); window.scrollTo(0,0); }
+        // Histórico detalhado
+        estado.historico.unshift({
+            tipo: estado.tempRefeicao,
+            cal: calorias,
+            prot: proteina,
+            carb: carbo,
+            gord: gordura,
+            data: new Date().toISOString()
+        });
 
-        function fazerLogin() {
-            estado.logado = true;
-            estado.objetivo = document.getElementById('obj').value;
-            navegar('home');
-        }
-
-        // =================== INTERFACE ===================
-        function render() {
-            const app = document.getElementById("app");
-
-            if (!estado.logado) {
-                app.innerHTML = `
-                    <div style="padding:60px 20px; text-align:center">
-                        <img src="icone-512.png" style="width:120px" onerror="this.src='https://via.placeholder.com/150'">
-                        <h2>NutriShot Elements</h2>
-                        <select id="obj" class="input-nutri">
-                            <option value="ganho">Objetivo: Ganhar Massa</option>
-                            <option value="perda">Objetivo: Perder Peso</option>
-                        </select><br>
-                        <button class="btn-principal" onclick="fazerLogin()">Entrar no Dashboard</button>
-                    </div>`;
-                return;
-            }
-
-            if (estado.tela === 'home') {
-                app.innerHTML = `
-                    <div style="padding:20px; display:flex; justify-content:space-between">
-                        <div><b>Olá, ${estado.nome}!</b><br><small>Resumo de hoje</small></div>
-                        <small onclick="estado.logado=false; render()">Sair</small>
-                    </div>
-
-                    <div class="card card-fogo">
-                        <small>Fogo na Sequência</small>
-                        <div style="font-size:38px;font-weight:bold">1 🔥</div>
-                    </div>
-
-                    <button class="btn-loja" onclick="navegar('catalogo')">🛒 VER SUPLEMENTOS RECOMENDADOS</button>
-
-                    <div class="card">
-                        <small>Calorias Consumidas</small>
-                        <div style="font-size:28px;font-weight:bold">${estado.calorias} <span style="font-size:14px;color:#aaa">/ 2577 cal</span></div>
-                    </div>
-
-                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:0 20px">
-                        <div class="card" style="margin:0;padding:15px;text-align:center"><small>Proteína</small><br><b>${estado.prot}g</b></div>
-                        <div class="card" style="margin:0;padding:15px;text-align:center"><small>Carbos</small><br><b>${estado.carb}g</b></div>
-                        <div class="card" style="margin:0;padding:15px;text-align:center"><small>Gordura</small><br><b>${estado.gord}g</b></div>
-                    </div>
-                    <button class="fab">+</button>`;
-            } 
-            
-            else if (estado.tela === 'catalogo') {
-                const lista = estado.objetivo === 'ganho' ? SUPLEMENTOS.ganho : SUPLEMENTOS.perda;
-                const titulo = estado.objetivo === 'ganho' ? "💪 Ganho de Massa" : "🔥 Perda de Peso";
-
-                app.innerHTML = `
-                    <div style="padding:20px">
-                        <div style="cursor:pointer;font-size:18px" onclick="navegar('home')">← Voltar</div>
-                        <h2>${titulo}</h2>
-                        <div class="prod-grid">
-                            ${lista.map(p => `
-                                <div class="prod-card">
-                                    <img src="${p.foto}" onerror="this.src='https://via.placeholder.com/150'">
-                                    <b>${p.nome}</b>
-                                    <small style="color:var(--primary);font-weight:bold">${p.preco}</small>
-                                    <a href="${p.link}" target="_blank"><button>Comprar</button></a>
-                                </div>
-                            `).join("")}
-                        </div>
-                    </div>`;
-            }
-        }
-
-        render();
-    </script>
-</body>
-</html>
+        salvar();
+        navegar('home');
+    });
+}
+</script>
