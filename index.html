@@ -43,12 +43,12 @@
         
         .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; }
 
-        /* PRODUTOS */
-        .prod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 10px; }
-        .prod-card { background: #fff; border-radius: 16px; padding: 12px; text-align: center; border: 1px solid #eee; display: flex; flex-direction: column; height: 210px; }
-        .prod-card img { width: 100%; height: 80px; object-fit: contain; margin-bottom: 10px; }
-        .prod-card b { font-size: 12px; flex-grow: 1; }
-        .prod-card button { width: 100%; background: var(--primary); color: #fff; border: none; padding: 8px; border-radius: 8px; font-weight: bold; }
+        /* LOJA COMPLETA */
+        .prod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px; }
+        .prod-card { background: #fff; border-radius: 16px; padding: 12px; text-align: center; border: 1px solid #eee; display: flex; flex-direction: column; height: 230px; justify-content: space-between; }
+        .prod-card img { width: 100%; height: 85px; object-fit: contain; margin-bottom: 8px; }
+        .prod-card b { font-size: 11px; line-height: 1.2; display: block; margin-bottom: 8px; height: 30px; overflow: hidden; }
+        .prod-card button { width: 100%; background: var(--primary); color: #fff; border: none; padding: 8px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; }
 
         .banner-inline { background: #eee; border: 1px dashed #ccc; padding: 15px; margin: 20px; border-radius: 15px; text-align: center; color: #999; font-size: 12px; }
 
@@ -74,12 +74,16 @@
                 { nome:"Creatina Growth 100g", foto:"creatina-100g.png", link:"https://amzn.to/4b47g9o" },
                 { nome:"Whey Chocolate", foto:"wey-choco.png", link:"https://amzn.to/3LjWMIB" },
                 { nome:"Whey Morango", foto:"wey-moran.png", link:"https://amzn.to/4sPsdvg" },
-                { nome:"Whey Creme", foto:"wey-creme.png", link:"https://amzn.to/4qq9ODl" }
+                { nome:"Whey Creme", foto:"wey-creme.png", link:"https://amzn.to/4qq9ODl" },
+                { nome:"Gainer Chocolate", foto:"Hipercalórico-choco.png", link:"https://amzn.to/4qpZKKC" },
+                { nome:"Gainer Cookies", foto:"Hipercalórico-cooki.png", link:"https://amzn.to/4bC9A7C" }
             ],
             perda: [
                 { nome:"Psyllium Cápsulas", foto:"Psyllium-caps.png", link:"https://amzn.to/4sBfMmq" },
+                { nome:"Psyllium em Pó", foto:"Psyllium-po.png", link:"https://amzn.to/3YINEAk" },
                 { nome:"Ultra Burn Termogênico", foto:"termog.png", link:"https://amzn.to/4b5phUQ" },
-                { nome:"L-Carnitina 2000mg", foto:"l-creat2000.png", link:"https://amzn.to/4bBHcCw" }
+                { nome:"L-Carnitina 2000mg", foto:"l-creat2000.png", link:"https://amzn.to/4bBHcCw" },
+                { nome:"L-Carnitina 1000mg", foto:"l-creat1000.png", link:"https://amzn.to/3LJAv6S" }
             ]
         };
 
@@ -95,7 +99,7 @@
         function validarEEntrar() {
             const email = document.getElementById('email-f').value;
             const pass = document.getElementById('pass-f').value;
-            if(email.length < 3) { alert("Preencha o e-mail!"); return; }
+            if(email.length < 3) { alert("Preencha os campos!"); return; }
             if(document.getElementById('nome-f')) { estado.nomeUsuario = document.getElementById('nome-f').value || 'Usuário'; }
             estado.logado = true; estado.tela = 'home'; salvar(); render();
         }
@@ -112,19 +116,15 @@
             }, 50);
         }
 
-        // OTMIZAÇÃO PARA EVITAR ERRO DE MEMÓRIA
         function prepararFoto(event) {
-            const file = event.target.files[0];
-            if(file) {
-                // Remove o arquivo do input imediatamente para liberar memória do sistema
-                event.target.value = ''; 
+            if(event.target.files && event.target.files[0]) {
                 estado.fotoSelecionada = true;
                 render();
             }
         }
 
         function confirmarAnalise() {
-            rodarAnuncio("IA analisando nutrientes...", () => {
+            rodarAnuncio("Analisando nutrientes...", () => {
                 const cal = Math.floor(Math.random() * 200 + 350);
                 estado.calorias += cal;
                 estado.prot += Math.floor(cal * 0.05);
@@ -226,8 +226,8 @@
                 const lista = estado.objetivo === 'ganho' ? SUPLEMENTOS.ganho : SUPLEMENTOS.perda;
                 root.innerHTML = `
                     <div style="padding: 20px;">
-                        <div onclick="navegar('home')">← Voltar</div>
-                        <h2 style="margin:20px 0;">Sugeridos para ${estado.objetivo === 'ganho' ? 'Ganho' : 'Perda'}</h2>
+                        <div onclick="navegar('home')" style="margin-bottom:15px; cursor:pointer;">← Voltar</div>
+                        <h2 style="margin:10px 0; font-size:18px;">Sugestões para ${estado.objetivo === 'ganho' ? 'Ganho de Massa' : 'Perda de Peso'}</h2>
                         <div class="prod-grid">
                             ${lista.map(p => `
                                 <div class="prod-card">
@@ -245,7 +245,7 @@
                 root.innerHTML = `
                     <div style="text-align:center; padding:60px 20px;">
                         <h2>Dica Nutricional 💡</h2>
-                        <div class="card" style="padding:30px;">"Beba 300ml de água antes de cada refeição para melhorar a digestão e o controle da fome."</div>
+                        <div class="card" style="padding:30px;">"Focar em proteínas e fibras ajuda a manter a massa magra e aumenta a queima calórica natural do corpo!"</div>
                         <button class="btn-principal" onclick="navegar('home')">Voltar ao Início</button>
                     </div>
                 `;
