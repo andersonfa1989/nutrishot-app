@@ -46,13 +46,13 @@
         .btn-water { background: var(--water); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
         .btn-principal { width: 100%; background: linear-gradient(to right, #667eea, #764ba2); color: white; border: none; padding: 18px; border-radius: 15px; font-size: 16px; font-weight: bold; margin-top: 10px; }
         .btn-outline { background: transparent; color: #666; border: 1px solid #ddd; padding: 12px; border-radius: 12px; width: 100%; margin-top: 10px; font-weight: 500; }
-        .btn-loja { background: #2ab573; color: white; border: none; padding: 15px; border-radius: 12px; width: calc(100% - 40px); margin: 0 20px; font-weight: bold; font-size: 14px; }
+        .btn-loja { background: #2ab573; color: white; border: none; padding: 15px; border-radius: 12px; width: calc(100% - 40px); margin: 0 20px; font-weight: bold; font-size: 14px; cursor: pointer; }
         
         .selector-objetivo { display: flex; gap: 10px; margin: 0 20px 15px 20px; }
-        .opt-obj { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #eee; background: #fff; text-align: center; font-weight: bold; font-size: 13px; }
+        .opt-obj { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #eee; background: #fff; text-align: center; font-weight: bold; font-size: 13px; cursor: pointer; }
         .opt-obj.active { border-color: var(--primary); background: #f0fff7; color: var(--primary); }
 
-        .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 35px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; }
+        .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 35px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; cursor: pointer; }
         #img-preview { width: 100%; max-height: 250px; object-fit: cover; border-radius: 15px; margin-bottom: 15px; }
 
         .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
@@ -75,6 +75,20 @@
     <script>
         const LOGO_URL = "icone-512.png";
         
+        const SUPLEMENTOS = {
+            ganho: [
+                { nome:"Creatina Growth 100g", foto:"creatina-100g.png", link:"https://amzn.to/4b47g9o" },
+                { nome:"Whey Chocolate", foto:"wey-choco.png", link:"https://amzn.to/3LjWMIB" },
+                { nome:"Whey Morango", foto:"wey-moran.png", link:"https://amzn.to/4sPsdvg" },
+                { nome:"Gainer Chocolate", foto:"Hipercalórico-choco.png", link:"https://amzn.to/4qpZKKC" }
+            ],
+            perda: [
+                { nome:"Psyllium Cápsulas", foto:"Psyllium-caps.png", link:"https://amzn.to/4sBfMmq" },
+                { nome:"Ultra Burn Termogênico", foto:"termog.png", link:"https://amzn.to/4b5phUQ" },
+                { nome:"L-Carnitina 2000mg", foto:"l-creat2000.png", link:"https://amzn.to/4bBHcCw" }
+            ]
+        };
+
         let estado = JSON.parse(localStorage.getItem('nutrishot_v5')) || {
             logado: false, tela: 'cadastro', nomeUsuario: 'Isaac', objetivo: 'perda',
             peso: 70, altura: 170, imc: 24.2, classification: 'Normal',
@@ -171,7 +185,7 @@
                 root.innerHTML = `
                     <div style="padding: 20px; display: flex; justify-content: space-between; align-items:center;">
                         <div><small style="color:#888;">Bom dia,</small><br><b style="font-size:18px;">${estado.nomeUsuario}</b></div>
-                        <span onclick="estado.logado=false; render()" style="background:#eee; padding:5px 12px; border-radius:10px; font-size:12px;">Sair</span>
+                        <span onclick="estado.logado=false; render()" style="background:#eee; padding:5px 12px; border-radius:10px; font-size:12px; cursor:pointer;">Sair</span>
                     </div>
 
                     <div class="card card-fogo">
@@ -211,6 +225,11 @@
                         <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Gorduras</small><br><b>${estado.gord}g</b></div>
                     </div>
 
+                    <div class="card" style="border: 1px solid var(--primary); background: #fafffb;">
+                        <b style="color:var(--primary)">Dica de Ouro ✨</b>
+                        <button onclick="navegar('dica')" style="width:100%; background:var(--primary); color:white; border:none; padding:12px; border-radius:12px; margin-top:10px; font-weight:bold; cursor:pointer;">📺 Ver Dica Exclusiva</button>
+                    </div>
+
                     <div class="card">
                         <b>Refeições de Hoje</b>
                         <div style="margin-top:10px;">
@@ -221,8 +240,36 @@
                         </div>
                     </div>
 
+                    <div class="selector-objetivo">
+                        <div class="opt-obj ${estado.objetivo==='perda'?'active':''}" onclick="estado.objetivo='perda'; render()">Emagrecer</div>
+                        <div class="opt-obj ${estado.objetivo==='ganho'?'active':''}" onclick="estado.objetivo='ganho'; render()">Ganho Massa</div>
+                    </div>
+
+                    <button class="btn-loja" onclick="navegar('catalogo')">🛒 VER SUPLEMENTOS RECOMENDADOS</button>
+
                     <button class="fab" onclick="navegar('add_refeicao')">+</button>
                 `; return;
+            }
+
+            if (estado.tela === 'catalogo') {
+                const lista = estado.objetivo === 'ganho' ? SUPLEMENTOS.ganho : SUPLEMENTOS.perda;
+                root.innerHTML = `
+                    <div style="padding: 20px;">
+                        <div onclick="navegar('home')" style="margin-bottom:15px; cursor:pointer; color:var(--blue-action); font-weight:bold;">← Voltar</div>
+                        <h2 style="margin:10px 0; font-size:18px;">Suplementação Recomendada</h2>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            ${lista.map(p => `
+                                <div style="background:#fff; border-radius:16px; padding:12px; text-align:center; border:1px solid #eee; display:flex; flex-direction:column; justify-content:space-between; height:220px;">
+                                    <img src="${p.foto}" style="width:100%; height:85px; object-fit:contain;" onerror="this.src='https://via.placeholder.com/150'">
+                                    <b style="font-size:11px;">${p.nome}</b>
+                                    <a href="${p.link}" target="_blank" style="text-decoration:none">
+                                        <button style="width:100%; background:var(--primary); color:#fff; border:none; padding:8px; border-radius:8px; font-weight:bold; font-size:11px; cursor:pointer;">Ver Oferta</button>
+                                    </a>
+                                </div>
+                            `).join("")}
+                        </div>
+                    </div>
+                `;
             }
 
             if (estado.tela === 'add_refeicao') {
@@ -248,6 +295,10 @@
                         </div>
                     </div>
                 `;
+            }
+
+            if (estado.tela === 'dica') {
+                root.innerHTML = `<div style="text-align:center; padding:100px 20px;"><h2>💡 Dica do Dia</h2><p style="font-size:20px;">"Consumir proteínas em todas as refeições ajuda a manter a saciedade e preservar a massa muscular."</p><button class="btn-principal" onclick="navegar('home')">Voltar</button></div>`;
             }
         }
         render();
