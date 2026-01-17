@@ -8,9 +8,10 @@
         :root { 
             --primary: #2ab573; 
             --blue-action: #2490eb; 
+            --water: #3498db;
             --bg: #f9fafb; 
         }
-        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; }
+        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 60px; }
         
         .img-logo-principal { width: 170px; margin-bottom: 5px; } 
         .texto-logo {
@@ -23,26 +24,12 @@
         .input-nutri { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; }
         .input-metade { width: 40%; display: inline-block; }
         
-        .btn-azul { 
-            width: calc(100% - 40px); 
-            background: var(--blue-action); 
-            color: white; border: none; padding: 18px; border-radius: 30px; 
-            margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(36, 144, 235, 0.3);
-        }
-
-        .footer-link { margin-top: 20px; font-size: 14px; cursor: pointer; color: #000; font-weight: 500; }
-        .footer-link span { color: var(--blue-action); font-weight: 700; }
+        .btn-azul { width: calc(100% - 40px); background: var(--blue-action); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer; }
 
         .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-        .card-fogo { 
-            background: linear-gradient(135deg, #667eea, #764ba2); 
-            color: #fff; border: none;
-            display: flex; justify-content: space-between; align-items: center;
-        }
+        .card-fogo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; display: flex; justify-content: space-between; align-items: center; }
         
         .imc-info { text-align: right; background: rgba(255,255,255,0.15); padding: 8px 12px; border-radius: 12px; min-width: 80px; }
-        .imc-label { font-size: 10px; opacity: 0.9; display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
         .imc-status { font-size: 10px; font-weight: bold; text-transform: uppercase; margin-top: 2px; display: block; }
 
         .grid-7 { display: flex; justify-content: space-between; align-items: flex-end; height: 50px; margin-top: 15px; }
@@ -53,28 +40,24 @@
 
         .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--primary); transition: width 0.5s ease; }
+        .progress-bar.water { background: var(--water); }
 
-        .selector-objetivo { display: flex; gap: 10px; margin: 0 20px 15px 20px; }
-        .opt-obj { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #eee; background: #fff; text-align: center; font-weight: bold; cursor: pointer; font-size: 13px; }
-        .opt-obj.active { border-color: var(--primary); background: #f0fff7; color: var(--primary); }
-
-        .dica-container { min-height: 85vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; background: radial-gradient(circle at top right, #f0fff7, #ffffff); text-align: center; }
-        .dica-texto-grande { font-size: 30px; font-weight: 800; line-height: 1.2; color: #222; margin: 30px 0; }
-        
+        .btn-water { background: var(--water); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
         .btn-principal { width: calc(100% - 40px); background: linear-gradient(to right, #667eea, #764ba2); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer; }
         .btn-loja { background: #2ab573; color: white; border: none; padding: 15px; border-radius: 12px; width: calc(100% - 40px); margin: 0 20px; font-weight: bold; cursor: pointer; font-size: 14px; }
         .btn-outline { background: transparent; color: #666; border: 1px solid #ddd; padding: 12px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 500; }
         
-        .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; }
-        #img-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; border: 1px solid #ddd; }
+        .selector-objetivo { display: flex; gap: 10px; margin: 0 20px 15px 20px; }
+        .opt-obj { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #eee; background: #fff; text-align: center; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .opt-obj.active { border-color: var(--primary); background: #f0fff7; color: var(--primary); }
+
+        .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; cursor: pointer; }
         .banner-inline { background: #eee; border: 1px dashed #ccc; padding: 15px; margin: 20px; border-radius: 15px; text-align: center; color: #999; font-size: 12px; }
+        .refeicao-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
 
         .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
         .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; overflow: hidden; }
         #bar-progress { width: 0%; height: 100%; background: #2ab573; transition: width 0.1s linear; }
-        
-        .refeicao-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
-        .refeicao-item:last-child { border: none; }
     </style>
 </head>
 <body>
@@ -110,8 +93,8 @@
         let estado = JSON.parse(localStorage.getItem('nutrishot_v5')) || {
             logado: false, tela: 'cadastro', nomeUsuario: 'Isaac', objetivo: 'perda',
             peso: 70, altura: 170, imc: 24.2, classification: 'Normal',
-            calorias: 0, prot: 0, carb: 0, gord: 0, historico: [],
-            tempRefeicao: 'Almoço', fotoSelecionada: null
+            calorias: 0, prot: 0, carb: 0, gord: 0, aguaAtual: 0,
+            historico: [], tempRefeicao: 'Almoço', fotoSelecionada: null
         };
 
         function salvar() { localStorage.setItem('nutrishot_v5', JSON.stringify(estado)); }
@@ -125,18 +108,17 @@
         }
 
         function validarEEntrar() {
-            const email = document.getElementById('email-f').value;
-            if(email.length < 3) { alert("Preencha os campos!"); return; }
             if(document.getElementById('nome-f')) { 
                 estado.nomeUsuario = document.getElementById('nome-f').value || 'Usuário';
                 estado.peso = parseFloat(document.getElementById('peso-f').value) || 70;
                 estado.altura = parseFloat(document.getElementById('altura-f').value) || 170;
                 const res = infoIMC(estado.peso, estado.altura);
-                estado.imc = res.valor;
-                estado.classification = res.texto;
+                estado.imc = res.valor; estado.classification = res.texto;
             }
             estado.logado = true; estado.tela = 'home'; salvar(); render();
         }
+
+        function adicionarAgua() { estado.aguaAtual += 250; salvar(); render(); }
 
         function rodarAnuncio(texto, callback) {
             const overlay = document.getElementById('ads-overlay');
@@ -179,45 +161,48 @@
             const root = document.getElementById('app');
 
             if (!estado.logado) {
-                const isCadastro = estado.tela === 'cadastro';
                 root.innerHTML = `
                     <div style="padding: 50px 20px; text-align: center;">
                         <img src="${LOGO_URL}" class="img-logo-principal" onerror="this.src='https://i.ibb.co/Lz0D7Yd/icone-512.png'">
                         <h1 class="texto-logo">NutriShot Elements</h1>
-                        ${isCadastro ? `
-                            <input type="text" id="nome-f" class="input-nutri" placeholder="Nome">
-                            <div style="display:flex; justify-content:center; gap:10px;">
-                                <input type="number" id="peso-f" class="input-nutri input-metade" placeholder="Peso (kg)">
-                                <input type="number" id="altura-f" class="input-nutri input-metade" placeholder="Altura (cm)">
-                            </div>
-                        ` : ''}
+                        <input type="text" id="nome-f" class="input-nutri" placeholder="Nome">
+                        <div style="display:flex; justify-content:center; gap:10px;">
+                            <input type="number" id="peso-f" class="input-nutri input-metade" placeholder="Peso (kg)">
+                            <input type="number" id="altura-f" class="input-nutri input-metade" placeholder="Altura (cm)">
+                        </div>
                         <input type="email" id="email-f" class="input-nutri" placeholder="E-mail">
                         <input type="password" id="pass-f" class="input-nutri" placeholder="Senha">
-                        <button class="btn-azul" onclick="validarEEntrar()">
-                            ${isCadastro ? 'CRIAR MINHA CONTA' : 'ENTRAR NO APP'}
-                        </button>
-                        <p class="footer-link" onclick="navegar('${isCadastro ? 'login' : 'cadastro'}')">
-                            ${isCadastro ? 'Já tem uma conta? <span>Entrar</span>' : 'Novo por aqui? <span>Criar Conta</span>'}
-                        </p>
+                        <button class="btn-azul" onclick="validarEEntrar()">CRIAR MINHA CONTA</button>
                     </div>
                 `; return;
             }
 
             if (estado.tela === 'home') {
-                const perc = Math.min((estado.calorias / 2577) * 100, 100);
+                const metaAgua = Math.round(estado.peso * 35);
+                const percAgua = Math.min((estado.aguaAtual / metaAgua) * 100, 100);
+                const percCal = Math.min((estado.calorias / 2577) * 100, 100);
+
                 root.innerHTML = `
                     <div style="padding: 20px; display: flex; justify-content: space-between; align-items:center;">
-                        <div><small style="color:#888; display:block;">Bom dia,</small><b style="font-size:18px;">${estado.nomeUsuario}</b></div>
+                        <div><small style="color:#888;">Bom dia,</small><br><b style="font-size:18px;">${estado.nomeUsuario}</b></div>
                         <span onclick="estado.logado=false; render()" style="background:#eee; padding:5px 12px; border-radius:10px; font-size:12px; cursor:pointer;">Sair</span>
                     </div>
 
                     <div class="card card-fogo">
                         <div><small>Sequência Ativa</small><div style="font-size: 26px; font-weight: bold;">1 Dia 🔥</div></div>
                         <div class="imc-info">
-                            <div class="imc-label">Perfil Físico</div>
                             <div style="font-size: 22px; font-weight: bold;">${estado.imc}</div>
                             <span class="imc-status">${estado.classification}</span>
                         </div>
+                    </div>
+
+                    <div class="card" style="border-left: 5px solid var(--water);">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <b>Meta de Água 💧</b>
+                            <span style="font-size:12px; color:#888;">${estado.aguaAtual}/${metaAgua}ml</span>
+                        </div>
+                        <div class="progress-container"><div class="progress-bar water" style="width: ${percAgua}%"></div></div>
+                        <button class="btn-water" onclick="adicionarAgua()">+ 250ml (Copo)</button>
                     </div>
 
                     <div class="card">
@@ -228,8 +213,8 @@
                     </div>
 
                     <div class="selector-objetivo">
-                        <div class="opt-obj ${estado.objetivo === 'perda' ? 'active' : ''}" onclick="estado.objetivo='perda'; render()">Emagrecer</div>
-                        <div class="opt-obj ${estado.objetivo === 'ganho' ? 'active' : ''}" onclick="estado.objetivo='ganho'; render()">Ganho Massa</div>
+                        <div class="opt-obj ${estado.objetivo==='perda'?'active':''}" onclick="estado.objetivo='perda'; render()">Emagrecer</div>
+                        <div class="opt-obj ${estado.objetivo==='ganho'?'active':''}" onclick="estado.objetivo='ganho'; render()">Ganho Massa</div>
                     </div>
 
                     <button class="btn-loja" onclick="navegar('catalogo')">🛒 VER SUPLEMENTOS</button>
@@ -237,7 +222,7 @@
                     <div class="card">
                         <small>Consumo de Calorias</small>
                         <div style="font-size: 26px; font-weight: bold;">${estado.calorias} <span style="font-size:14px; color:#ccc">/ 2577 kcal</span></div>
-                        <div class="progress-container"><div class="progress-bar" style="width: ${perc}%"></div></div>
+                        <div class="progress-container"><div class="progress-bar" style="width: ${percCal}%"></div></div>
                     </div>
 
                     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin:0 20px;">
@@ -252,16 +237,15 @@
                     </div>
 
                     <div class="card">
-                        <b>Refeições de Hoje</b>
+                        <b>Refeições de Hoje 🍽️</b>
                         <div style="margin-top:10px;">
-                            ${estado.historico.length === 0 ? 
-                                '<p style="color:#aaa; text-align:center; font-size:14px;">Nenhuma refeição registrada.</p>' : 
-                                estado.historico.map(h => `<div class="refeicao-item"><span>${h.tipo}</span><b>${h.cal} kcal</b></div>`).join('')
-                            }
+                            ${estado.historico.length === 0 ? '<p style="color:#aaa; text-align:center; font-size:14px;">Nada registrado ainda.</p>' : 
+                            estado.historico.map(h => `<div class="refeicao-item"><span>${h.tipo}</span><b>${h.cal} kcal</b></div>`).join('')}
                         </div>
                     </div>
 
                     <div class="banner-inline"><small>ANÚNCIO</small><br><b>ESPAÇO PUBLICITÁRIO</b></div>
+
                     <button class="fab" onclick="navegar('add_refeicao')">+</button>
                 `; return;
             }
@@ -271,13 +255,13 @@
                 root.innerHTML = `
                     <div style="padding: 20px;">
                         <div onclick="navegar('home')" style="margin-bottom:15px; cursor:pointer; color:var(--blue-action); font-weight:bold;">← Voltar</div>
-                        <h2 style="margin:10px 0; font-size:18px;">Suplementação Recomendada</h2>
+                        <h2 style="margin:10px 0;">Suplementação</h2>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                             ${lista.map(p => `
-                                <div style="background:#fff; border-radius:16px; padding:12px; text-align:center; border:1px solid #eee; display:flex; flex-direction:column; justify-content:space-between; height:230px;">
+                                <div style="background:#fff; border-radius:16px; padding:12px; text-align:center; border:1px solid #eee; height:230px; display:flex; flex-direction:column; justify-content:space-between;">
                                     <img src="${p.foto}" style="width:100%; height:85px; object-fit:contain;" onerror="this.src='https://via.placeholder.com/150'">
                                     <b style="font-size:11px;">${p.nome}</b>
-                                    <a href="${p.link}" target="_blank" style="text-decoration:none"><button style="width:100%; background:var(--primary); color:#fff; border:none; padding:8px; border-radius:8px; font-weight:bold; font-size:11px; cursor:pointer;">Ver Oferta</button></a>
+                                    <a href="${p.link}" target="_blank" style="text-decoration:none"><button style="width:100%; background:var(--primary); color:#fff; border:none; padding:8px; border-radius:8px; font-weight:bold; cursor:pointer;">Ver Oferta</button></a>
                                 </div>
                             `).join("")}
                         </div>
@@ -295,13 +279,13 @@
                         </div>
                         <div class="card" style="text-align:center; margin-top: 20px;">
                             ${!estado.fotoSelecionada ? `
-                                <button class="btn-principal" style="width:100%; margin: 10px 0" onclick="document.getElementById('take-photo').click()">📸 Tirar Foto</button>
+                                <button class="btn-azul" style="width:100%; margin: 10px 0" onclick="document.getElementById('take-photo').click()">📸 Tirar Foto</button>
                                 <button class="btn-outline" onclick="document.getElementById('pick-gallery').click()">📁 Galeria</button>
                                 <input type="file" id="take-photo" capture="environment" accept="image/*" style="display:none" onchange="prepararFoto(event)">
                                 <input type="file" id="pick-gallery" accept="image/*" style="display:none" onchange="prepararFoto(event)">
                             ` : `
-                                <img src="${estado.fotoSelecionada}" id="img-preview">
-                                <button class="btn-principal" style="width:100%; margin:0" onclick="confirmarAnalise()">🚀 ANALISAR AGORA</button>
+                                <img src="${estado.fotoSelecionada}" style="width:100%; border-radius:12px; margin-bottom:15px;">
+                                <button class="btn-azul" style="width:100%; margin:0" onclick="confirmarAnalise()">🚀 ANALISAR AGORA</button>
                                 <button class="btn-outline" style="margin-top:15px" onclick="estado.fotoSelecionada=null; render()">🗑️ Escolher Outra</button>
                             `}
                         </div>
@@ -311,13 +295,11 @@
 
             if (estado.tela === 'dica') {
                 root.innerHTML = `
-                    <div class="dica-container">
-                        <div class="icon-dica" style="font-size:50px;">💡</div>
-                        <h2 style="color:var(--primary); margin:0; letter-spacing:1px;">DICA EXCLUSIVA</h2>
-                        <div class="dica-texto-grande">
-                            "Mastigar devagar aumenta a saciedade e melhora a absorção dos nutrientes pelo seu corpo!"
-                        </div>
-                        <button class="btn-principal" style="width:100%;" onclick="navegar('home')">CONTINUAR JORNADA</button>
+                    <div style="text-align:center; padding:100px 20px;">
+                        <div style="font-size:50px;">💡</div>
+                        <h2 style="color:var(--primary);">DICA DO DIA</h2>
+                        <p style="font-size:20px;">"Consumir fibras antes das refeições principais ajuda a controlar o pico de insulina."</p>
+                        <button class="btn-azul" onclick="navegar('home')">CONTINUAR</button>
                     </div>
                 `;
             }
