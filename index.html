@@ -12,14 +12,16 @@
         }
         body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; }
         
+        /* LOGO E TÍTULO AJUSTADOS */
+        .img-logo-principal { width: 180px; margin-bottom: 5px; } /* Logo Maior */
         .texto-logo {
-            font-size: 32px; 
+            font-size: 24px; /* Nome Menor */
             font-weight: 800;
             background: linear-gradient(to right, #2490eb, #2ab573, #f39c12);
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent;
-            margin: 10px 0;
-            letter-spacing: -1px;
+            margin: 0 0 20px 0;
+            letter-spacing: -0.5px;
         }
 
         .input-nutri { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; }
@@ -27,34 +29,39 @@
         .btn-azul { 
             width: calc(100% - 40px); 
             background: var(--blue-action); 
-            color: white; 
-            border: none; 
-            padding: 18px; 
-            border-radius: 30px; 
-            margin: 10px 20px; 
-            font-size: 18px; 
-            font-weight: bold; 
-            cursor: pointer;
+            color: white; border: none; padding: 18px; border-radius: 30px; 
+            margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer;
             box-shadow: 0 4px 15px rgba(36, 144, 235, 0.3);
         }
 
-        /* ESTILO DO RODAPÉ LOGIN/CADASTRO */
-        .footer-link { 
-            margin-top: 20px; 
-            font-size: 14px; 
-            cursor: pointer; 
-            color: #000; /* Texto base em preto */
-            font-weight: 500;
-        }
-        .footer-link span { 
-            color: var(--blue-action); /* Ação em azul */
-            font-weight: 700;
-        }
+        .footer-link { margin-top: 20px; font-size: 14px; cursor: pointer; color: #000; font-weight: 500; }
+        .footer-link span { color: var(--blue-action); font-weight: 700; }
 
-        /* CARDS E GRÁFICOS */
+        /* CARDS */
         .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
         .card-fogo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; }
         
+        /* PÁGINA DE DICA PREMIUM */
+        .dica-container {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            background: radial-gradient(circle at top right, #f0fff7, #ffffff);
+        }
+        .dica-texto-grande {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1.3;
+            color: #222;
+            text-align: center;
+            margin: 30px 0;
+        }
+        .icon-dica { font-size: 60px; margin-bottom: 10px; }
+
+        /* ELEMENTOS GERAIS */
         .grid-7 { display: flex; justify-content: space-between; align-items: flex-end; height: 50px; margin-top: 15px; }
         .col-dia { display: flex; flex-direction: column; align-items: center; flex: 1; }
         .barra-v { width: 30px; height: 4px; background: #eee; border-radius: 2px; }
@@ -76,9 +83,6 @@
 
         #img-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; border: 1px solid #ddd; }
 
-        .banner-inline { background: #eee; border: 1px dashed #ccc; padding: 15px; margin: 20px; border-radius: 15px; text-align: center; color: #999; font-size: 12px; }
-
-        /* ADS */
         .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
         .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; overflow: hidden; }
         #bar-progress { width: 0%; height: 100%; background: #2ab573; transition: width 0.1s linear; }
@@ -172,18 +176,14 @@
 
             if (!estado.logado) {
                 root.innerHTML = `
-                    <div style="padding: 60px 20px; text-align: center;">
-                        <img src="${LOGO_URL}" style="width: 130px;" onerror="this.src='https://i.ibb.co/Lz0D7Yd/icone-512.png'">
+                    <div style="padding: 50px 20px; text-align: center;">
+                        <img src="${LOGO_URL}" class="img-logo-principal" onerror="this.src='https://i.ibb.co/Lz0D7Yd/icone-512.png'">
                         <h1 class="texto-logo">NutriShot Elements</h1>
                         <p style="color: #666; margin-bottom: 20px; font-size: 14px;">${estado.tela === 'cadastro' ? 'Sua jornada inteligente começa aqui' : 'Bem-vindo de volta'}</p>
-                        ${estado.tela === 'cadastro' ? '<input type="text" id="nome-f" class="input-nutri" placeholder="Como quer ser chamado?">' : ''}
+                        ${estado.tela === 'cadastro' ? '<input type="text" id="nome-f" class="input-nutri" placeholder="Nome">' : ''}
                         <input type="email" id="email-f" class="input-nutri" placeholder="E-mail">
                         <input type="password" id="pass-f" class="input-nutri" placeholder="Senha">
-                        
-                        <button class="btn-azul" onclick="validarEEntrar()">
-                            ${estado.tela === 'cadastro' ? 'CRIAR MINHA CONTA' : 'ENTRAR NO APP'}
-                        </button>
-                        
+                        <button class="btn-azul" onclick="validarEEntrar()">${estado.tela === 'cadastro' ? 'CRIAR MINHA CONTA' : 'ENTRAR NO APP'}</button>
                         <p class="footer-link" onclick="navegar('${estado.tela === 'cadastro' ? 'login' : 'cadastro'}')">
                             ${estado.tela === 'cadastro' ? 'Novo por aqui? <span>Criar Conta</span>' : 'Já tem uma conta? <span>Entrar</span>'}
                         </p>
@@ -195,43 +195,21 @@
                 const perc = Math.min((estado.calorias / 2577) * 100, 100);
                 root.innerHTML = `
                     <div style="padding: 20px; display: flex; justify-content: space-between; align-items:center;">
-                        <div>
-                           <small style="color:#888; display:block;">Bom dia,</small>
-                           <b style="font-size:18px;">${estado.nomeUsuario}</b>
-                        </div>
+                        <div><small style="color:#888; display:block;">Bem-vindo,</small><b style="font-size:18px;">${estado.nomeUsuario}</b></div>
                         <span onclick="estado.logado=false; render()" style="background:#eee; padding:5px 12px; border-radius:10px; font-size:12px;">Sair</span>
                     </div>
-                    <div class="card card-fogo">
-                        <small>Sequência Ativa</small>
-                        <div style="font-size: 32px; font-weight: bold;">1 Dia 🔥</div>
-                    </div>
-                    <div class="card">
-                        <b>Progresso Semanal</b>
-                        <div class="grid-7">
-                            ${['S','T','Q','Q','S','S','D'].map((d, i) => `<div class="col-dia"><div class="barra-v ${i===4?'active':''}"></div><span class="dia-txt">${d}</span></div>`).join('')}
-                        </div>
-                    </div>
-                    <div style="margin: 10px 20px 5px 20px; font-size: 14px; font-weight: bold;">Foco atual:</div>
+                    <div class="card card-fogo"><small>Sequência Ativa</small><div style="font-size: 32px; font-weight: bold;">1 Dia 🔥</div></div>
+                    <div class="card"><b>Progresso Semanal</b><div class="grid-7">${['S','T','Q','Q','S','S','D'].map((d, i) => `<div class="col-dia"><div class="barra-v ${i===4?'active':''}"></div><span class="dia-txt">${d}</span></div>`).join('')}</div></div>
                     <div class="selector-objetivo">
                         <div class="opt-obj ${estado.objetivo === 'perda' ? 'active' : ''}" onclick="estado.objetivo='perda'; render()">Emagrecer</div>
                         <div class="opt-obj ${estado.objetivo === 'ganho' ? 'active' : ''}" onclick="estado.objetivo='ganho'; render()">Ganho Massa</div>
                     </div>
                     <button class="btn-loja" onclick="navegar('catalogo')">🛒 VER SUPLEMENTOS</button>
-                    <div class="card">
-                        <small>Consumo de Calorias</small>
-                        <div style="font-size: 26px; font-weight: bold;">${estado.calorias} <span style="font-size:14px; color:#ccc">/ 2577 kcal</span></div>
-                        <div class="progress-container"><div class="progress-bar" style="width: ${perc}%"></div></div>
+                    <div class="card"><small>Calorias</small><div style="font-size: 26px; font-weight: bold;">${estado.calorias} <small style="font-size:14px; color:#ccc">/ 2577</small></div><div class="progress-container"><div class="progress-bar" style="width: ${perc}%"></div></div></div>
+                    <div class="card" style="border: 2px solid var(--primary); background: #fafffb; text-align:center;">
+                        <b style="color:var(--primary); font-size:18px;">Dica de Ouro ✨</b>
+                        <button onclick="rodarAnuncio('Buscando Dica...', ()=>navegar('dica'))" style="width:100%; background:var(--primary); color:white; border:none; padding:15px; border-radius:12px; margin-top:10px; font-weight:bold; font-size:16px;">📺 Ver Dica Exclusiva</button>
                     </div>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin:0 20px;">
-                        <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Prot</small><br><b>${estado.prot}g</b></div>
-                        <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Carb</small><br><b>${estado.carb}g</b></div>
-                        <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Gord</small><br><b>${estado.gord}g</b></div>
-                    </div>
-                    <div class="card" style="border: 1px solid var(--primary); background: #fafffb;">
-                        <b style="color:var(--primary)">Dica de Ouro ✨</b>
-                        <button onclick="rodarAnuncio('Buscando Dica...', ()=>navegar('dica'))" style="width:100%; background:var(--primary); color:white; border:none; padding:12px; border-radius:12px; margin-top:10px; font-weight:bold;">📺 Ver Dica Exclusiva</button>
-                    </div>
-                    <div class="banner-inline"><small>ANÚNCIO</small><br><b>ESPAÇO PUBLICITÁRIO</b></div>
                     <button class="fab" onclick="navegar('add_refeicao')">+</button>
                 `; return;
             }
@@ -248,8 +226,7 @@
                             ${!estado.fotoSelecionada ? `
                                 <button class="btn-principal" style="width:100%; margin: 10px 0" onclick="document.getElementById('take-photo').click()">📸 Tirar Foto</button>
                                 <button class="btn-outline" onclick="document.getElementById('pick-gallery').click()">📁 Galeria</button>
-                                <input type="file" id="take-photo" capture="environment" accept="image/*" style="display:none" onchange="prepararFoto(event)">
-                                <input type="file" id="pick-gallery" accept="image/*" style="display:none" onchange="prepararFoto(event)">
+                                <input type="file" id="take-photo" capture="environment" accept="image/*" style="display:none" onchange="prepararFoto(event)"><input type="file" id="pick-gallery" accept="image/*" style="display:none" onchange="prepararFoto(event)">
                             ` : `
                                 <img src="${estado.fotoSelecionada}" id="img-preview">
                                 <button class="btn-principal" style="width:100%; margin:0" onclick="confirmarAnalise()">🚀 ANALISAR AGORA</button>
@@ -265,8 +242,8 @@
                 root.innerHTML = `
                     <div style="padding: 20px;">
                         <div onclick="navegar('home')" style="margin-bottom:15px; cursor:pointer; color:var(--blue-action); font-weight:bold;">← Voltar</div>
-                        <h2 style="margin:10px 0; font-size:18px;">Suplementação Recomendada</h2>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px 0;">
+                        <h2 style="margin:10px 0; font-size:18px;">Produtos Sugeridos</h2>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                             ${lista.map(p => `
                                 <div style="background:#fff; border-radius:16px; padding:12px; text-align:center; border:1px solid #eee; display:flex; flex-direction:column; justify-content:space-between; height:230px;">
                                     <img src="${p.foto}" style="width:100%; height:85px; object-fit:contain;" onerror="this.src='https://via.placeholder.com/150'">
@@ -281,10 +258,13 @@
 
             if (estado.tela === 'dica') {
                 root.innerHTML = `
-                    <div style="text-align:center; padding:60px 20px;">
-                        <h2 style="color:var(--primary);">Sua Dica 💡</h2>
-                        <div class="card" style="padding:30px; font-size:18px; line-height:1.5;">"Mastigar devagar aumenta a saciedade e melhora a absorção dos nutrientes pela IA do seu corpo!"</div>
-                        <button class="btn-principal" onclick="navegar('home')">Voltar ao Início</button>
+                    <div class="dica-container">
+                        <div class="icon-dica">💡</div>
+                        <h2 style="color:var(--primary); margin:0;">DICA EXCLUSIVA</h2>
+                        <div class="dica-texto-grande">
+                            "Mastigar devagar aumenta a saciedade e melhora a absorção dos nutrientes pelo seu corpo!"
+                        </div>
+                        <button class="btn-principal" style="width:100%;" onclick="navegar('home')">CONTINUAR JORNADA</button>
                     </div>
                 `;
             }
