@@ -4,12 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>NutriShot Elements</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6941311170472131"></script>
     <style>
         :root { --primary: #2ab573; --secondary: #667eea; --bg: #f9fafb; }
         body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 80px; }
         
-        /* Estilo da Logo Gradiente */
+        /* Estilo da Logo com Gradiente */
         .texto-logo {
             font-size: 32px; font-weight: bold;
             background: linear-gradient(to right, #2ab573, #2490eb, #f39c12);
@@ -17,7 +16,7 @@
             margin: 10px 0;
         }
 
-        /* Cards e Layout */
+        /* Dashboard e Cards */
         .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
         .card-fogo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; }
         
@@ -28,39 +27,43 @@
         .barra.active { background: #6a11cb; width: 40px; }
         .dia-txt { font-size: 10px; color: #aaa; margin-top: 5px; }
 
-        /* Botões Estilizados */
-        .btn-principal { width: calc(100% - 40px); background: linear-gradient(to right, #667eea, #764ba2); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(102,126,234,0.3); }
-        .btn-loja { background: #2ab573; color: white; border: none; padding: 12px; border-radius: 12px; width: calc(100% - 40px); margin: 0 20px; font-weight: bold; cursor: pointer; }
-        .fab { position: fixed; bottom: 20px; right: 20px; width: 70px; height: 70px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 100; }
+        /* Botões e FAB */
+        .btn-principal { width: calc(100% - 40px); background: linear-gradient(to right, #667eea, #764ba2); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .btn-loja { background: #2ab573; color: white; border: none; padding: 12px; border-radius: 12px; width: calc(100% - 40px); margin: 0 20px; font-weight: bold; }
+        .fab { position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
 
         /* Inputs */
         .input-nutri { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; }
         
         /* Overlay Anúncio */
         .ads-loading { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
-        .bar-container { width: 70%; height: 6px; background: #333; border-radius: 10px; margin-top: 20px; }
-        #bar-progress { width: 0%; height: 100%; background: #2ab573; }
+        .bar-container { width: 70%; height: 6px; background: #333; border-radius: 10px; margin-top: 20px; overflow: hidden; }
+        #bar-progress { width: 0%; height: 100%; background: #2ab573; transition: width 0.1s linear; }
     </style>
 </head>
 <body>
 
     <div id="ads-overlay" class="ads-loading">
-        <div style="font-size: 18px; font-weight: bold;">Carregando Dica...</div>
+        <div style="font-size: 18px; font-weight: bold;">Carregando Dica Especial...</div>
         <div class="bar-container"><div id="bar-progress"></div></div>
     </div>
 
     <div id="app"></div>
 
     <script>
-        // Sistema de Persistência (Mantém logado ao atualizar)
-        let estado = JSON.parse(localStorage.getItem('nutrishot_data')) || {
-            tela: 'cadastro',
+        // Link hospedado da logo para evitar o erro de "imagem não encontrada"
+        const LOGO_URL = "https://i.ibb.co/Lz0D7Yd/icone-512.png";
+
+        // Persistência de dados: verifica se já existe uma sessão salva
+        let estado = JSON.parse(localStorage.getItem('nutrishot_v3_session')) || {
             logado: false,
+            tela: 'cadastro',
             calorias: 0, prot: 0, carb: 0, gord: 0,
-            historico: []
+            historico: [],
+            conquistaLiberada: false
         };
 
-        function salvar() { localStorage.setItem('nutrishot_data', JSON.stringify(estado)); }
+        function salvar() { localStorage.setItem('nutrishot_v3_session', JSON.stringify(estado)); }
 
         function navegar(tela) { 
             estado.tela = tela; 
@@ -68,7 +71,16 @@
             render(); 
         }
 
-        // Simulação de Anúncio
+        function fazerLogin() {
+            estado.logado = true;
+            navegar('home');
+        }
+
+        function fazerLogout() {
+            localStorage.clear();
+            location.reload();
+        }
+
         function mostrarAnuncio(callback) {
             const overlay = document.getElementById('ads-overlay');
             const bar = document.getElementById('bar-progress');
@@ -77,44 +89,40 @@
             const tempo = setInterval(() => {
                 p += 5; bar.style.width = p + '%';
                 if(p >= 100) { clearInterval(tempo); overlay.style.display = 'none'; bar.style.width = '0%'; callback(); }
-            }, 100);
-        }
-
-        function finalizarLogin() {
-            estado.logado = true;
-            navegar('home');
+            }, 80);
         }
 
         function render() {
             const root = document.getElementById('app');
 
-            // Tela de Cadastro/Login (Design solicitado)
+            // TELA DE CADASTRO/LOGIN (Design fiel ao seu pedido)
             if (!estado.logado) {
                 root.innerHTML = `
                     <div style="padding: 50px 20px; text-align: center;">
-                        <img src="https://i.ibb.co/Lz0D7Yd/icone-512.png" style="width: 150px; margin-bottom: 5px;">
+                        <img src="${LOGO_URL}" style="width: 150px; margin-bottom: 5px;" alt="NutriShot Elements">
                         <h1 class="texto-logo">NutriShot Elements</h1>
                         <p style="color: #666; margin-bottom: 30px;">Crie sua conta para começar</p>
                         
                         <input type="text" class="input-nutri" placeholder="Nome">
                         <input type="email" class="input-nutri" placeholder="E-mail">
+                        <input type="password" class="input-nutri" placeholder="Senha">
                         
-                        <button class="btn-principal" onclick="finalizarLogin()">Cadastrar</button>
+                        <button class="btn-principal" onclick="fazerLogin()">Cadastrar</button>
                         
                         <p style="margin-top: 25px; color: #888;">Já possui uma conta? 
-                            <span onclick="finalizarLogin()" style="color: #667eea; font-weight: bold; cursor:pointer;">Entrar</span>
+                            <span onclick="fazerLogin()" style="color: #667eea; font-weight: bold; cursor:pointer;">Entrar</span>
                         </p>
                     </div>
                 `;
                 return;
             }
 
-            // Dashboard Completo
+            // DASHBOARD
             if (estado.tela === 'home') {
                 root.innerHTML = `
                     <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
                         <div><b>Olá, Isaac!</b><br><small style="color:#888;">Resumo de hoje</small></div>
-                        <span onclick="localStorage.clear(); location.reload()" style="font-size: 12px; color: #888; border: 1px solid #ddd; padding: 5px 10px; border-radius: 8px;">Sair</span>
+                        <span onclick="fazerLogout()" style="font-size: 12px; color: #888; border: 1px solid #ddd; padding: 5px 10px; border-radius: 8px; cursor:pointer;">Sair</span>
                     </div>
 
                     <div class="card card-fogo">
@@ -135,13 +143,13 @@
                         </div>
                     </div>
 
-                    <button class="btn-loja">🛒 VER SUPLEMENTOS RECOMENDADOS</button>
+                    <button class="btn-loja" onclick="alert('Loja em breve!')">🛒 VER SUPLEMENTOS RECOMENDADOS</button>
 
                     <div class="card">
                         <small style="color:#888">Calorias Consumidas</small>
                         <div style="font-size: 32px; font-weight: bold; margin: 10px 0;">${estado.calorias} <span style="font-size:16px; color:#ccc; font-weight:normal;">/ 2577 cal</span></div>
                         <div style="width:100%; height:8px; background:#f0f0f0; border-radius:10px; overflow:hidden;">
-                            <div style="width:${(estado.calorias/2577)*100}%; height:100%; background:#2ab573;"></div>
+                            <div style="width:${Math.min((estado.calorias/2577)*100, 100)}%; height:100%; background:#2ab573;"></div>
                         </div>
                     </div>
 
@@ -154,14 +162,14 @@
                     <div class="card" style="border: 1px solid #2ab573; background: #fafffb;">
                         <b style="color:#2ab573">Dica Especial</b><br>
                         <small>Assista ao vídeo e libere uma dica nutricional!</small>
-                        <button onclick="mostrarAnuncio(()=>navegar('dica'))" style="width:100%; background:#2ab573; color:white; border:none; padding:12px; border-radius:30px; margin-top:10px; font-weight:bold;">📺 Assistir Anúncio</button>
+                        <button onclick="mostrarAnuncio(()=>navegar('dica'))" style="width:100%; background:#2ab573; color:white; border:none; padding:12px; border-radius:30px; margin-top:10px; font-weight:bold; cursor:pointer;">📺 Assistir Anúncio</button>
                     </div>
 
                     <div class="card">
                         <b>Conquistas Desbloqueadas</b>
                         <div style="display:flex; align-items:center; background:#f8f8f8; padding:12px; border-radius:12px; margin-top:10px;">
                             <div style="font-size:24px; margin-right:12px;">🏆</div>
-                            <div><b>Primeira Refeição</b><br><small style="color:#888;">Você começou sua jornada!</small></div>
+                            <div><b>Primeira Refeição</b><br><small style="color:#888;">${estado.conquistaLiberada ? 'Desbloqueado hoje!' : 'Registre sua primeira refeição'}</small></div>
                         </div>
                     </div>
 
@@ -169,23 +177,23 @@
                         <b>Refeições de Hoje</b>
                         <div style="margin-top:10px;">
                             ${estado.historico.length === 0 ? '<small style="color:#ccc">Nenhuma refeição ainda.</small>' : 
-                                estado.historico.map(r => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee"><span>Almoço</span><b>+${r} kcal</b></div>`).join('')}
+                                estado.historico.map(r => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee"><span>Almoço</span><b>+${r} kcal</b></div>`).join('')}
                         </div>
                     </div>
 
-                    <button class="fab" onclick="document.getElementById('file-input').click()">+</button>
-                    <input type="file" id="file-input" style="display:none" onchange="processarFoto()">
+                    <button class="fab" onclick="document.getElementById('file-in').click()">+</button>
+                    <input type="file" id="file-in" style="display:none" accept="image/*" onchange="processarFoto()">
                 `;
             }
 
-            // Tela de Dica
+            // TELA DE DICA
             if (estado.tela === 'dica') {
                 root.innerHTML = `
                     <div style="text-align:center; padding:60px 20px;">
                         <div style="font-size:50px;">🥗</div>
                         <h2 style="color:#2ab573">Dica Liberada!</h2>
                         <div class="card" style="padding:30px; font-size:18px;">
-                            "Comer fibras antes do prato principal reduz o pico de insulina e ajuda a emagrecer!"
+                            "Comer fibras (como saladas) antes do prato principal reduz o pico de insulina e ajuda a emagrecer!"
                         </div>
                         <button class="btn-principal" onclick="navegar('home')">Voltar ao Dashboard</button>
                     </div>
@@ -199,6 +207,7 @@
                 estado.calorias += cal;
                 estado.prot += Math.floor(cal * 0.05);
                 estado.historico.unshift(cal);
+                estado.conquistaLiberada = true;
                 navegar('home');
             });
         }
