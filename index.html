@@ -5,19 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>NutriShot Elements</title>
     <style>
-        :root { --primary: #2ab573; --secondary: #667eea; --bg: #f9fafb; --accent: #764ba2; }
+        :root { --primary: #2ab573; --secondary: #667eea; --bg: #f9fafb; }
         body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 80px; }
         
         /* LOGIN & LOGO */
-        .texto-logo {
-            font-size: 32px; font-weight: bold; color: #2490eb; margin: 10px 0;
-        }
+        .texto-logo { font-size: 32px; font-weight: bold; color: #2490eb; margin: 10px 0; }
         .input-nutri { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; }
 
-        /* BOTÕES */
-        .btn-entrar { width: calc(100% - 40px); background: linear-gradient(to right, #667eea, #764ba2); color: white; border: none; padding: 18px; border-radius: 30px; margin: 20px; font-size: 18px; font-weight: bold; cursor: pointer; }
-        
-        /* DASHBOARD PRESERVADO */
+        /* DASHBOARD */
         .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
         .card-fogo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; }
         .grid-7 { display: flex; justify-content: space-between; align-items: flex-end; height: 50px; margin-top: 15px; }
@@ -25,9 +20,13 @@
         .barra { width: 30px; height: 4px; background: #eee; border-radius: 2px; }
         .barra.active { background: #6a11cb; width: 40px; }
         .dia-txt { font-size: 10px; color: #aaa; margin-top: 5px; }
+
+        /* BOTÕES */
+        .btn-principal { width: calc(100% - 40px); background: linear-gradient(to right, #667eea, #764ba2); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .btn-preto { width: calc(100% - 40px); background: #000; color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 16px; font-weight: bold; cursor: pointer; }
         .fab { position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 100; }
 
-        /* ANÚNCIO */
+        /* ANÚNCIO / PROGRESSO */
         .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
         .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; overflow: hidden; }
         #bar-progress { width: 0%; height: 100%; background: #2ab573; transition: width 0.1s linear; }
@@ -43,22 +42,22 @@
     <div id="app"></div>
 
     <script>
-        const LOGO_IMG = "icone-512.png"; 
+        const LOGO_IMG = "icone-512.png"; //
 
-        let estado = JSON.parse(localStorage.getItem('nutrishot_v8')) || {
+        let estado = JSON.parse(localStorage.getItem('nutrishot_final')) || {
             logado: false,
-            tela: 'login', // Pode ser 'login' ou 'cadastro'
+            tela: 'login',
             calorias: 0, prot: 0, carb: 0, gord: 0,
             historico: [],
             tempRefeicao: 'Almoço'
         };
 
-        function salvar() { localStorage.setItem('nutrishot_v8', JSON.stringify(estado)); }
+        function salvar() { localStorage.setItem('nutrishot_final', JSON.stringify(estado)); }
         function navegar(tela) { estado.tela = tela; salvar(); render(); window.scrollTo(0,0); }
 
         function realizarAcao() {
             const email = document.getElementById('email-input').value;
-            if(email.length < 5) { alert("Por favor, preencha os dados corretamente."); return; }
+            if(email.length < 5) { alert("Preencha os dados corretamente."); return; }
             estado.logado = true;
             estado.tela = 'home';
             salvar();
@@ -80,26 +79,18 @@
         function render() {
             const root = document.getElementById('app');
 
-            // TELA DE LOGIN / CADASTRO
+            // TELA LOGIN / CADASTRO
             if (!estado.logado) {
                 root.innerHTML = `
                     <div style="padding: 40px 20px; text-align: center;">
                         <img src="${LOGO_IMG}" style="width: 80px; margin-bottom: 10px;" onerror="this.src='https://via.placeholder.com/80?text=Logo'">
                         <h1 class="texto-logo">NutriShot Elements</h1>
                         <p style="color:#666; margin-bottom: 30px;">${estado.tela === 'cadastro' ? 'Crie sua conta para começar' : 'Bem-vindo de volta'}</p>
-                        
-                        ${estado.tela === 'cadastro' ? '<input type="text" class="input-nutri" placeholder="Nome">' : ''}
                         <input type="email" id="email-input" class="input-nutri" placeholder="E-mail">
                         <input type="password" class="input-nutri" placeholder="Senha">
-                        
-                        <button class="btn-entrar" onclick="realizarAcao()">${estado.tela === 'cadastro' ? 'Cadastrar' : 'Entrar'}</button>
-                        
+                        <button class="btn-principal" onclick="realizarAcao()">Entrar</button>
                         <div style="margin-top: 15px; font-size: 14px; color: #888;">
-                            ${estado.tela === 'login' ? `
-                                Esquecer a senha? | <span onclick="navegar('cadastro')" style="color: #2ab573; font-weight: bold; cursor:pointer;">Cadastre-se</span>
-                            ` : `
-                                Já tem conta? <span onclick="navegar('login')" style="color: #2ab573; font-weight: bold; cursor:pointer;">Faça Login</span>
-                            `}
+                            Esqueceu a senha? | <span onclick="estado.tela='cadastro'; render()" style="color: #2ab573; font-weight: bold; cursor:pointer;">Cadastre-se</span>
                         </div>
                     </div>
                 `;
@@ -111,7 +102,7 @@
                 root.innerHTML = `
                     <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
                         <b>Olá, Isaac!</b>
-                        <span onclick="estado.logado=false; navegar('login')" style="font-size:12px; color:#888; cursor:pointer; border: 1px solid #ddd; padding: 5px 10px; border-radius: 8px;">Sair</span>
+                        <span onclick="estado.logado=false; salvar(); render()" style="font-size:12px; color:#888;">Sair</span>
                     </div>
 
                     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin:0 20px;">
@@ -134,19 +125,15 @@
                     </div>
 
                     <div class="card">
-                        <b>Conquistas Desbloqueadas</b>
-                        <div style="display:flex; align-items:center; background:#f8f8f8; padding:12px; border-radius:12px; margin-top:10px;">
-                            <div style="font-size:24px; margin-right:12px;">🍽️</div>
-                            <div><b>Primeira Refeição</b><br><small style="color:#888;">${estado.historico.length > 0 ? 'Registrou sua primeira refeição' : 'Adicione sua primeira refeição!'}</small></div>
+                        <b>Refeições de Hoje</b>
+                        <div style="margin-top:10px; text-align:center; color:#888;">
+                            ${estado.historico.length === 0 ? 'Nenhuma refeição registrada ainda.' : 
+                                estado.historico.map(r => `<div style="display:flex; justify-content:space-between; color:#333; padding:10px 0; border-bottom:1px solid #eee"><span>${r.tipo}</span><b>+${r.cal} kcal</b></div>`).join('')}
                         </div>
                     </div>
 
-                    <div class="card">
-                        <b>Refeições de Hoje</b>
-                        <div style="margin-top:20px; text-align:center; color:#888;">
-                            ${estado.historico.length === 0 ? 'Nenhuma refeição registrada ainda.<br>Adicione sua primeira refeição!' : 
-                                estado.historico.map(r => `<div style="display:flex; justify-content:space-between; color:#333; padding:10px 0; border-bottom:1px solid #eee"><span>${r.tipo}</span><b>+${r.cal} kcal</b></div>`).join('')}
-                        </div>
+                    <div class="card" style="border: 1px solid var(--primary); background: #fafffb;">
+                        <button onclick="rodarAnuncio('Liberando Dica...', ()=>navegar('dica'))" style="width:100%; background:var(--primary); color:white; border:none; padding:12px; border-radius:30px; font-weight:bold;">📺 Assistir para Dica</button>
                     </div>
 
                     <button class="fab" onclick="navegar('add_refeicao')">+</button>
@@ -154,23 +141,38 @@
                 return;
             }
 
-            // TELA DE SELEÇÃO DE REFEIÇÃO
+            // TELA DICA
+            if (estado.tela === 'dica') {
+                root.innerHTML = `
+                    <div style="text-align:center; padding:60px 20px;">
+                        <div style="font-size:40px; margin-bottom:10px;">🥗</div>
+                        <h2 style="color:var(--primary); margin-bottom:30px;">Dica Liberada!</h2>
+                        <div class="card" style="padding:40px 20px; font-size:16px; line-height:1.5; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                            "Comer fibras (como saladas) antes do prato principal reduz o pico de insulina e ajuda a controlar o peso!"
+                        </div>
+                        <button class="btn-preto" onclick="navegar('home')">Voltar ao Dashboard</button>
+                    </div>
+                `;
+                return;
+            }
+
+            // ADICIONAR REFEIÇÃO
             if (estado.tela === 'add_refeicao') {
                 root.innerHTML = `
                     <div style="padding: 20px;">
-                        <div onclick="navegar('home')" style="cursor:pointer;">← Voltar</div>
+                        <div onclick="navegar('home')">← Voltar</div>
                         <h2 style="text-align:center; margin-top:30px;">Qual é a refeição?</h2>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
                             ${['Café', 'Almoço', 'Jantar', 'Lanche'].map(t => `
-                                <div onclick="estado.tempRefeicao='${t}'; render()" style="background: ${estado.tempRefeicao===t?'#f0fff7':'#fff'}; border: 2px solid ${estado.tempRefeicao===t?'#2ab573':'#eee'}; padding: 20px; border-radius: 15px; text-align: center; cursor:pointer;">
+                                <div onclick="estado.tempRefeicao='${t}'; render()" style="background: ${estado.tempRefeicao===t?'#f0fff7':'#fff'}; border: 2px solid ${estado.tempRefeicao===t?'#2ab573':'#eee'}; padding: 20px; border-radius: 15px; text-align: center;">
                                     <b>${t}</b>
                                 </div>
                             `).join('')}
                         </div>
-                        <button class="btn-entrar" style="margin: 20px 0; width:100%;" onclick="document.getElementById('c-in').click()">📸 Tirar Foto / Galeria</button>
+                        <button class="btn-principal" onclick="document.getElementById('c-in').click()">📸 Tirar Foto</button>
                         <input type="file" id="c-in" accept="image/*" style="display:none" onchange="rodarAnuncio('IA Analisando...', () => {
                             estado.historico.unshift({tipo: estado.tempRefeicao, cal: 450});
-                            estado.prot += 25; estado.carb += 40; estado.gord += 12;
+                            estado.prot += 20; estado.carb += 35; estado.gord += 10;
                             navegar('home');
                         })">
                     </div>
