@@ -44,7 +44,6 @@
             display: flex; justify-content: space-between; align-items: center;
         }
         
-        /* ESTILO IMC */
         .imc-info { text-align: right; background: rgba(255,255,255,0.15); padding: 8px 12px; border-radius: 12px; min-width: 80px; }
         .imc-label { font-size: 10px; opacity: 0.9; display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
         .imc-status { font-size: 10px; font-weight: bold; text-transform: uppercase; margin-top: 2px; display: block; }
@@ -145,14 +144,18 @@
             estado.logado = true; estado.tela = 'home'; salvar(); render();
         }
 
-        function atualizarPeso() {
+        function atualizarDadosFisicos() {
             const novoPeso = prompt("Atualize seu peso (kg):", estado.peso);
             if (novoPeso) {
-                estado.peso = parseFloat(novoPeso);
-                const res = infoIMC(estado.peso, estado.altura);
-                estado.imc = res.valor;
-                estado.classification = res.texto;
-                salvar(); render();
+                const novaAltura = prompt("Atualize sua altura (cm):", estado.altura);
+                if (novaAltura) {
+                    estado.peso = parseFloat(novoPeso);
+                    estado.altura = parseFloat(novaAltura);
+                    const res = infoIMC(estado.peso, estado.altura);
+                    estado.imc = res.valor;
+                    estado.classification = res.texto;
+                    salvar(); render();
+                }
             }
         }
 
@@ -232,7 +235,7 @@
                     <div class="card card-fogo">
                         <div><small>Sequência Ativa</small><div style="font-size: 26px; font-weight: bold;">1 Dia 🔥</div></div>
                         <div class="imc-info">
-                            <div class="imc-label">Meu IMC <span onclick="atualizarPeso()" style="cursor:pointer">✏️</span></div>
+                            <div class="imc-label">Perfil Físico <span onclick="atualizarDadosFisicos()" style="cursor:pointer">✏️</span></div>
                             <div style="font-size: 22px; font-weight: bold;">${estado.imc}</div>
                             <span class="imc-status">${estado.classification}</span>
                         </div>
