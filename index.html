@@ -43,12 +43,13 @@
         
         .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; }
 
-        /* LOJA COMPLETA */
+        /* PREVIEW DA FOTO */
+        #img-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; border: 1px solid #ddd; }
+
+        /* LOJA */
         .prod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px; }
         .prod-card { background: #fff; border-radius: 16px; padding: 12px; text-align: center; border: 1px solid #eee; display: flex; flex-direction: column; height: 230px; justify-content: space-between; }
-        .prod-card img { width: 100%; height: 85px; object-fit: contain; margin-bottom: 8px; }
-        .prod-card b { font-size: 11px; line-height: 1.2; display: block; margin-bottom: 8px; height: 30px; overflow: hidden; }
-        .prod-card button { width: 100%; background: var(--primary); color: #fff; border: none; padding: 8px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; }
+        .prod-card img { width: 100%; height: 85px; object-fit: contain; }
 
         .banner-inline { background: #eee; border: 1px dashed #ccc; padding: 15px; margin: 20px; border-radius: 15px; text-align: center; color: #999; font-size: 12px; }
 
@@ -90,7 +91,7 @@
         let estado = JSON.parse(localStorage.getItem('nutrishot_v5')) || {
             logado: false, tela: 'cadastro', nomeUsuario: 'Isaac', objetivo: 'perda',
             calorias: 0, prot: 0, carb: 0, gord: 0, historico: [],
-            tempRefeicao: 'Almoço', fotoSelecionada: false
+            tempRefeicao: 'Almoço', fotoSelecionada: null
         };
 
         function salvar() { localStorage.setItem('nutrishot_v5', JSON.stringify(estado)); }
@@ -98,7 +99,6 @@
 
         function validarEEntrar() {
             const email = document.getElementById('email-f').value;
-            const pass = document.getElementById('pass-f').value;
             if(email.length < 3) { alert("Preencha os campos!"); return; }
             if(document.getElementById('nome-f')) { estado.nomeUsuario = document.getElementById('nome-f').value || 'Usuário'; }
             estado.logado = true; estado.tela = 'home'; salvar(); render();
@@ -113,25 +113,31 @@
             const tempo = setInterval(() => {
                 p += 5; bar.style.width = p + '%';
                 if(p >= 100) { clearInterval(tempo); overlay.style.display = 'none'; bar.style.width = '0%'; callback(); }
-            }, 50);
+            }, 60);
         }
 
+        // FUNÇÃO QUE GERA A VISUALIZAÇÃO DA FOTO
         function prepararFoto(event) {
-            if(event.target.files && event.target.files[0]) {
-                estado.fotoSelecionada = true;
-                render();
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    estado.fotoSelecionada = e.target.result; // Salva o preview base64
+                    render();
+                }
+                reader.readAsDataURL(file);
             }
         }
 
         function confirmarAnalise() {
-            rodarAnuncio("Analisando nutrientes...", () => {
+            rodarAnuncio("IA analisando nutrientes...", () => {
                 const cal = Math.floor(Math.random() * 200 + 350);
                 estado.calorias += cal;
                 estado.prot += Math.floor(cal * 0.05);
                 estado.carb += Math.floor(cal * 0.12);
                 estado.gord += Math.floor(cal * 0.03);
                 estado.historico.unshift({tipo: estado.tempRefeicao, cal: cal});
-                estado.fotoSelecionada = false;
+                estado.fotoSelecionada = null; // Limpa a foto após análise
                 navegar('home');
             });
         }
@@ -201,21 +207,21 @@
             if (estado.tela === 'add_refeicao') {
                 root.innerHTML = `
                     <div style="padding: 20px;">
-                        <div onclick="navegar('home')">← Voltar</div>
+                        <div onclick="navegar('home')" style="cursor:pointer;">← Voltar</div>
                         <h2 style="text-align:center; margin-top:30px;">O que vamos comer?</h2>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                             ${['Café', 'Almoço', 'Jantar', 'Lanche'].map(t => `<div onclick="estado.tempRefeicao='${t}'; render()" style="padding:20px; border-radius:15px; text-align:center; border: 2px solid ${estado.tempRefeicao===t?'var(--primary)':'#eee'}; background: ${estado.tempRefeicao===t?'#f0fff7':'#fff'}"><b>${t}</b></div>`).join('')}
                         </div>
-                        <div class="card" style="text-align:center; margin-top: 40px;">
+                        <div class="card" style="text-align:center; margin-top: 20px;">
                             ${!estado.fotoSelecionada ? `
                                 <button class="btn-principal" style="width:100%; margin: 10px 0" onclick="document.getElementById('take-photo').click()">📸 Tirar Foto Agora</button>
                                 <button class="btn-outline" onclick="document.getElementById('pick-gallery').click()">📁 Escolher da Galeria</button>
                                 <input type="file" id="take-photo" capture="environment" accept="image/*" style="display:none" onchange="prepararFoto(event)">
                                 <input type="file" id="pick-gallery" accept="image/*" style="display:none" onchange="prepararFoto(event)">
                             ` : `
-                                <div style="color:var(--primary); font-weight:bold; margin-bottom:10px;">✅ Imagem Selecionada!</div>
+                                <img src="${estado.fotoSelecionada}" id="img-preview">
                                 <button class="btn-principal" style="width:100%; margin:0" onclick="confirmarAnalise()">🚀 ANALISAR AGORA</button>
-                                <button class="btn-outline" style="margin-top:15px" onclick="estado.fotoSelecionada=false; render()">🗑️ Escolher Outra</button>
+                                <button class="btn-outline" style="margin-top:15px" onclick="estado.fotoSelecionada=null; render()">🗑️ Escolher Outra</button>
                             `}
                         </div>
                     </div>
@@ -227,7 +233,7 @@
                 root.innerHTML = `
                     <div style="padding: 20px;">
                         <div onclick="navegar('home')" style="margin-bottom:15px; cursor:pointer;">← Voltar</div>
-                        <h2 style="margin:10px 0; font-size:18px;">Sugestões para ${estado.objetivo === 'ganho' ? 'Ganho de Massa' : 'Perda de Peso'}</h2>
+                        <h2 style="margin:10px 0; font-size:18px;">Suplementação para ${estado.objetivo === 'ganho' ? 'Ganho' : 'Perda'}</h2>
                         <div class="prod-grid">
                             ${lista.map(p => `
                                 <div class="prod-card">
@@ -244,8 +250,8 @@
             if (estado.tela === 'dica') {
                 root.innerHTML = `
                     <div style="text-align:center; padding:60px 20px;">
-                        <h2>Dica Nutricional 💡</h2>
-                        <div class="card" style="padding:30px;">"Focar em proteínas e fibras ajuda a manter a massa magra e aumenta a queima calórica natural do corpo!"</div>
+                        <h2>Sua Dica 💡</h2>
+                        <div class="card" style="padding:30px;">"Consumir fibras antes de grandes refeições reduz o índice glicêmico e ajuda no emagrecimento!"</div>
                         <button class="btn-principal" onclick="navegar('home')">Voltar ao Início</button>
                     </div>
                 `;
