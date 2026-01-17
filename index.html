@@ -8,14 +8,15 @@
         :root { --primary: #2ab573; --secondary: #667eea; --bg: #f9fafb; }
         body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 80px; }
         
-        /* LOGIN & LOGO */
+        /* LOGIN & LOGO GRADIENTE */
         .texto-logo {
             font-size: 32px; font-weight: bold;
             background: linear-gradient(to right, #2ab573, #2490eb, #f39c12);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             margin: 10px 0;
         }
-        .input-nutri { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; }
+        .input-nutri { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; transition: 0.3s; }
+        .input-nutri:focus { border-color: var(--secondary); box-shadow: 0 0 8px rgba(102, 126, 234, 0.2); }
 
         /* DASHBOARD PRESERVADO */
         .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
@@ -40,9 +41,8 @@
 <body>
 
     <div id="ads-overlay" class="ads-overlay">
-        <div id="ad-text" style="font-size: 18px; font-weight: bold;">Analisando sua Refeição...</div>
+        <div id="ad-text" style="font-size: 18px; font-weight: bold;">Processando...</div>
         <div class="bar-container"><div id="bar-progress"></div></div>
-        <p style="font-size: 12px; color: #888; margin-top: 15px;">Aguarde a análise da IA NutriShot</p>
     </div>
 
     <div id="app"></div>
@@ -50,36 +50,55 @@
     <script>
         const LOGO_URL = "https://i.ibb.co/Lz0D7Yd/icone-512.png";
 
-        let estado = JSON.parse(localStorage.getItem('nutrishot_final_v1')) || {
+        // Inicializa o estado. Se 'logado' for false, ele sempre mostrará o login.
+        let estado = JSON.parse(localStorage.getItem('nutrishot_v5')) || {
             logado: false,
             tela: 'cadastro',
+            nomeUsuario: 'Isaac',
             calorias: 0, prot: 0, carb: 0, gord: 0,
             historico: [],
             tempRefeicao: 'Almoço'
         };
 
-        function salvar() { localStorage.setItem('nutrishot_final_v1', JSON.stringify(estado)); }
+        function salvar() { localStorage.setItem('nutrishot_v5', JSON.stringify(estado)); }
 
         function navegar(tela) { estado.tela = tela; salvar(); render(); window.scrollTo(0,0); }
 
-        // LÓGICA DE ANÚNCIO CORRIGIDA
         function rodarAnuncio(texto, callback) {
             const overlay = document.getElementById('ads-overlay');
             const bar = document.getElementById('bar-progress');
-            const txt = document.getElementById('ad-text');
-            txt.innerText = texto;
+            document.getElementById('ad-text').innerText = texto;
             overlay.style.display = 'flex';
             let p = 0;
             const tempo = setInterval(() => {
-                p += 4; bar.style.width = p + '%';
+                p += 5; bar.style.width = p + '%';
                 if(p >= 100) { clearInterval(tempo); overlay.style.display = 'none'; bar.style.width = '0%'; callback(); }
-            }, 80);
+            }, 70);
+        }
+
+        // Função de Login Real
+        function realizarAcaoLogin(modo) {
+            const email = document.getElementById('email-input').value;
+            if(email.length < 5) {
+                alert("Por favor, preencha o e-mail corretamente.");
+                return;
+            }
+            estado.logado = true;
+            estado.tela = 'home';
+            salvar();
+            render();
+        }
+
+        function fazerLogout() {
+            estado.logado = false;
+            estado.tela = 'cadastro';
+            salvar();
+            render();
         }
 
         function processarFoto() {
-            // Roda o anúncio antes de mostrar o resultado no dashboard
             rodarAnuncio("Analisando com IA NutriShot...", () => {
-                const cal = Math.floor(Math.random() * 250 + 350);
+                const cal = Math.floor(Math.random() * 200 + 350);
                 estado.calorias += cal;
                 estado.prot += Math.floor(cal * 0.05);
                 estado.historico.unshift({tipo: estado.tempRefeicao, cal: cal});
@@ -90,53 +109,34 @@
         function render() {
             const root = document.getElementById('app');
 
-            // TELA DE LOGIN/CADASTRO (Design Restaurado)
+            // TELA DE LOGIN / CADASTRO (Só entra se preencher)
             if (!estado.logado) {
                 root.innerHTML = `
                     <div style="padding: 60px 20px; text-align: center;">
                         <img src="${LOGO_URL}" style="width: 150px; height: auto; margin-bottom: 5px;">
                         <h1 class="texto-logo">NutriShot Elements</h1>
-                        <p style="color: #666; margin-bottom: 30px;">Crie sua conta para começar</p>
-                        <input type="text" class="input-nutri" placeholder="Nome">
-                        <input type="email" class="input-nutri" placeholder="E-mail">
-                        <button class="btn-principal" onclick="estado.logado=true; navegar('home')">Cadastrar</button>
-                        <p style="margin-top: 25px; color: #888;">Já possui uma conta? <span onclick="estado.logado=true; navegar('home')" style="color: #667eea; font-weight: bold; cursor:pointer;">Entrar</span></p>
+                        <p style="color: #666; margin-bottom: 30px;">${estado.tela === 'cadastro' ? 'Crie sua conta para começar' : 'Entre na sua conta'}</p>
+                        
+                        ${estado.tela === 'cadastro' ? '<input type="text" class="input-nutri" placeholder="Nome">' : ''}
+                        <input type="email" id="email-input" class="input-nutri" placeholder="E-mail">
+                        <input type="password" class="input-nutri" placeholder="Senha">
+                        
+                        <button class="btn-principal" onclick="realizarAcaoLogin()">${estado.tela === 'cadastro' ? 'Cadastrar' : 'Entrar'}</button>
+                        
+                        <p style="margin-top: 25px; color: #888;">
+                            ${estado.tela === 'cadastro' ? 'Já possui uma conta? <span onclick="navegar(\'login\')" style="color: #667eea; font-weight: bold; cursor:pointer;">Entrar</span>' : 'Novo por aqui? <span onclick="navegar(\'cadastro\')" style="color: #667eea; font-weight: bold; cursor:pointer;">Cadastre-se</span>'}
+                        </p>
                     </div>
                 `;
                 return;
             }
 
-            // TELA DE SELEÇÃO DE REFEIÇÃO
-            if (estado.tela === 'add_refeicao') {
-                root.innerHTML = `
-                    <div style="padding: 20px;">
-                        <div style="font-size: 20px;" onclick="navegar('home')">← Voltar</div>
-                        <h2 style="text-align:center; margin-top:30px;">O que vamos comer?</h2>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
-                            ${['Café', 'Almoço', 'Jantar', 'Lanche'].map(t => `
-                                <div onclick="estado.tempRefeicao='${t}'; render()" style="background: ${estado.tempRefeicao===t?'#f0fff7':'#fff'}; border: 2px solid ${estado.tempRefeicao===t?'#2ab573':'#eee'}; padding: 20px; border-radius: 15px; text-align: center; cursor: pointer;">
-                                    <b>${t}</b>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div class="card" style="text-align:center; margin: 40px 0;">
-                            <p><b>Capture sua refeição</b></p>
-                            <button class="btn-principal" style="width:100%; margin: 10px 0;" onclick="document.getElementById('c-in').click()">📸 Tirar Foto</button>
-                            <button class="btn-principal" style="width:100%; margin: 0; background:#fff; color:#000; border:1px solid #ddd;" onclick="document.getElementById('g-in').click()">📁 Galeria</button>
-                        </div>
-                        <input type="file" id="c-in" capture="environment" accept="image/*" style="display:none" onchange="processarFoto()">
-                        <input type="file" id="g-in" accept="image/*" style="display:none" onchange="processarFoto()">
-                    </div>
-                `;
-                return;
-            }
-
-            // DASHBOARD (Design Mantido)
+            // DASHBOARD PRESERVADO
             if (estado.tela === 'home') {
                 root.innerHTML = `
                     <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
-                        <div><b>Olá, Isaac!</b><br><small style="color:#888;">Resumo de hoje</small></div>
-                        <span onclick="localStorage.clear(); location.reload()" style="font-size: 11px; border: 1px solid #ddd; padding: 4px 10px; border-radius: 8px;">Sair</span>
+                        <div><b>Olá, ${estado.nomeUsuario}!</b><br><small style="color:#888;">Resumo de hoje</small></div>
+                        <span onclick="fazerLogout()" style="font-size: 11px; border: 1px solid #ddd; padding: 4px 10px; border-radius: 8px; cursor:pointer;">Sair</span>
                     </div>
 
                     <div class="card card-fogo">
@@ -163,7 +163,7 @@
                         <small style="color:#888">Calorias Consumidas</small>
                         <div style="font-size: 28px; font-weight: bold; margin: 8px 0;">${estado.calorias} <span style="font-size:14px; color:#ccc; font-weight:normal;">/ 2577 cal</span></div>
                         <div style="width:100%; height:8px; background:#f0f0f0; border-radius:10px; overflow:hidden;">
-                            <div style="width:${(estado.calorias/2577)*100}%; height:100%; background:var(--primary);"></div>
+                            <div style="width:${Math.min((estado.calorias/2577)*100, 100)}%; height:100%; background:var(--primary);"></div>
                         </div>
                     </div>
 
@@ -176,7 +176,7 @@
                     <div class="card" style="border: 1px solid var(--primary); background: #fafffb;">
                         <b style="color:var(--primary)">Dica Especial</b><br>
                         <small>Assista ao vídeo e libere uma dica nutricional!</small>
-                        <button onclick="rodarAnuncio('Carregando Dica...', ()=>navegar('dica'))" style="width:100%; background:var(--primary); color:white; border:none; padding:12px; border-radius:30px; margin-top:10px; font-weight:bold;">📺 Assistir Anúncio</button>
+                        <button onclick="rodarAnuncio('Carregando Dica Especial...', ()=>navegar('dica'))" style="width:100%; background:var(--primary); color:white; border:none; padding:12px; border-radius:30px; margin-top:10px; font-weight:bold;">📺 Assistir Anúncio</button>
                     </div>
 
                     <div class="card">
@@ -190,23 +190,47 @@
                     <div class="card">
                         <b>Refeições de Hoje</b>
                         <div style="margin-top:10px;">
-                            ${estado.historico.length === 0 ? '<small style="color:#ccc">Nenhuma refeição ainda.</small>' : 
+                            ${estado.historico.length === 0 ? '<small style="color:#ccc">Nenhuma refeição registrada.</small>' : 
                                 estado.historico.map(r => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee"><span>${r.tipo}</span><b>+${r.cal} kcal</b></div>`).join('')}
                         </div>
                     </div>
 
                     <button class="fab" onclick="navegar('add_refeicao')">+</button>
                 `;
+                return;
             }
 
-            // TELA DE DICA (Fiel à imagem)
+            // TELA DE SELEÇÃO DE REFEIÇÃO
+            if (estado.tela === 'add_refeicao') {
+                root.innerHTML = `
+                    <div style="padding: 20px;">
+                        <div style="font-size: 20px;" onclick="navegar('home')">← Voltar</div>
+                        <h2 style="text-align:center; margin-top:30px;">O que vamos comer?</h2>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
+                            ${['Café', 'Almoço', 'Jantar', 'Lanche'].map(t => `
+                                <div onclick="estado.tempRefeicao='${t}'; render()" style="background: ${estado.tempRefeicao===t?'#f0fff7':'#fff'}; border: 2px solid ${estado.tempRefeicao===t?'#2ab573':'#eee'}; padding: 20px; border-radius: 15px; text-align: center; cursor: pointer;">
+                                    <b>${t}</b>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="card" style="text-align:center; margin-top: 40px;">
+                            <button class="btn-principal" style="width:100%; margin: 10px 0;" onclick="document.getElementById('c-in').click()">📸 Tirar Foto</button>
+                            <button class="btn-principal" style="width:100%; margin: 0; background:#fff; color:#000; border:1px solid #ddd;" onclick="document.getElementById('g-in').click()">📁 Galeria</button>
+                        </div>
+                        <input type="file" id="c-in" capture="environment" accept="image/*" style="display:none" onchange="processarFoto()">
+                        <input type="file" id="g-in" accept="image/*" style="display:none" onchange="processarFoto()">
+                    </div>
+                `;
+            }
+
+            // TELA DE DICA
             if (estado.tela === 'dica') {
                 root.innerHTML = `
                     <div style="text-align:center; padding:60px 20px;">
                         <div style="font-size:50px;">🥗</div>
                         <h2 style="color:var(--primary)">Dica Liberada!</h2>
                         <div class="card" style="padding:30px; font-size:18px;">
-                            "Comer fibras (como saladas) antes do prato principal reduz o pico de insulina e ajuda a controlar o peso!"
+                            "Comer fibras (como saladas) antes do prato principal ajuda no controle da saciedade!"
                         </div>
                         <button class="btn-principal" style="background:#000" onclick="navegar('home')">Voltar ao Dashboard</button>
                     </div>
