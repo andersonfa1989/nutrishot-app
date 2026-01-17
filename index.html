@@ -6,249 +6,232 @@
     <title>NutriShot Elements</title>
     <style>
         :root { --primary: #2ab573; --secondary: #6a11cb; --bg: #f8f9fa; --text: #333; }
-        body { margin: 0; font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 80px; }
+        body { margin: 0; font-family: -apple-system, sans-serif; background: #fdfdfd; color: var(--text); padding-bottom: 100px; }
         
-        /* Layout Geral */
-        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: #fff; }
-        .logo-main { width: 140px; display: block; margin: 20px auto; }
-        .card { background: #fff; border-radius: 15px; padding: 20px; margin: 10px 20px; border: 1px solid #eee; }
-        
-        /* Dashboard */
+        /* Headers e Logos */
+        .header-main { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: #fff; }
+        .logo-login { width: 180px; display: block; margin: 40px auto 20px; }
+
+        /* Cards Estilizados */
+        .card { background: #fff; border-radius: 15px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .card-streak { background: linear-gradient(135deg, #4e54c8, #8f94fb); color: #fff; border: none; }
-        .grid-7days { display: flex; justify-content: space-between; align-items: flex-end; height: 40px; margin-top: 15px; padding: 0 10px; }
-        .bar-day { width: 8px; background: #eee; border-radius: 4px; position: relative; }
-        .bar-active { background: var(--secondary); height: 60%; }
         
-        /* Macros */
-        .grid-macros { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 0 20px; }
-        .macro-box { background: #fff; padding: 15px; border-radius: 15px; border: 1px solid #eee; text-align: center; }
-        .macro-box small { color: #888; font-size: 11px; display: block; margin-bottom: 4px; }
+        /* Gráfico 7 Dias */
+        .chart-container { display: flex; justify-content: space-between; align-items: flex-end; height: 60px; margin-top: 20px; padding: 0 10px; }
+        .bar-wrapper { display: flex; flex-direction: column; align-items: center; flex: 1; }
+        .bar-value { font-size: 10px; color: #aaa; margin-bottom: 5px; }
+        .bar-fill { width: 30px; height: 4px; background: #eee; border-radius: 2px; }
+        .bar-fill.active { background: var(--secondary); }
+        .bar-date { font-size: 10px; color: #ccc; margin-top: 5px; }
 
-        /* Botões */
-        .btn-green { background: var(--primary); color: #fff; border: none; width: calc(100% - 40px); margin: 10px 20px; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
-        .btn-black { background: #111; color: #fff; border: none; padding: 18px; border-radius: 30px; width: calc(100% - 50px); margin: 10px 25px; font-size: 16px; font-weight: 600; cursor: pointer; }
-        .fab { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: #000; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000; }
+        /* Grid de Macros */
+        .grid-macros { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 0 20px; }
+        .macro-box { background: #fff; padding: 20px 10px; border-radius: 15px; border: 1px solid #eee; text-align: center; }
+        .macro-box small { color: #888; font-size: 11px; display: block; margin-bottom: 8px; }
+        .macro-box b { font-size: 18px; }
 
-        /* Overlays */
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; }
-        #ai-loader { background: rgba(255,255,255,0.95); color: #333; }
-        .progress-container { width: 70%; height: 6px; background: #333; border-radius: 10px; margin: 20px 0; overflow: hidden; }
-        #progress-bar { width: 0%; height: 100%; background: var(--primary); transition: width 0.1s linear; }
+        /* Conquistas */
+        .achievement-item { display: flex; align-items: center; background: #f4f6f9; padding: 12px; border-radius: 12px; margin-top: 10px; }
+        .achievement-icon { width: 40px; height: 40px; background: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 20px; }
+
+        /* Botões e FAB */
+        .btn-green { background: var(--primary); color: #fff; border: none; width: calc(100% - 40px); margin: 10px 20px; padding: 16px; border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-black { background: #111; color: #fff; border: none; padding: 18px; border-radius: 30px; width: calc(100% - 40px); margin: 10px 20px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.4); z-index: 999; }
+
+        /* Overlay Anúncio */
+        .overlay-ads { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
+        .progress-ads { width: 70%; height: 6px; background: #333; border-radius: 10px; margin: 20px 0; overflow: hidden; }
+        #bar-ads { width: 0%; height: 100%; background: var(--primary); transition: width 0.1s linear; }
 
         /* Inputs */
-        .input-group { margin: 10px 25px; }
-        input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #ddd; box-sizing: border-box; }
-        
-        .meal-option { background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 20px; margin-bottom: 10px; text-align: center; cursor: pointer; }
-        .meal-option.active { background: #111; color: #fff; }
+        .input-field { width: calc(100% - 40px); margin: 10px 20px; padding: 15px; border-radius: 12px; border: 1px solid #ddd; box-sizing: border-box; font-size: 16px; }
     </style>
 </head>
 <body>
 
-    <div id="loading-overlay" class="overlay">
-        <div style="font-size: 18px; font-weight: bold;">Carregando Dica Especial...</div>
-        <div class="progress-container"><div id="progress-bar"></div></div>
-        <div style="font-size: 12px; color: #888;">Assista para liberar</div>
-    </div>
-
-    <div id="ai-loader" class="overlay">
-        <div style="font-size: 50px;">🤖</div>
-        <div style="font-weight: bold; margin-top: 15px;">IA Analisando sua Refeição...</div>
+    <div id="overlay-ads" class="overlay-ads">
+        <div style="font-size: 18px; font-weight: bold;">Carregando Conteúdo...</div>
+        <div class="progress-ads"><div id="bar-ads"></div></div>
+        <div style="font-size: 12px; color: #888;">Aguarde o término do vídeo</div>
     </div>
 
     <div id="app"></div>
 
     <script>
-        // ESTADO GLOBAL DO APP
-        let estado = JSON.parse(localStorage.getItem('nutri_session')) || {
-            tela: 'login',
-            logado: false,
-            calorias: 0, proteina: 0, carbos: 0, gordura: 0,
-            refeicoes: [],
-            tempImg: null,
-            tipoRefeicao: 'Almoço'
+        // ESTADO DO APLICATIVO COM PERSISTÊNCIA
+        let state = JSON.parse(localStorage.getItem('nutrishot_pro_session')) || {
+            screen: 'login',
+            isLogged: false,
+            calories: 0, protein: 0, carbs: 0, fat: 0,
+            meals: [],
+            hasAchievement: false
         };
 
-        function salvar() { localStorage.setItem('nutri_session', JSON.stringify(estado)); }
+        function saveState() { localStorage.setItem('nutrishot_pro_session', JSON.stringify(state)); }
 
-        function navegar(tela) { estado.tela = tela; render(); window.scrollTo(0,0); }
+        function navigate(screen) { state.screen = screen; render(); window.scrollTo(0,0); }
 
-        function logout() {
-            localStorage.removeItem('nutri_session');
-            location.reload();
-        }
-
-        // SISTEMA DE ANÚNCIO
-        function rodarAnuncio(callback) {
-            const overlay = document.getElementById('loading-overlay');
-            const bar = document.getElementById('progress-bar');
+        function runAd(callback) {
+            const overlay = document.getElementById('overlay-ads');
+            const bar = document.getElementById('bar-ads');
             overlay.style.display = 'flex';
             let p = 0;
-            const int = setInterval(() => {
-                p += 2; bar.style.width = p + '%';
-                if(p >= 100) { clearInterval(int); overlay.style.display = 'none'; bar.style.width = '0%'; callback(); }
-            }, 40);
+            const interval = setInterval(() => {
+                p += 4; bar.style.width = p + '%';
+                if(p >= 100) { clearInterval(interval); overlay.style.display = 'none'; bar.style.width = '0%'; callback(); }
+            }, 80);
         }
 
-        // ANALISE DE IA E SOMA
-        function finalizarCaptura(input) {
+        function handlePhoto(input) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                estado.tempImg = e.target.result;
-                navegar('confirmar_foto');
+                state.tempImg = e.target.result;
+                navigate('confirm_photo');
             };
             reader.readAsDataURL(input.files[0]);
         }
 
-        function calcularRefeicaoIA() {
-            document.getElementById('ai-loader').style.display = 'flex';
-            setTimeout(() => {
-                const calGerada = Math.floor(Math.random() * 250 + 350);
-                const p = Math.floor(calGerada * 0.06);
-                const c = Math.floor(calGerada * 0.12);
-                const g = Math.floor(calGerada * 0.03);
+        function calculateIA() {
+            runAd(() => {
+                const cal = Math.floor(Math.random() * 200 + 400);
+                const p = Math.floor(cal * 0.05);
+                const c = Math.floor(cal * 0.11);
+                const g = Math.floor(cal * 0.03);
 
-                estado.calorias += calGerada;
-                estado.proteina += p;
-                estado.carbos += c;
-                estado.gordura += g;
-                estado.refeicoes.unshift({ nome: estado.tipoRefeicao, cal: calGerada });
+                state.calories += cal;
+                state.protein += p;
+                state.carbs += c;
+                state.fat += g;
+                state.meals.unshift({ name: 'Refeição', cal: cal });
+                state.hasAchievement = true;
                 
-                document.getElementById('ai-loader').style.display = 'none';
-                salvar();
-                
-                // Exibe resultado detalhado antes de voltar
-                root.innerHTML = `
-                    <div style="padding:40px 20px; text-align:center;">
-                        <img src="${estado.tempImg}" style="width:200px; border-radius:20px; margin-bottom:20px;">
-                        <h2 style="color:var(--primary)">Análise Concluída!</h2>
-                        <div class="card">
-                            <p><b>${estado.tipoRefeicao}</b></p>
-                            <p style="font-size:24px; font-weight:bold;">${calGerada} kcal</p>
-                            <hr border="0" height="1" background="#eee">
-                            <p>P: ${p}g | C: ${c}g | G: ${g}g</p>
-                        </div>
-                        <button class="btn-black" onclick="navegar('home')">Confirmar e Voltar</button>
-                    </div>
-                `;
-            }, 2000);
+                saveState();
+                navigate('home');
+            });
         }
 
         function render() {
             const root = document.getElementById('app');
             
-            if (estado.tela === 'login') {
+            // TELA DE LOGIN
+            if (state.screen === 'login') {
                 root.innerHTML = `
-                    <img src="https://i.ibb.co/Lz0D7Yd/icone-512.png" class="logo-main">
-                    <div class="input-group"><input type="email" placeholder="E-mail"></div>
-                    <div class="input-group"><input type="password" placeholder="Senha"></div>
-                    <button class="btn-black" onclick="estado.logado=true; navegar('home')">Entrar</button>
-                    <p style="text-align:center; font-size:14px;">Novo aqui? <b onclick="navegar('cadastro')">Cadastre-se</b></p>
+                    <img src="https://i.ibb.co/Lz0D7Yd/icone-512.png" class="logo-login">
+                    <input type="email" class="input-field" placeholder="E-mail">
+                    <input type="password" class="input-field" placeholder="Senha">
+                    <button class="btn-black" onclick="state.isLogged=true; navigate('home')">Entrar</button>
+                    <p style="text-align:center; font-size:14px; color:#888;">Esqueceu a senha? | <b onclick="navigate('register')" style="color:var(--primary)">Cadastre-se</b></p>
                 `;
             }
 
-            else if (estado.tela === 'cadastro') {
+            // DASHBOARD COMPLETO
+            else if (state.screen === 'home') {
                 root.innerHTML = `
-                    <img src="https://i.ibb.co/Lz0D7Yd/icone-512.png" class="logo-main" style="width:80px">
-                    <h2 style="text-align:center">Criar Conta</h2>
-                    <div class="input-group"><input type="text" placeholder="Nome"></div>
-                    <div class="input-group"><input type="email" placeholder="E-mail"></div>
-                    <div class="input-group"><input type="password" placeholder="Senha"></div>
-                    <button class="btn-black" onclick="navegar('login')">Registrar</button>
-                `;
-            }
-
-            else if (estado.tela === 'home') {
-                root.innerHTML = `
-                    <div class="header">
-                        <div><b>Olá, Isaac!</b><br><small style="color:#888;">Bem-vindo de volta</small></div>
-                        <button onclick="logout()" style="background:none; border:none; color:#888;">Sair</button>
+                    <div class="header-main">
+                        <div><b>Olá, Isaac!</b><br><small style="color:#888;">Resumo de hoje</small></div>
+                        <button onclick="localStorage.clear(); location.reload()" style="background:#eee; border:none; padding:5px 15px; border-radius:8px;">Sair</button>
                     </div>
 
                     <div class="card card-streak">
                         <small>Fogo na Sequência</small>
-                        <div style="font-size: 35px; font-weight: bold;">1 🔥</div>
-                        <div class="grid-7days">
-                            ${[1,2,3,4,5,6,7].map(i => `<div class="bar-day ${i===6?'bar-active':''}" style="height:${i*10}%"></div>`).join('')}
+                        <div style="font-size: 40px; font-weight: bold; margin-top:5px;">1 🔥</div>
+                    </div>
+
+                    <div class="card">
+                        <b>Últimos 7 Dias</b>
+                        <div class="chart-container">
+                            ${['9/1','10/1','11/1','12/1','13/1','14/1','15/1'].map((d, i) => `
+                                <div class="bar-wrapper">
+                                    <span class="bar-value">${i === 5 ? '400' : '0'}</span>
+                                    <div class="bar-fill ${i === 5 ? 'active' : ''}"></div>
+                                    <span class="bar-date">${d}</span>
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
 
-                    <button class="btn-green" onclick="navegar('loja')">🛒 VER SUPLEMENTOS RECOMENDADOS</button>
+                    <button class="btn-green" onclick="navigate('store')">🛒 VER SUPLEMENTOS RECOMENDADOS</button>
 
                     <div class="card">
                         <small style="color:#888">Calorias Consumidas</small>
-                        <div style="font-size: 24px; font-weight: bold; margin: 5px 0;">${estado.calorias} <span style="font-size:14px; color:#ccc">/ 2577 cal</span></div>
-                        <div style="width:100%; height:6px; background:#f0f0f0; border-radius:10px;">
-                            <div style="width:${(estado.calorias/2577)*100}%; height:100%; background:var(--primary); border-radius:10px;"></div>
+                        <div style="font-size: 26px; font-weight: bold; margin: 5px 0;">${state.calories} <span style="font-size:14px; color:#ccc; font-weight:normal;">/ 2577 cal</span></div>
+                        <div style="width:100%; height:8px; background:#f0f0f0; border-radius:10px;">
+                            <div style="width:${Math.min((state.calories/2577)*100, 100)}%; height:100%; background:var(--primary); border-radius:10px;"></div>
                         </div>
                     </div>
 
                     <div class="grid-macros">
-                        <div class="macro-box"><small>Proteína</small><b>${estado.proteina}g</b></div>
-                        <div class="macro-box"><small>Carbos</small><b>${estado.carbos}g</b></div>
-                        <div class="macro-box"><small>Gordura</small><b>${estado.gordura}g</b></div>
+                        <div class="macro-box"><small>Proteína</small><b>${state.protein}g</b></div>
+                        <div class="macro-box"><small>Carboidratos</small><b>${state.carbs}g</b></div>
+                        <div class="macro-box"><small>Gordura</small><b>${state.fat}g</b></div>
                     </div>
 
-                    <div class="card" style="border:1px solid var(--primary); background:#fafffb">
-                        <b style="color:var(--primary)">Dica Especial</b>
-                        <button class="btn-green" style="width:100%; margin:10px 0 0 0" onclick="rodarAnuncio(()=>navegar('dica'))">💡 Ver aqui a dica especial</button>
+                    <div class="card" style="border: 1px solid var(--primary); background: #fafffb;">
+                        <b style="color:var(--primary)">Dica Especial</b><br>
+                        <small style="color:#666">Assista ao vídeo e libere uma dica nutricional!</small>
+                        <button class="btn-green" style="width:100%; margin:15px 0 0 0" onclick="runAd(()=>navigate('dica'))">📺 Assistir Anúncio</button>
+                    </div>
+
+                    <div class="card">
+                        <b>Conquistas Desbloqueadas</b>
+                        ${state.hasAchievement ? `
+                            <div class="achievement-item">
+                                <div class="achievement-icon">🏆</div>
+                                <div><b>Primeira Refeição</b><br><small style="color:#888">Registrou sua primeira refeição</small></div>
+                            </div>
+                        ` : `<p style="color:#ccc; text-align:center; font-size:14px; margin-top:15px;">Nenhuma conquista ainda.</p>`}
                     </div>
 
                     <div class="card">
                         <b>Refeições de Hoje</b>
-                        <div style="margin-top:10px">
-                            ${estado.refeicoes.map(r => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f9f9f9"><span>${r.nome}</span><b>+${r.cal} kcal</b></div>`).join('')}
+                        <div style="margin-top:15px;">
+                            ${state.meals.length === 0 ? '<p style="color:#ccc; text-align:center; font-size:14px;">Nenhuma refeição registrada ainda.</p>' : 
+                                state.meals.map(m => `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #f9f9f9"><span>Refeição</span><b>+${m.cal} kcal</b></div>`).join('')
+                            }
                         </div>
                     </div>
 
-                    <button class="fab" onclick="navegar('add')">+</button>
+                    <button class="fab" onclick="navigate('add_meal')">+</button>
                 `;
             }
 
-            else if (estado.tela === 'add') {
+            // TELA DE ADICIONAR
+            else if (state.screen === 'add_meal') {
                 root.innerHTML = `
                     <div style="padding:20px">
-                        <h2 onclick="navegar('home')">← Voltar</h2>
-                        <p><b>Tipo de Refeição</b></p>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
-                            ${['Café','Almoço','Jantar','Lanche'].map(t => `<div class="meal-option ${estado.tipoRefeicao===t?'active':''}" onclick="estado.tipoRefeicao='${t}'; render()">${t}</div>`).join('')}
+                        <h2 onclick="navigate('home')">← Voltar</h2>
+                        <div class="card" style="text-align:center; padding:40px 20px;">
+                            <p><b>Como deseja registrar?</b></p>
+                            <button class="btn-black" style="width:100%; margin:10px 0" onclick="document.getElementById('c-in').click()">📸 Tirar Foto</button>
+                            <button class="btn-black" style="width:100%; margin:0; background:#fff; color:#000; border:1px solid #ddd" onclick="document.getElementById('g-in').click()">📁 Galeria</button>
                         </div>
-                        <button class="btn-black" style="width:100%; margin:20px 0" onclick="document.getElementById('cam').click()">📸 Abrir Câmera</button>
-                        <button class="btn-black" style="width:100%; margin:0; background:#fff; color:#333; border:1px solid #ddd" onclick="document.getElementById('gal').click()">📁 Escolher da Galeria</button>
-                        <input type="file" id="cam" capture="environment" accept="image/*" style="display:none" onchange="finalizarCaptura(this)">
-                        <input type="file" id="gal" accept="image/*" style="display:none" onchange="finalizarCaptura(this)">
+                        <input type="file" id="c-in" capture="environment" accept="image/*" style="display:none" onchange="handlePhoto(this)">
+                        <input type="file" id="g-in" accept="image/*" style="display:none" onchange="handlePhoto(this)">
                     </div>
                 `;
             }
 
-            else if (estado.tela === 'confirmar_foto') {
+            else if (state.screen === 'confirm_photo') {
                 root.innerHTML = `
                     <div style="padding:20px; text-align:center">
-                        <img src="${estado.tempImg}" style="width:100%; border-radius:20px; margin-bottom:20px">
-                        <button class="btn-black" onclick="rodarAnuncio(calcularRefeicaoIA)">Calcular com IA</button>
-                        <button onclick="navegar('add')" style="background:none; border:none; color:red; margin-top:10px">Trocar Foto</button>
+                        <img src="${state.tempImg}" style="width:100%; border-radius:20px; margin-bottom:20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1)">
+                        <button class="btn-black" onclick="calculateIA()">Calcular com IA</button>
+                        <p onclick="navigate('add_meal')" style="color:red; margin-top:20px">Trocar Foto</p>
                     </div>
                 `;
             }
 
-            else if (estado.tela === 'dica') {
+            // TELA DE DICA FINAL
+            else if (state.screen === 'dica') {
                 root.innerHTML = `
-                    <div style="min-height:100vh; background:linear-gradient(180deg, #e8f5e9, #fff); padding:40px 20px; text-align:center">
-                        <img src="https://i.ibb.co/Lz0D7Yd/icone-512.png" style="width:60px">
-                        <h2 style="color:var(--primary)">Dica Liberada!</h2>
-                        <div class="card" style="padding:40px 20px; font-size:18px">
-                            "Comer fibras antes do prato principal reduz o pico de insulina e ajuda a emagrecer!"
+                    <div style="min-height:100vh; background:linear-gradient(180deg, #e8f5e9, #fff); padding:60px 20px; text-align:center">
+                        <img src="https://i.ibb.co/Lz0D7Yd/icone-512.png" style="width:60px; margin-bottom:20px;">
+                        <h1 style="color:var(--primary); margin:0">Dica Liberada!</h1>
+                        <div class="card" style="padding:40px 20px; margin-top:30px; line-height:1.6; font-size:18px;">
+                            "Comer fibras (como saladas) antes do prato principal reduz o pico de insulina e ajuda a controlar o peso!"
                         </div>
-                        <button class="btn-black" onclick="navegar('home')">Voltar ao Dashboard</button>
-                    </div>
-                `;
-            }
-
-            else if (estado.tela === 'loja') {
-                root.innerHTML = `
-                    <div style="padding:20px">
-                        <h2 onclick="navegar('home')">← Loja</h2>
-                        <div class="card">Em breve os produtos aqui...</div>
+                        <button class="btn-black" onclick="navigate('home')" style="margin-top:30px">Voltar ao Dashboard</button>
                     </div>
                 `;
             }
