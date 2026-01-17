@@ -108,7 +108,19 @@
             }, 70);
         }
 
-        function realizarAcaoLogin() {
+        function validarEEntrar() {
+            const email = document.getElementById('email-f').value;
+            const pass = document.getElementById('pass-f').value;
+            
+            if(email.length < 3 || pass.length < 3) {
+                alert("Por favor, preencha os campos corretamente.");
+                return;
+            }
+            
+            if(document.getElementById('nome-f')) {
+                estado.nomeUsuario = document.getElementById('nome-f').value || 'Usuário';
+            }
+
             estado.logado = true;
             estado.tela = 'home';
             salvar();
@@ -135,11 +147,11 @@
                         <h1 class="texto-logo">NutriShot Elements</h1>
                         <p style="color: #666; margin-bottom: 30px;">${estado.tela === 'cadastro' ? 'Crie sua conta para começar' : 'Entre na sua conta'}</p>
                         
-                        ${estado.tela === 'cadastro' ? '<input type="text" class="input-nutri" placeholder="Nome">' : ''}
-                        <input type="email" class="input-nutri" placeholder="E-mail">
-                        <input type="password" class="input-nutri" placeholder="Senha">
+                        ${estado.tela === 'cadastro' ? '<input type="text" id="nome-f" class="input-nutri" placeholder="Nome">' : ''}
+                        <input type="email" id="email-f" class="input-nutri" placeholder="E-mail">
+                        <input type="password" id="pass-f" class="input-nutri" placeholder="Senha">
                         
-                        <button class="btn-principal" onclick="realizarAcaoLogin()">${estado.tela === 'cadastro' ? 'Cadastrar' : 'Entrar'}</button>
+                        <button class="btn-principal" onclick="validarEEntrar()">${estado.tela === 'cadastro' ? 'Cadastrar' : 'Entrar'}</button>
                         
                         <p style="margin-top: 25px; color: #888;">
                             ${estado.tela === 'cadastro' ? 
@@ -189,12 +201,21 @@
                     <div class="card">
                         <small style="color:#888">Calorias Consumidas</small>
                         <div style="font-size: 28px; font-weight: bold;">${estado.calorias} <span style="font-size:14px; color:#ccc; font-weight:normal;">/ 2577 cal</span></div>
+                        <div style="width:100%; height:8px; background:#f0f0f0; border-radius:10px; overflow:hidden; margin-top:10px;">
+                            <div style="width:${Math.min((estado.calorias/2577)*100, 100)}%; height:100%; background:var(--primary);"></div>
+                        </div>
                     </div>
 
                     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin:0 20px;">
                         <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Proteína</small><br><b>${estado.prot}g</b></div>
                         <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Carbos</small><br><b>${estado.carb}g</b></div>
                         <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Gordura</small><br><b>${estado.gord}g</b></div>
+                    </div>
+
+                    <div class="card" style="border: 1px solid var(--primary); background: #fafffb;">
+                        <b style="color:var(--primary)">Dica Especial</b><br>
+                        <small>Assista ao vídeo e libere uma dica nutricional!</small>
+                        <button onclick="rodarAnuncio('Carregando Dica Especial...', ()=>navegar('dica'))" style="width:100%; background:var(--primary); color:white; border:none; padding:12px; border-radius:30px; margin-top:10px; font-weight:bold; cursor:pointer;">📺 Assistir Anúncio</button>
                     </div>
 
                     <div class="card">
@@ -250,6 +271,20 @@
                                 </div>
                             `).join("")}
                         </div>
+                    </div>
+                `;
+                return;
+            }
+
+            if (estado.tela === 'dica') {
+                root.innerHTML = `
+                    <div style="text-align:center; padding:60px 20px;">
+                        <div style="font-size:50px;">🥗</div>
+                        <h2 style="color:var(--primary)">Dica Liberada!</h2>
+                        <div class="card" style="padding:30px; font-size:18px;">
+                            "Comer fibras (como saladas) antes do prato principal ajuda no controle da saciedade!"
+                        </div>
+                        <button class="btn-principal" style="background:#000" onclick="navegar('home')">Voltar ao Dashboard</button>
                     </div>
                 `;
             }
