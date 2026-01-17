@@ -30,33 +30,37 @@
             background: var(--blue-action); 
             color: white; border: none; padding: 18px; border-radius: 30px; 
             margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(36, 144, 235, 0.3);
         }
 
-        .footer-link { margin-top: 20px; font-size: 14px; cursor: pointer; color: #666; }
-        .footer-link span { color: var(--blue-action); font-weight: 700; }
-
-        .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; }
+        .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
         .card-fogo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; display: flex; justify-content: space-between; align-items: center; }
         
         .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--primary); transition: width 0.5s ease; }
         .progress-bar.water { background: var(--water); }
 
-        .btn-water { background: var(--water); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; width: 100%; margin-top: 10px; }
+        .btn-water { background: var(--water); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; width: 100%; margin-top: 10px; cursor: pointer; }
 
         .selector-objetivo { display: flex; gap: 10px; margin: 0 20px 15px 20px; }
         .opt-obj { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #eee; background: #fff; text-align: center; font-weight: bold; cursor: pointer; font-size: 13px; }
         .opt-obj.active { border-color: var(--primary); background: #f0fff7; color: var(--primary); }
 
         .btn-principal { width: 100%; background: linear-gradient(to right, #667eea, #764ba2); color: white; border: none; padding: 18px; border-radius: 15px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .btn-outline { width: 100%; background: transparent; color: #ff4757; border: 1px solid #ff4757; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: bold; cursor: pointer; }
         .btn-loja { background: #2ab573; color: white; border: none; padding: 15px; border-radius: 12px; width: calc(100% - 40px); margin: 0 20px 15px 20px; font-weight: bold; cursor: pointer; }
         
-        .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; z-index: 99; }
+        .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; }
         
-        #img-preview { width: 100%; border-radius: 12px; margin-bottom: 15px; display: block; }
+        #img-preview { width: 100%; border-radius: 12px; margin-bottom: 15px; border: 1px solid #ddd; }
+        .banner-inline { background: #eee; border: 1px dashed #ccc; padding: 15px; margin: 20px; border-radius: 15px; text-align: center; color: #999; font-size: 12px; }
+
         .refeicao-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
-        
+
+        /* Estilo do Catálogo */
+        .grid-loja { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; }
+        .item-loja { background: #fff; border-radius: 16px; padding: 12px; text-align: center; border: 1px solid #eee; }
+        .item-loja img { width: 100%; height: 80px; object-fit: contain; margin-bottom: 8px; }
+
         .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
         .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; overflow: hidden; }
         #bar-progress { width: 0%; height: 100%; background: #2ab573; }
@@ -65,7 +69,7 @@
 <body>
 
     <div id="ads-overlay" class="ads-overlay">
-        <div id="ad-text" style="font-size: 18px; font-weight: bold;">Analisando...</div>
+        <div id="ad-text" style="font-size: 18px; font-weight: bold;">Analisando Prato...</div>
         <div class="bar-container"><div id="bar-progress"></div></div>
     </div>
 
@@ -76,18 +80,16 @@
         
         const SUPLEMENTOS = {
             ganho: [
-                { nome:"Creatina Growth 100g", foto:"creatina.png", link:"#" },
-                { nome:"Whey Protein Isolado", foto:"whey.png", link:"#" },
-                { nome:"Hipercalórico 3kg", foto:"hiper.png", link:"#" },
-                { nome:"BCAA 2400", foto:"bcaa.png", link:"#" },
-                { nome:"Pasta de Amendoim", foto:"pasta.png", link:"#" }
+                { nome:"Creatina 300g", preco: "R$ 110" },
+                { nome:"Whey Protein", preco: "R$ 145" },
+                { nome:"Hipercalórico", preco: "R$ 90" },
+                { nome:"Pasta Amendoim", preco: "R$ 35" }
             ],
             perda: [
-                { nome:"Termogênico Hot", foto:"termog.png", link:"#" },
-                { nome:"Psyllium Fibras", foto:"psyllium.png", link:"#" },
-                { nome:"L-Carnitina Líquida", foto:"lcarnitina.png", link:"#" },
-                { nome:"Chá Verde Extrato", foto:"cha.png", link:"#" },
-                { nome:"Picolinato Cromo", foto:"cromo.png", link:"#" }
+                { nome:"Termogênico", preco: "R$ 89" },
+                { nome:"Psyllium", preco: "R$ 45" },
+                { nome:"Chá Verde", preco: "R$ 30" },
+                { nome:"L-Carnitina", preco: "R$ 70" }
             ]
         };
 
@@ -97,24 +99,12 @@
         };
 
         function salvar() { localStorage.setItem('nutrishot_v5', JSON.stringify(estado)); }
-        function navegar(tela) { estado.tela = tela; salvar(); render(); }
+        function navegar(tela) { estado.tela = tela; salvar(); render(); window.scrollTo(0,0); }
 
         function beberAgua() {
             estado.aguaAtual += 250;
             salvar();
             render();
-        }
-
-        function rodarAnuncio(texto, callback) {
-            const overlay = document.getElementById('ads-overlay');
-            const bar = document.getElementById('bar-progress');
-            document.getElementById('ad-text').innerText = texto;
-            overlay.style.display = 'flex';
-            let p = 0;
-            const tempo = setInterval(() => {
-                p += 10; bar.style.width = p + '%';
-                if(p >= 100) { clearInterval(tempo); overlay.style.display = 'none'; callback(); }
-            }, 100);
         }
 
         function prepararFoto(event) {
@@ -123,79 +113,85 @@
                 const reader = new FileReader();
                 reader.onload = (e) => { 
                     estado.fotoSelecionada = e.target.result; 
+                    salvar();
                     render(); 
                 };
                 reader.readAsDataURL(file);
             }
         }
 
+        function removerFoto() {
+            estado.fotoSelecionada = null;
+            salvar();
+            render();
+        }
+
         function finalizarAnalise() {
-            rodarAnuncio("IA NutriShot calculando macros...", () => {
-                const cal = Math.floor(Math.random() * 300 + 200);
-                estado.calorias += cal;
-                estado.historico.unshift({tipo: 'Refeição IA', cal: cal});
-                estado.fotoSelecionada = null;
-                navegar('home');
-            });
+            const overlay = document.getElementById('ads-overlay');
+            const bar = document.getElementById('bar-progress');
+            overlay.style.display = 'flex';
+            let p = 0;
+            const tempo = setInterval(() => {
+                p += 5; bar.style.width = p + '%';
+                if(p >= 100) { 
+                    clearInterval(tempo); 
+                    overlay.style.display = 'none';
+                    const cal = Math.floor(Math.random() * 300 + 250);
+                    estado.calorias += cal;
+                    estado.historico.unshift({tipo: 'Refeição IA', cal: cal});
+                    estado.fotoSelecionada = null;
+                    navegar('home');
+                }
+            }, 50);
         }
 
         function render() {
             const root = document.getElementById('app');
 
             if (!estado.logado) {
-                const isCad = estado.tela === 'cadastro';
-                root.innerHTML = `
-                    <div style="padding: 50px 20px; text-align: center;">
-                        <img src="${LOGO_URL}" class="img-logo-principal">
-                        <h1 class="texto-logo">NutriShot Elements</h1>
-                        ${isCad ? '<input type="text" class="input-nutri" placeholder="Seu Nome">' : ''}
-                        <input type="email" class="input-nutri" placeholder="E-mail">
-                        <input type="password" class="input-nutri" placeholder="Senha">
-                        <button class="btn-azul" onclick="estado.logado=true; navegar('home')">${isCad ? 'CRIAR CONTA' : 'ENTRAR'}</button>
-                        <p class="footer-link" onclick="navegar('${isCad ? 'login' : 'cadastro'}')">
-                            ${isCad ? 'Já tem conta? <span>Entrar</span>' : 'Novo por aqui? <span>Criar Conta</span>'}
-                        </p>
-                    </div>`;
+                root.innerHTML = `<div style="padding:50px 20px; text-align:center;"><img src="${LOGO_URL}" class="img-logo-principal"><h1 class="texto-logo">NutriShot Elements</h1><button class="btn-azul" onclick="estado.logado=true; navegar('home')">ENTRAR NO APP</button><p class="footer-link">Novo por aqui? <b>Criar Conta</b></p></div>`;
                 return;
             }
 
             if (estado.tela === 'home') {
                 const metaAgua = Math.round(estado.peso * 35);
                 root.innerHTML = `
-                    <div style="padding: 20px;"><b>Olá, ${estado.nomeUsuario}</b></div>
+                    <div style="padding:20px;"><b>Olá, ${estado.nomeUsuario}</b></div>
                     <div class="card card-fogo">
                         <div><small>Sequência</small><br><b>1 Dia 🔥</b></div>
                         <div style="text-align:right"><small>IMC</small><br><b>24.2</b></div>
                     </div>
 
-                    <div class="card" style="border-left: 5px solid var(--water);">
-                        <b>Água: ${estado.aguaAtual}ml / ${metaAgua}ml</b>
-                        <div class="progress-container"><div class="progress-bar water" style="width: ${(estado.aguaAtual/metaAgua)*100}%"></div></div>
-                        <button class="btn-water" onclick="beberAgua()">+ 250ML</button>
+                    <div class="card" style="border-left:5px solid var(--water);">
+                        <b>Hidratação: ${estado.aguaAtual}ml / ${metaAgua}ml</b>
+                        <div class="progress-container"><div class="progress-bar water" style="width:${(estado.aguaAtual/metaAgua)*100}%"></div></div>
+                        <button class="btn-water" onclick="beberAgua()">+ BEBER 250ML</button>
                     </div>
 
                     <div class="selector-objetivo">
                         <div class="opt-obj ${estado.objetivo==='perda'?'active':''}" onclick="estado.objetivo='perda'; salvar(); render()">Emagrecer</div>
-                        <div class="opt-obj ${estado.objetivo==='ganho'?'active':''}" onclick="estado.objetivo='ganho'; salvar(); render()">Massa Muscular</div>
+                        <div class="opt-obj ${estado.objetivo==='ganho'?'active':''}" onclick="estado.objetivo='ganho'; salvar(); render()">Massa</div>
                     </div>
 
-                    <button class="btn-loja" onclick="navegar('catalogo')">🛒 VER SUPLEMENTOS</button>
+                    <button class="btn-loja" onclick="navegar('catalogo')">🛒 ABRIR CARDÁPIO DE SUPLEMENTOS</button>
 
                     <div class="card">
-                        <b>Calorias: ${estado.calorias} kcal</b>
-                        <div class="progress-container"><div class="progress-bar" style="width: ${(estado.calorias/2500)*100}%"></div></div>
+                        <b>Calorias: ${estado.calorias} <small>/ 2500 kcal</small></b>
+                        <div class="progress-container"><div class="progress-bar" style="width:${(estado.calorias/2500)*100}%"></div></div>
                     </div>
 
                     <div class="card" style="border: 1px solid var(--primary);">
-                        <small>Dica de Ouro ✨</small><br>
-                        <button class="btn-principal" style="margin-top:10px; padding:10px" onclick="navegar('dica')">Ver Dica</button>
+                        <b style="color:var(--primary)">Dica de Ouro ✨</b>
+                        <button class="btn-principal" style="margin-top:10px; padding:10px;" onclick="navegar('dica')">VER DICA EXCLUSIVA</button>
                     </div>
 
                     <div class="card">
                         <b>Refeições de Hoje</b><br><br>
-                        ${estado.historico.map(h => `<div class="refeicao-item"><span>${h.tipo}</span><b>${h.cal} kcal</b></div>`).join('')}
+                        ${estado.historico.length === 0 ? '<small style="color:#999">Nenhuma refeição registrada.</small>' : 
+                        estado.historico.map(h => `<div class="refeicao-item"><span>${h.tipo}</span><b>${h.cal} kcal</b></div>`).join('')}
                     </div>
 
+                    <div class="banner-inline"><small>ANÚNCIO</small><br><b>ESPAÇO PUBLICITÁRIO DISPONÍVEL</b></div>
                     <button class="fab" onclick="navegar('add')">+</button>
                 `;
             }
@@ -203,45 +199,41 @@
             if (estado.tela === 'catalogo') {
                 const lista = estado.objetivo === 'ganho' ? SUPLEMENTOS.ganho : SUPLEMENTOS.perda;
                 root.innerHTML = `
-                    <div style="padding: 20px;">
-                        <button onclick="navegar('home')" style="border:none; background:none; font-weight:bold; color:var(--blue-action)">← VOLTAR</button>
-                        <h2>Suplementos Recomendados</h2>
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div style="padding:20px;">
+                        <button onclick="navegar('home')" style="border:none; background:none; font-weight:bold; color:var(--blue-action); margin-bottom:20px;">← VOLTAR</button>
+                        <h2>Cardápio de Suplementos</h2>
+                        <div class="grid-loja">
                             ${lista.map(p => `
-                                <div style="background:#fff; padding:10px; border-radius:15px; border:1px solid #eee; text-align:center;">
-                                    <div style="height:80px; background:#f4f4f4; border-radius:10px; margin-bottom:10px; display:flex; align-items:center; justify-content:center;">📦</div>
-                                    <small><b>${p.nome}</b></small>
-                                    <button style="width:100%; margin-top:10px; background:var(--primary); color:#fff; border:none; border-radius:5px; padding:5px;">Ver Preço</button>
-                                </div>
-                            `).join('')}
+                                <div class="item-loja">
+                                    <div style="font-size:30px; margin-bottom:10px;">📦</div>
+                                    <b>${p.nome}</b><br><small>${p.preco}</small>
+                                    <button style="width:100%; margin-top:10px; background:var(--primary); color:#fff; border:none; padding:8px; border-radius:8px;">COMPRAR</button>
+                                </div>`).join('')}
                         </div>
                     </div>`;
             }
 
             if (estado.tela === 'add') {
                 root.innerHTML = `
-                    <div style="padding: 20px;">
-                        <button onclick="navegar('home')" style="border:none; background:none; font-weight:bold; color:var(--blue-action)">← CANCELAR</button>
-                        <h2 style="text-align:center;">Analisar Prato</h2>
+                    <div style="padding:20px;">
+                        <button onclick="navegar('home')" style="border:none; background:none; font-weight:bold; color:var(--blue-action); margin-bottom:20px;">← CANCELAR</button>
+                        <h2 style="text-align:center;">Analisar Refeição</h2>
                         <div class="card" style="text-align:center;">
-                            ${estado.fotoSelecionada ? 
-                                `<img src="${estado.fotoSelecionada}" id="img-preview">
-                                 <button class="btn-principal" onclick="finalizarAnalise()">🚀 ANALISAR AGORA</button>` :
-                                `<p>Tire uma foto ou anexe o arquivo da sua refeição para a IA analisar.</p>
-                                 <input type="file" id="arquivo" accept="image/*" style="display:none;" onchange="prepararFoto(event)">
-                                 <button class="btn-principal" onclick="document.getElementById('arquivo').click()">📸 ANEXAR FOTO</button>`
-                            }
+                            ${estado.fotoSelecionada ? `
+                                <img src="${estado.fotoSelecionada}" id="img-preview">
+                                <button class="btn-principal" onclick="finalizarAnalise()">🚀 ANALISAR AGORA</button>
+                                <button class="btn-outline" onclick="removerFoto()">❌ REMOVER E TROCAR</button>
+                            ` : `
+                                <p>Tire uma foto ou anexe uma imagem do celular.</p>
+                                <input type="file" id="arquivo" accept="image/*" style="display:none;" onchange="prepararFoto(event)">
+                                <button class="btn-principal" onclick="document.getElementById('arquivo').click()">📸 TIRAR FOTO / IMPORTAR</button>
+                            `}
                         </div>
                     </div>`;
             }
 
             if (estado.tela === 'dica') {
-                root.innerHTML = `
-                    <div style="padding: 40px; text-align:center;">
-                        <h2>Dica de Ouro</h2>
-                        <p>"Beber 1 copo de água 15 min antes de comer aumenta a saciedade."</p>
-                        <button class="btn-azul" onclick="navegar('home')">VOLTAR</button>
-                    </div>`;
+                root.innerHTML = `<div style="padding:40px; text-align:center;"><h2>Dica de Ouro</h2><p>"Comer fibras antes do carboidrato reduz o pico de insulina."</p><button class="btn-azul" onclick="navegar('home')">VOLTAR</button></div>`;
             }
         }
         render();
