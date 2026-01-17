@@ -118,6 +118,7 @@
             logado: false, tela: 'cadastro', nomeUsuario: 'Isaac', objetivo: 'perda',
             peso: 70, altura: 170, imc: 24.2, classification: 'Normal',
             calorias: 0, prot: 0, carb: 0, gord: 0, aguaAtual: 0, historico: [],
+            sequencia: 1, ultimoAcesso: new Date().toDateString(),
             tempRefeicao: 'Almoço', fotoSelecionada: null, ultimoResultado: null
         };
 
@@ -137,6 +138,36 @@
             return { valor: imc, texto: classe };
         }
 
+        // Lógica de Sequência Ativa
+        function verificarSequencia() {
+            const hoje = new Date().toDateString();
+            if (estado.ultimoAcesso !== hoje) {
+                const ontem = new Date();
+                ontem.setDate(ontem.getDate() - 1);
+                
+                if (estado.ultimoAcesso === ontem.toDateString()) {
+                    estado.sequencia++;
+                } else {
+                    estado.sequencia = 1;
+                }
+                estado.ultimoAcesso = hoje;
+                salvar();
+            }
+        }
+
+        function editarMedidas() {
+            const novoPeso = prompt("Digite seu peso atual (kg):", estado.peso);
+            const novaAltura = prompt("Digite sua altura atual (cm):", estado.altura);
+            if(novoPeso && novaAltura) {
+                estado.peso = parseFloat(novoPeso);
+                estado.altura = parseFloat(novaAltura);
+                const res = infoIMC(estado.peso, estado.altura);
+                estado.imc = res.valor;
+                estado.classification = res.texto;
+                salvar(); render();
+            }
+        }
+
         function validarEEntrar() {
             const email = document.getElementById('email-f').value;
             if(email.length < 3) { alert("Preencha os campos!"); return; }
@@ -148,13 +179,14 @@
                 estado.imc = res.valor;
                 estado.classification = res.texto;
             }
-            estado.logado = true; estado.tela = 'home'; salvar(); render();
+            estado.logado = true; estado.tela = 'home'; 
+            verificarSequencia();
+            salvar(); render();
         }
 
         function beberAgua() {
             estado.aguaAtual += 250;
-            salvar();
-            render();
+            salvar(); render();
         }
 
         function rodarAnuncio(texto, callback) {
@@ -173,10 +205,7 @@
             const file = event.target.files[0];
             if(file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    estado.fotoSelecionada = e.target.result;
-                    render();
-                }
+                reader.onload = function(e) { estado.fotoSelecionada = e.target.result; render(); }
                 reader.readAsDataURL(file);
             }
         }
@@ -189,7 +218,6 @@
                 estado.carb += Math.floor(cal * 0.12);
                 estado.gord += Math.floor(cal * 0.03);
                 estado.historico.unshift({tipo: estado.tempRefeicao, cal: cal});
-                
                 estado.ultimoResultado = { tipo: estado.tempRefeicao, cal: cal };
                 estado.fotoSelecionada = null;
                 navegar('resultado_analise');
@@ -229,9 +257,7 @@
                 const metaAgua = Math.round(estado.peso * 35);
                 const percAgua = Math.min((estado.aguaAtual / metaAgua) * 100, 100);
 
-                // LOGICA PARA O DIA DA SEMANA CORRETO
-                // getDay() retorna 0 para Domingo, 1 para Segunda... 6 para Sábado.
-                // Ajustamos para nossa lista que começa em Segunda (índice 0)
+                // Dia da semana dinâmico
                 let diaSemanaJS = new Date().getDay(); 
                 let indiceAtivo = diaSemanaJS === 0 ? 6 : diaSemanaJS - 1;
 
@@ -242,9 +268,9 @@
                     </div>
 
                     <div class="card card-fogo">
-                        <div><small>Sequência Ativa</small><div style="font-size: 26px; font-weight: bold;">1 Dia 🔥</div></div>
-                        <div class="imc-info">
-                            <div class="imc-label">Perfil Físico</div>
+                        <div><small>Sequência Ativa</small><div style="font-size: 26px; font-weight: bold;">${estado.sequencia} ${estado.sequencia > 1 ? 'Dias' : 'Dia'} 🔥</div></div>
+                        <div class="imc-info" onclick="editarMedidas()" style="cursor:pointer">
+                            <div class="imc-label">Perfil Físico <span style="margin-left:5px">✎</span></div>
                             <div style="font-size: 22px; font-weight: bold;">${estado.imc}</div>
                             <span class="imc-status">${estado.classification}</span>
                         </div>
@@ -370,14 +396,14 @@
                     <div class="dica-container">
                         <div style="font-size:60px">💡</div>
                         <h2 style="color:var(--primary); margin:0; letter-spacing:1px;">DICA EXCLUSIVA</h2>
-                        <div class="dica-texto-grande">
-                            "Mastigar devagar aumenta a saciedade e melhora a absorção dos nutrientes pelo seu corpo!"
-                        </div>
+                        <div class="dica-texto-grande">"Mastigar devagar aumenta a saciedade e melhora a absorção dos nutrientes pelo seu corpo!"</div>
                         <button class="btn-principal" style="width:100%;" onclick="navegar('home')">CONTINUAR JORNADA</button>
                     </div>
                 `;
             }
         }
+
+        verificarSequencia();
         render();
     </script>
 </body>
