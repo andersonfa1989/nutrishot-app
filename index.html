@@ -1,33 +1,193 @@
-<script>
-function processarFoto() {
-    rodarAnuncio("Analisando com IA NutriShot...", () => {
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>NutriShot Elements</title>
 
-        // Calorias estimadas
-        const calorias = Math.floor(Math.random() * 200 + 350);
+<style>
+:root { --primary:#2ab573; --secondary:#667eea; --bg:#f9fafb; }
+body{margin:0;font-family:'Segoe UI',Roboto,sans-serif;background:var(--bg);color:#333;padding-bottom:80px}
 
-        // Distribuição nutricional
-        const proteina = Math.round((calorias * 0.20) / 4); // 20%
-        const carbo = Math.round((calorias * 0.50) / 4);    // 50%
-        const gordura = Math.round((calorias * 0.30) / 9);  // 30%
-
-        // Atualiza totais
-        estado.calorias += calorias;
-        estado.prot += proteina;
-        estado.carb += carbo;
-        estado.gord += gordura;
-
-        // Histórico detalhado
-        estado.historico.unshift({
-            tipo: estado.tempRefeicao,
-            cal: calorias,
-            prot: proteina,
-            carb: carbo,
-            gord: gordura,
-            data: new Date().toISOString()
-        });
-
-        salvar();
-        navegar('home');
-    });
+.texto-logo{
+font-size:32px;font-weight:bold;
+background:linear-gradient(to right,#2ab573,#2490eb,#f39c12);
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+margin:10px 0
 }
+
+.input-nutri{
+width:85%;padding:15px;margin:10px 0;border:1px solid #ddd;
+border-radius:12px;font-size:16px;outline:none
+}
+
+.card{background:#fff;border-radius:20px;padding:20px;margin:15px 20px;border:1px solid #eee}
+.card-fogo{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none}
+
+.btn-principal{
+width:calc(100% - 40px);
+background:linear-gradient(to right,#667eea,#764ba2);
+color:#fff;border:none;padding:18px;border-radius:30px;
+margin:10px 20px;font-size:18px;font-weight:bold
+}
+
+.btn-loja{
+background:#2ab573;color:#fff;border:none;padding:12px;
+border-radius:12px;width:calc(100% - 40px);margin:0 20px;font-weight:bold
+}
+
+.fab{
+position:fixed;bottom:20px;right:20px;width:65px;height:65px;
+background:#000;color:#fff;border-radius:50%;font-size:30px;border:none
+}
+
+.ads-overlay{
+display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+background:#000;z-index:9999;flex-direction:column;
+align-items:center;justify-content:center;color:#fff
+}
+
+.bar-container{width:70%;height:8px;background:#333;border-radius:10px;margin-top:25px}
+#bar-progress{width:0;height:100%;background:#2ab573}
+</style>
+</head>
+
+<body>
+
+<div id="ads-overlay" class="ads-overlay">
+<div id="ad-text">Processando...</div>
+<div class="bar-container"><div id="bar-progress"></div></div>
+</div>
+
+<div id="app"></div>
+
+<script>
+const LOGO_URL = "icone-512.png";
+
+let estado = JSON.parse(localStorage.getItem('nutrishot_v5')) || {
+logado:false,
+tela:'cadastro',
+nomeUsuario:'Isaac',
+calorias:0,
+prot:0,
+carb:0,
+gord:0,
+historico:[],
+tempRefeicao:'Almoço'
+};
+
+function salvar(){
+localStorage.setItem('nutrishot_v5', JSON.stringify(estado));
+}
+
+function navegar(t){
+estado.tela=t;salvar();render();window.scrollTo(0,0);
+}
+
+function rodarAnuncio(texto,callback){
+const o=document.getElementById('ads-overlay');
+const b=document.getElementById('bar-progress');
+document.getElementById('ad-text').innerText=texto;
+o.style.display='flex';
+let p=0;
+const i=setInterval(()=>{
+p+=5;b.style.width=p+'%';
+if(p>=100){clearInterval(i);o.style.display='none';b.style.width='0%';callback();}
+},70);
+}
+
+function realizarAcaoLogin(){
+const email=document.getElementById('email-input').value;
+if(email.length<5){alert("Preencha o e-mail corretamente");return;}
+estado.logado=true;estado.tela='home';salvar();render();
+}
+
+function fazerLogout(){
+estado.logado=false;estado.tela='cadastro';salvar();render();
+}
+
+/* 🔥 FUNÇÃO CORRIGIDA */
+function processarFoto(){
+rodarAnuncio("Analisando com IA NutriShot...",()=>{
+const calorias=Math.floor(Math.random()*200+350);
+
+// distribuição nutricional
+const prot=Math.round((calorias*0.20)/4);
+const carb=Math.round((calorias*0.50)/4);
+const gord=Math.round((calorias*0.30)/9);
+
+estado.calorias+=calorias;
+estado.prot+=prot;
+estado.carb+=carb;
+estado.gord+=gord;
+
+estado.historico.unshift({
+tipo:estado.tempRefeicao,
+cal:calorias,
+prot,carb,gord
+});
+
+salvar();
+navegar('home');
+});
+}
+
+function render(){
+const root=document.getElementById('app');
+
+if(!estado.logado){
+root.innerHTML=`
+<div style="padding:60px 20px;text-align:center">
+<img src="${LOGO_URL}" style="width:150px" onerror="this.src='https://i.ibb.co/Lz0D7Yd/icone-512.png'">
+<h1 class="texto-logo">NutriShot Elements</h1>
+<input id="email-input" class="input-nutri" placeholder="E-mail">
+<input class="input-nutri" placeholder="Senha">
+<button class="btn-principal" onclick="realizarAcaoLogin()">Entrar</button>
+</div>`;
+return;
+}
+
+if(estado.tela==='home'){
+root.innerHTML=`
+<div style="padding:20px;display:flex;justify-content:space-between">
+<b>Olá, ${estado.nomeUsuario}</b>
+<span onclick="fazerLogout()">Sair</span>
+</div>
+
+<div class="card card-fogo">
+<div style="font-size:32px">${estado.calorias} kcal</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:0 20px">
+<div class="card"><small>Proteína</small><br><b>${estado.prot}g</b></div>
+<div class="card"><small>Carbo</small><br><b>${estado.carb}g</b></div>
+<div class="card"><small>Gordura</small><br><b>${estado.gord}g</b></div>
+</div>
+
+<div class="card">
+<b>Refeições</b>
+${estado.historico.map(r=>`
+<div style="display:flex;justify-content:space-between">
+<span>${r.tipo}</span><b>${r.cal} kcal</b>
+</div>`).join('')}
+</div>
+
+<button class="fab" onclick="navegar('add')">+</button>
+`;
+return;
+}
+
+if(estado.tela==='add'){
+root.innerHTML=`
+<div style="padding:20px">
+<div onclick="navegar('home')">← Voltar</div>
+<h2>Refeição</h2>
+<button class="btn-principal" onclick="processarFoto()">📸 Simular Foto</button>
+</div>`;
+}
+}
+
+render();
 </script>
+</body>
+</html>
