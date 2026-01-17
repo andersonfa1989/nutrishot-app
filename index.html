@@ -13,7 +13,7 @@
         }
         body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; }
         
-        /* LOGIN/CADASTRO ESTILO TOP */
+        /* ESTILO LOGIN/CADASTRO TOP */
         .img-logo-principal { width: 170px; margin-bottom: 5px; } 
         .texto-logo {
             font-size: 24px; font-weight: 800;
@@ -36,7 +36,7 @@
         .footer-link { margin-top: 20px; font-size: 14px; cursor: pointer; color: #000; font-weight: 500; }
         .footer-link span { color: var(--blue-action); font-weight: 700; }
 
-        /* DASHBOARD */
+        /* DASHBOARD ELEMENTS */
         .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
         .card-fogo { 
             background: linear-gradient(135deg, #667eea, #764ba2); 
@@ -49,15 +49,16 @@
 
         .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--primary); transition: width 0.5s ease; }
-        .progress-bar.water { background: var(--water); }
+        .progress-bar.water-bar { background: var(--water); }
 
-        .btn-water { background: var(--water); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
-        .btn-loja { background: #2ab573; color: white; border: none; padding: 15px; border-radius: 12px; width: calc(100% - 40px); margin: 0 20px; font-weight: bold; cursor: pointer; font-size: 14px; }
-        .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; }
-
-        .selector-objetivo { display: flex; gap: 10px; margin: 0 20px 15px 20px; }
+        .btn-water { background: var(--water); color: white; border: none; padding: 12px; border-radius: 15px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 12px; font-size: 14px; }
+        .btn-loja { background: #2ab573; color: white; border: none; padding: 15px; border-radius: 12px; width: calc(100% - 40px); margin: 10px 20px; font-weight: bold; cursor: pointer; font-size: 14px; }
+        
+        .selector-objetivo { display: flex; gap: 10px; margin: 0 20px; }
         .opt-obj { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #eee; background: #fff; text-align: center; font-weight: bold; cursor: pointer; font-size: 13px; }
         .opt-obj.active { border-color: var(--primary); background: #f0fff7; color: var(--primary); }
+
+        .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; }
     </style>
 </head>
 <body>
@@ -67,28 +68,15 @@
     <script>
         const LOGO_URL = "icone-512.png";
         
-        const SUPLEMENTOS = {
-            ganho: [
-                { nome:"Creatina Growth 100g", foto:"creatina-100g.png", link:"https://amzn.to/4b47g9o" },
-                { nome:"Whey Chocolate", foto:"wey-choco.png", link:"https://amzn.to/3LjWMIB" },
-                { nome:"Whey Morango", foto:"wey-moran.png", link:"https://amzn.to/4sPsdvg" },
-                { nome:"Whey Creme", foto:"wey-creme.png", link:"https://amzn.to/4qq9ODl" },
-                { nome:"Gainer Chocolate", foto:"Hipercalórico-choco.png", link:"https://amzn.to/4qpZKKC" },
-                { nome:"Gainer Cookies", foto:"Hipercalórico-cooki.png", link:"https://amzn.to/4bC9A7C" }
-            ],
-            perda: [
-                { nome:"Psyllium Cápsulas", foto:"Psyllium-caps.png", link:"https://amzn.to/4sBfMmq" },
-                { nome:"Psyllium em Pó", foto:"Psyllium-po.png", link:"https://amzn.to/3YINEAk" },
-                { nome:"Ultra Burn Termogênico", foto:"termog.png", link:"https://amzn.to/4b5phUQ" },
-                { nome:"L-Carnitina 2000mg", foto:"l-creat2000.png", link:"https://amzn.to/4bBHcCw" },
-                { nome:"L-Carnitina 1000mg", foto:"l-creat1000.png", link:"https://amzn.to/3LJAv6S" }
-            ]
-        };
-
         let estado = JSON.parse(localStorage.getItem('nutrishot_v5')) || {
             logado: false, tela: 'cadastro', nomeUsuario: '', objetivo: 'perda',
             peso: 70, altura: 170, imc: 24.2, classification: 'Normal',
-            calorias: 0, aguaAtual: 0, historico: []
+            calorias: 0, aguaAtual: 0
+        };
+
+        const SUPLEMENTOS = {
+            ganho: [{ nome:"Creatina Growth 100g", foto:"creatina-100g.png", link:"https://amzn.to/4b47g9o" }],
+            perda: [{ nome:"Psyllium Cápsulas", foto:"Psyllium-caps.png", link:"https://amzn.to/4sBfMmq" }]
         };
 
         function salvar() { localStorage.setItem('nutrishot_v5', JSON.stringify(estado)); }
@@ -96,15 +84,12 @@
 
         function infoIMC(peso, altura) {
             const altM = altura / 100;
-            const imc = (peso / (altM * altM)).toFixed(1);
-            let classe = imc < 18.5 ? "Magreza" : imc < 25 ? "Normal" : imc < 30 ? "Sobrepeso" : imc < 35 ? "Obesidade I" : "Obesidade II";
-            return { valor: imc, texto: classe };
+            const imcValue = (peso / (altM * altM)).toFixed(1);
+            let classe = imcValue < 18.5 ? "Magreza" : imcValue < 25 ? "Normal" : imcValue < 30 ? "Sobrepeso" : "Obesidade";
+            return { valor: imcValue, texto: classe };
         }
 
         function validarEEntrar() {
-            const email = document.getElementById('email-f').value;
-            if(email.length < 3) { alert("Preencha o e-mail!"); return; }
-            
             if(estado.tela === 'cadastro') {
                 estado.nomeUsuario = document.getElementById('nome-f').value || 'Usuário';
                 estado.peso = parseFloat(document.getElementById('peso-f').value) || 70;
@@ -113,11 +98,7 @@
                 estado.imc = res.valor;
                 estado.classification = res.texto;
             }
-            
-            estado.logado = true; 
-            estado.tela = 'home'; 
-            salvar(); 
-            render();
+            estado.logado = true; estado.tela = 'home'; salvar(); render();
         }
 
         function render() {
@@ -129,9 +110,7 @@
                     <div style="padding: 50px 20px; text-align: center;">
                         <img src="${LOGO_URL}" class="img-logo-principal" onerror="this.src='https://i.ibb.co/Lz0D7Yd/icone-512.png'">
                         <h1 class="texto-logo">NutriShot Elements</h1>
-                        <p style="color: #666; margin-bottom: 20px; font-size: 14px;">
-                            ${isCadastro ? 'Sua jornada inteligente começa aqui' : 'Bem-vindo de volta'}
-                        </p>
+                        <p style="color: #666; margin-bottom: 20px; font-size: 14px;">${isCadastro ? 'Sua jornada inteligente começa aqui' : 'Bem-vindo de volta'}</p>
                         ${isCadastro ? `
                             <input type="text" id="nome-f" class="input-nutri" placeholder="Como quer ser chamado?">
                             <div style="display:flex; justify-content:center; gap:10px;">
@@ -142,9 +121,7 @@
                         <input type="email" id="email-f" class="input-nutri" placeholder="E-mail">
                         <input type="password" id="pass-f" class="input-nutri" placeholder="Senha">
                         <button class="btn-azul" onclick="validarEEntrar()">${isCadastro ? 'CRIAR MINHA CONTA' : 'ENTRAR NO APP'}</button>
-                        <p class="footer-link" onclick="navegar('${isCadastro ? 'login' : 'cadastro'}')">
-                            ${isCadastro ? 'Já tem uma conta? <span>Entrar</span>' : 'Novo por aqui? <span>Criar Conta</span>'}
-                        </p>
+                        <p class="footer-link" onclick="navegar('${isCadastro ? 'login' : 'cadastro'}')">${isCadastro ? 'Já tem uma conta? <span>Entrar</span>' : 'Novo por aqui? <span>Criar Conta</span>'}</p>
                     </div>
                 `; return;
             }
@@ -161,7 +138,7 @@
                     </div>
 
                     <div class="card card-fogo">
-                        <div><small>Status Hoje</small><div style="font-size: 26px; font-weight: bold;">Ativo 🔥</div></div>
+                        <div><small>Status Saúde</small><div style="font-size: 26px; font-weight: bold;">Ativo 🔥</div></div>
                         <div class="imc-info">
                             <div class="imc-label">Meu IMC</div>
                             <div style="font-size: 22px; font-weight: bold;">${estado.imc}</div>
@@ -169,46 +146,32 @@
                         </div>
                     </div>
 
-                    <div class="selector-objetivo" style="margin-top:20px;">
+                    <div class="card" style="border-top: 4px solid var(--water);">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <b>Hidratação Diária</b>
+                            <span style="color:var(--water); font-weight:bold;">💧 ${estado.aguaAtual}ml</span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar water-bar" style="width: ${percAgua}%"></div>
+                        </div>
+                        <small style="color:#888; margin-top:5px; display:block;">Meta: ${metaAgua}ml (35ml/kg)</small>
+                        <button class="btn-water" onclick="estado.aguaAtual+=250; render()">+ BEBER 250ML</button>
+                    </div>
+
+                    <div class="selector-objetivo">
                         <div class="opt-obj ${estado.objetivo === 'perda' ? 'active' : ''}" onclick="estado.objetivo='perda'; render()">Emagrecer</div>
                         <div class="opt-obj ${estado.objetivo === 'ganho' ? 'active' : ''}" onclick="estado.objetivo='ganho'; render()">Ganho Massa</div>
                     </div>
 
-                    <button class="btn-loja" onclick="navegar('catalogo')">🛒 VER SUPLEMENTOS</button>
-
-                    <div class="card" style="border-left: 5px solid var(--water);">
-                        <b>Hidratação 💧</b><br>
-                        <small>${estado.aguaAtual}ml / ${metaAgua}ml</small>
-                        <div class="progress-container"><div class="progress-bar water" style="width: ${percAgua}%"></div></div>
-                        <button class="btn-water" onclick="estado.aguaAtual+=250; render()">+ 250ml</button>
-                    </div>
+                    <button class="btn-loja" onclick="navegar('catalogo')">🛒 VER SUPLEMENTOS SUGERIDOS</button>
 
                     <div class="card">
-                        <small>Calorias Diárias</small>
-                        <div style="font-size: 26px; font-weight: bold;">${estado.calorias} <span style="font-size:14px; color:#ccc">/ 2577 kcal</span></div>
+                        <small>Consumo Energético</small>
+                        <div style="font-size: 24px; font-weight: bold;">${estado.calorias} <span style="font-size:14px; color:#ccc">/ 2577 kcal</span></div>
                         <div class="progress-container"><div class="progress-bar" style="width: ${percCal}%"></div></div>
                     </div>
 
-                    <button class="fab" onclick="alert('Análise de foto em breve!')">+</button>
-                `; return;
-            }
-
-            if (estado.tela === 'catalogo') {
-                const lista = estado.objetivo === 'ganho' ? SUPLEMENTOS.ganho : SUPLEMENTOS.perda;
-                root.innerHTML = `
-                    <div style="padding: 20px;">
-                        <div onclick="navegar('home')" style="margin-bottom:15px; cursor:pointer; color:var(--blue-action); font-weight:bold;">← Voltar</div>
-                        <h2>Suplementação</h2>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                            ${lista.map(p => `
-                                <div style="background:#fff; border-radius:16px; padding:12px; text-align:center; border:1px solid #eee; height:230px; display:flex; flex-direction:column; justify-content:space-between;">
-                                    <img src="${p.foto}" style="width:100%; height:85px; object-fit:contain;" onerror="this.src='https://via.placeholder.com/150'">
-                                    <b style="font-size:11px;">${p.nome}</b>
-                                    <a href="${p.link}" target="_blank" style="text-decoration:none"><button style="width:100%; background:var(--primary); color:#fff; border:none; padding:8px; border-radius:8px; font-weight:bold; cursor:pointer;">Ver Oferta</button></a>
-                                </div>
-                            `).join("")}
-                        </div>
-                    </div>
+                    <button class="fab" onclick="alert('Câmera em breve!')">+</button>
                 `;
             }
         }
