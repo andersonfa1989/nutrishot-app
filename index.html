@@ -15,8 +15,7 @@
         
         .img-logo-principal { width: 170px; margin-bottom: 5px; } 
         .texto-logo {
-            font-size: 24px; 
-            font-weight: 800;
+            font-size: 24px; font-weight: 800;
             background: linear-gradient(to right, #2490eb, #2ab573, #f39c12);
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent;
@@ -76,6 +75,9 @@
         #img-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; border: 1px solid #ddd; }
         .banner-inline { background: #eee; border: 1px dashed #ccc; padding: 15px; margin: 20px; border-radius: 15px; text-align: center; color: #999; font-size: 12px; }
 
+        .refeicao-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+        .refeicao-item:last-child { border-bottom: none; }
+
         .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
         .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; overflow: hidden; }
         #bar-progress { width: 0%; height: 100%; background: #2ab573; transition: width 0.1s linear; }
@@ -97,17 +99,11 @@
             ganho: [
                 { nome:"Creatina Growth 100g", foto:"creatina-100g.png", link:"https://amzn.to/4b47g9o" },
                 { nome:"Whey Chocolate", foto:"wey-choco.png", link:"https://amzn.to/3LjWMIB" },
-                { nome:"Whey Morango", foto:"wey-moran.png", link:"https://amzn.to/4sPsdvg" },
-                { nome:"Whey Creme", foto:"wey-creme.png", link:"https://amzn.to/4qq9ODl" },
-                { nome:"Gainer Chocolate", foto:"Hipercalórico-choco.png", link:"https://amzn.to/4qpZKKC" },
-                { nome:"Gainer Cookies", foto:"Hipercalórico-cooki.png", link:"https://amzn.to/4bC9A7C" }
+                { nome:"Gainer Chocolate", foto:"Hipercalórico-choco.png", link:"https://amzn.to/4qpZKKC" }
             ],
             perda: [
                 { nome:"Psyllium Cápsulas", foto:"Psyllium-caps.png", link:"https://amzn.to/4sBfMmq" },
-                { nome:"Psyllium em Pó", foto:"Psyllium-po.png", link:"https://amzn.to/3YINEAk" },
-                { nome:"Ultra Burn Termogênico", foto:"termog.png", link:"https://amzn.to/4b5phUQ" },
-                { nome:"L-Carnitina 2000mg", foto:"l-creat2000.png", link:"https://amzn.to/4bBHcCw" },
-                { nome:"L-Carnitina 1000mg", foto:"l-creat1000.png", link:"https://amzn.to/3LJAv6S" }
+                { nome:"Ultra Burn Termogênico", foto:"termog.png", link:"https://amzn.to/4b5phUQ" }
             ]
         };
 
@@ -124,43 +120,12 @@
         function infoIMC(peso, altura) {
             const altM = altura / 100;
             const imc = (peso / (altM * altM)).toFixed(1);
-            let classe = "";
-            if (imc < 18.5) classe = "Magreza";
-            else if (imc < 25) classe = "Normal";
-            else if (imc < 30) classe = "Sobrepeso";
-            else if (imc < 35) classe = "Obesidade I";
-            else if (imc < 40) classe = "Obesidade II";
-            else classe = "Mórbida";
+            let classe = imc < 18.5 ? "Magreza" : imc < 25 ? "Normal" : imc < 30 ? "Sobrepeso" : "Obesidade";
             return { valor: imc, texto: classe };
         }
 
         function validarEEntrar() {
-            const email = document.getElementById('email-f').value;
-            if(email.length < 3) { alert("Preencha os campos!"); return; }
-            if(document.getElementById('nome-f')) { 
-                estado.nomeUsuario = document.getElementById('nome-f').value || 'Usuário';
-                estado.peso = parseFloat(document.getElementById('peso-f').value) || 70;
-                estado.altura = parseFloat(document.getElementById('altura-f').value) || 170;
-                const res = infoIMC(estado.peso, estado.altura);
-                estado.imc = res.valor;
-                estado.classification = res.texto;
-            }
             estado.logado = true; estado.tela = 'home'; salvar(); render();
-        }
-
-        function atualizarDadosFisicos() {
-            const novoPeso = prompt("Atualize seu peso (kg):", estado.peso);
-            if (novoPeso) {
-                const novaAltura = prompt("Atualize sua altura (cm):", estado.altura);
-                if (novaAltura) {
-                    estado.peso = parseFloat(novoPeso);
-                    estado.altura = parseFloat(novaAltura);
-                    const res = infoIMC(estado.peso, estado.altura);
-                    estado.imc = res.valor;
-                    estado.classification = res.texto;
-                    salvar(); render();
-                }
-            }
         }
 
         function rodarAnuncio(texto, callback) {
@@ -179,10 +144,7 @@
             const file = event.target.files[0];
             if(file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    estado.fotoSelecionada = e.target.result;
-                    render();
-                }
+                reader.onload = (e) => { estado.fotoSelecionada = e.target.result; render(); }
                 reader.readAsDataURL(file);
             }
         }
@@ -204,26 +166,13 @@
             const root = document.getElementById('app');
 
             if (!estado.logado) {
-                const isCadastro = estado.tela === 'cadastro';
                 root.innerHTML = `
                     <div style="padding: 50px 20px; text-align: center;">
                         <img src="${LOGO_URL}" class="img-logo-principal" onerror="this.src='https://i.ibb.co/Lz0D7Yd/icone-512.png'">
                         <h1 class="texto-logo">NutriShot Elements</h1>
-                        ${isCadastro ? `
-                            <input type="text" id="nome-f" class="input-nutri" placeholder="Nome">
-                            <div style="display:flex; justify-content:center; gap:10px;">
-                                <input type="number" id="peso-f" class="input-nutri input-metade" placeholder="Peso (kg)">
-                                <input type="number" id="altura-f" class="input-nutri input-metade" placeholder="Altura (cm)">
-                            </div>
-                        ` : ''}
                         <input type="email" id="email-f" class="input-nutri" placeholder="E-mail">
                         <input type="password" id="pass-f" class="input-nutri" placeholder="Senha">
-                        <button class="btn-azul" onclick="validarEEntrar()">
-                            ${isCadastro ? 'CRIAR MINHA CONTA' : 'ENTRAR NO APP'}
-                        </button>
-                        <p class="footer-link" onclick="navegar('${isCadastro ? 'login' : 'cadastro'}')">
-                            ${isCadastro ? 'Já tem uma conta? <span>Entrar</span>' : 'Novo por aqui? <span>Criar Conta</span>'}
-                        </p>
+                        <button class="btn-azul" onclick="validarEEntrar()">ENTRAR NO APP</button>
                     </div>
                 `; return;
             }
@@ -242,7 +191,7 @@
                     <div class="card card-fogo">
                         <div><small>Sequência Ativa</small><div style="font-size: 26px; font-weight: bold;">1 Dia 🔥</div></div>
                         <div class="imc-info">
-                            <div class="imc-label">Perfil Físico <span onclick="atualizarDadosFisicos()" style="cursor:pointer">✏️</span></div>
+                            <div class="imc-label">Perfil Físico</div>
                             <div style="font-size: 22px; font-weight: bold;">${estado.imc}</div>
                             <span class="imc-status">${estado.classification}</span>
                         </div>
@@ -286,7 +235,21 @@
                         <button onclick="rodarAnuncio('Buscando Dica...', ()=>navegar('dica'))" style="width:100%; background:var(--primary); color:white; border:none; padding:12px; border-radius:12px; margin-top:10px; font-weight:bold;">📺 Ver Dica Exclusiva</button>
                     </div>
 
+                    <div class="card">
+                        <b style="display:block; margin-bottom:10px;">Refeições de Hoje</b>
+                        ${estado.historico.length === 0 ? 
+                            `<div style="text-align:center; color:#999; padding:10px;"><small>Nenhuma refeição registrada ainda.<br>Adicione sua primeira refeição!</small></div>` : 
+                            estado.historico.map(h => `
+                                <div class="refeicao-item">
+                                    <span><b>${h.tipo}</b></span>
+                                    <span style="color:var(--primary); font-weight:bold;">${h.cal} kcal</span>
+                                </div>
+                            `).join('')
+                        }
+                    </div>
+
                     <div class="banner-inline"><small>ANÚNCIO</small><br><b>ESPAÇO PUBLICITÁRIO</b></div>
+                    
                     <button class="fab" onclick="navegar('add_refeicao')">+</button>
                 `; return;
             }
@@ -335,16 +298,12 @@
             }
 
             if (estado.tela === 'dica') {
-                root.innerHTML = `
-                    <div class="dica-container">
-                        <div class="icon-dica">💡</div>
-                        <h2 style="color:var(--primary); margin:0; letter-spacing:1px;">DICA EXCLUSIVA</h2>
-                        <div class="dica-texto-grande">
-                            "Mastigar devagar aumenta a saciedade e melhora a absorção dos nutrientes pelo seu corpo!"
-                        </div>
-                        <button class="btn-principal" style="width:100%;" onclick="navegar('home')">CONTINUAR JORNADA</button>
-                    </div>
-                `;
+                root.innerHTML = `<div class="dica-container">
+                    <div style="font-size:60px">💡</div>
+                    <h2 style="color:var(--primary)">DICA EXCLUSIVA</h2>
+                    <div class="dica-texto-grande">"Mastigar devagar aumenta a saciedade e melhora a absorção dos nutrientes!"</div>
+                    <button class="btn-principal" onclick="navegar('home')">CONTINUAR JORNADA</button>
+                </div>`;
             }
         }
         render();
