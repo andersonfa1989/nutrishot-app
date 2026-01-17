@@ -5,17 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>NutriShot Elements</title>
     <style>
-        :root { --primary: #2ab573; --secondary: #667eea; --bg: #f9fafb; }
+        :root { 
+            --primary: #2ab573; 
+            --blue-action: #2490eb; /* Novo Azul para Entrada */
+            --secondary: #667eea; 
+            --bg: #f9fafb; 
+        }
         body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; }
         
         .texto-logo {
             font-size: 32px; font-weight: bold;
-            background: linear-gradient(to right, #2ab573, #2490eb, #f39c12);
+            background: linear-gradient(to right, #2490eb, #2ab573);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             margin: 10px 0;
         }
         .input-nutri { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; }
         
+        /* BOTÃO AZUL (ENTRAR/CADASTRAR) */
+        .btn-azul { 
+            width: calc(100% - 40px); 
+            background: var(--blue-action); 
+            color: white; 
+            border: none; 
+            padding: 18px; 
+            border-radius: 30px; 
+            margin: 10px 20px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(36, 144, 235, 0.3);
+        }
+
         /* CARDS */
         .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
         .card-fogo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; }
@@ -27,26 +47,21 @@
         .barra-v.active { background: #6a11cb; width: 40px; }
         .dia-txt { font-size: 10px; color: #aaa; margin-top: 5px; }
 
-        /* PROGRESSO CALORIAS */
         .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--primary); transition: width 0.5s ease; }
 
-        /* SELETORES */
         .selector-objetivo { display: flex; gap: 10px; margin: 0 20px 15px 20px; }
         .opt-obj { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #eee; background: #fff; text-align: center; font-weight: bold; cursor: pointer; font-size: 13px; }
         .opt-obj.active { border-color: var(--primary); background: #f0fff7; color: var(--primary); }
 
-        /* BOTÕES */
         .btn-principal { width: calc(100% - 40px); background: linear-gradient(to right, #667eea, #764ba2); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer; }
         .btn-loja { background: #2ab573; color: white; border: none; padding: 15px; border-radius: 12px; width: calc(100% - 40px); margin: 0 20px; font-weight: bold; cursor: pointer; font-size: 14px; }
         .btn-outline { background: transparent; color: #666; border: 1px solid #ddd; padding: 12px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 500; }
         
         .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; }
 
-        /* PREVIEW DA FOTO */
         #img-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; border: 1px solid #ddd; }
 
-        /* LOJA */
         .prod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px; }
         .prod-card { background: #fff; border-radius: 16px; padding: 12px; text-align: center; border: 1px solid #eee; display: flex; flex-direction: column; height: 230px; justify-content: space-between; }
         .prod-card img { width: 100%; height: 85px; object-fit: contain; }
@@ -116,13 +131,12 @@
             }, 60);
         }
 
-        // FUNÇÃO QUE GERA A VISUALIZAÇÃO DA FOTO
         function prepararFoto(event) {
             const file = event.target.files[0];
             if(file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    estado.fotoSelecionada = e.target.result; // Salva o preview base64
+                    estado.fotoSelecionada = e.target.result;
                     render();
                 }
                 reader.readAsDataURL(file);
@@ -137,7 +151,7 @@
                 estado.carb += Math.floor(cal * 0.12);
                 estado.gord += Math.floor(cal * 0.03);
                 estado.historico.unshift({tipo: estado.tempRefeicao, cal: cal});
-                estado.fotoSelecionada = null; // Limpa a foto após análise
+                estado.fotoSelecionada = null;
                 navegar('home');
             });
         }
@@ -150,13 +164,17 @@
                     <div style="padding: 60px 20px; text-align: center;">
                         <img src="${LOGO_URL}" style="width: 140px;" onerror="this.src='https://i.ibb.co/Lz0D7Yd/icone-512.png'">
                         <h1 class="texto-logo">NutriShot</h1>
-                        <p>${estado.tela === 'cadastro' ? 'Crie sua conta' : 'Entrar'}</p>
-                        ${estado.tela === 'cadastro' ? '<input type="text" id="nome-f" class="input-nutri" placeholder="Nome">' : ''}
+                        <p style="color: #666; margin-bottom: 20px;">${estado.tela === 'cadastro' ? 'Crie sua conta grátis' : 'Bem-vindo de volta'}</p>
+                        ${estado.tela === 'cadastro' ? '<input type="text" id="nome-f" class="input-nutri" placeholder="Seu nome">' : ''}
                         <input type="email" id="email-f" class="input-nutri" placeholder="E-mail">
                         <input type="password" id="pass-f" class="input-nutri" placeholder="Senha">
-                        <button class="btn-principal" onclick="validarEEntrar()">Acessar</button>
-                        <p onclick="navegar('${estado.tela === 'cadastro' ? 'login' : 'cadastro'}')" style="cursor:pointer; color:#888;">
-                            ${estado.tela === 'cadastro' ? 'Já tem conta? Entrar' : 'Novo aqui? Cadastrar'}
+                        
+                        <button class="btn-azul" onclick="validarEEntrar()">
+                            ${estado.tela === 'cadastro' ? 'Cadastrar Agora' : 'Entrar no App'}
+                        </button>
+                        
+                        <p onclick="navegar('${estado.tela === 'cadastro' ? 'login' : 'cadastro'}')" style="cursor:pointer; color:var(--blue-action); font-weight: 500; margin-top: 15px;">
+                            ${estado.tela === 'cadastro' ? 'Já tem uma conta? Clique aqui' : 'Novo por aqui? Criar conta'}
                         </p>
                     </div>
                 `; return;
@@ -233,7 +251,7 @@
                 root.innerHTML = `
                     <div style="padding: 20px;">
                         <div onclick="navegar('home')" style="margin-bottom:15px; cursor:pointer;">← Voltar</div>
-                        <h2 style="margin:10px 0; font-size:18px;">Suplementação para ${estado.objetivo === 'ganho' ? 'Ganho' : 'Perda'}</h2>
+                        <h2 style="margin:10px 0; font-size:18px;">Suplementação Recomendada</h2>
                         <div class="prod-grid">
                             ${lista.map(p => `
                                 <div class="prod-card">
@@ -251,7 +269,7 @@
                 root.innerHTML = `
                     <div style="text-align:center; padding:60px 20px;">
                         <h2>Sua Dica 💡</h2>
-                        <div class="card" style="padding:30px;">"Consumir fibras antes de grandes refeições reduz o índice glicêmico e ajuda no emagrecimento!"</div>
+                        <div class="card" style="padding:30px;">"Beba um copo de água 15 minutos antes das refeições para aumentar a saciedade."</div>
                         <button class="btn-principal" onclick="navegar('home')">Voltar ao Início</button>
                     </div>
                 `;
