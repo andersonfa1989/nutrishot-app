@@ -12,7 +12,7 @@
         .texto-logo { font-size: 32px; font-weight: bold; color: #2490eb; margin: 10px 0; }
         .input-nutri { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; }
 
-        /* DASHBOARD */
+        /* DASHBOARD PRESERVADO */
         .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
         .card-fogo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; }
         .grid-7 { display: flex; justify-content: space-between; align-items: flex-end; height: 50px; margin-top: 15px; }
@@ -27,7 +27,7 @@
         .fab { position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 100; }
 
         /* ANÚNCIO / PROGRESSO */
-        .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
+        .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; }
         .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; overflow: hidden; }
         #bar-progress { width: 0%; height: 100%; background: #2ab573; transition: width 0.1s linear; }
     </style>
@@ -35,29 +35,31 @@
 <body>
 
     <div id="ads-overlay" class="ads-overlay">
-        <div id="ad-text" style="font-size: 18px; font-weight: bold;">Analisando com IA...</div>
+        <div id="ad-text" style="font-size: 18px; font-weight: bold;">Analisando com IA NutriShot...</div>
         <div class="bar-container"><div id="bar-progress"></div></div>
     </div>
 
     <div id="app"></div>
 
     <script>
-        const LOGO_IMG = "icone-512.png"; //
+        const LOGO_URL = "icone-512.png"; //
 
-        let estado = JSON.parse(localStorage.getItem('nutrishot_final')) || {
+        // Recupera o estado ou inicia um novo
+        let estado = JSON.parse(localStorage.getItem('nutrishot_v6')) || {
             logado: false,
-            tela: 'login',
+            tela: 'cadastro',
+            nomeUsuario: 'Isaac',
             calorias: 0, prot: 0, carb: 0, gord: 0,
             historico: [],
             tempRefeicao: 'Almoço'
         };
 
-        function salvar() { localStorage.setItem('nutrishot_final', JSON.stringify(estado)); }
+        function salvar() { localStorage.setItem('nutrishot_v6', JSON.stringify(estado)); }
         function navegar(tela) { estado.tela = tela; salvar(); render(); window.scrollTo(0,0); }
 
-        function realizarAcao() {
+        function realizarAcaoLogin() {
             const email = document.getElementById('email-input').value;
-            if(email.length < 5) { alert("Preencha os dados corretamente."); return; }
+            if(email.length < 5) { alert("Preencha o e-mail corretamente."); return; }
             estado.logado = true;
             estado.tela = 'home';
             salvar();
@@ -70,39 +72,34 @@
             document.getElementById('ad-text').innerText = texto;
             overlay.style.display = 'flex';
             let p = 0;
-            const t = setInterval(() => {
+            const tempo = setInterval(() => {
                 p += 5; bar.style.width = p + '%';
-                if(p >= 100) { clearInterval(t); overlay.style.display = 'none'; bar.style.width = '0%'; callback(); }
+                if(p >= 100) { clearInterval(tempo); overlay.style.display = 'none'; bar.style.width = '0%'; callback(); }
             }, 70);
         }
 
         function render() {
             const root = document.getElementById('app');
 
-            // TELA LOGIN / CADASTRO
             if (!estado.logado) {
                 root.innerHTML = `
-                    <div style="padding: 40px 20px; text-align: center;">
-                        <img src="${LOGO_IMG}" style="width: 80px; margin-bottom: 10px;" onerror="this.src='https://via.placeholder.com/80?text=Logo'">
+                    <div style="padding: 60px 20px; text-align: center;">
+                        <img src="${LOGO_URL}" style="width: 150px; margin-bottom: 5px;" onerror="this.src='https://via.placeholder.com/150'">
                         <h1 class="texto-logo">NutriShot Elements</h1>
-                        <p style="color:#666; margin-bottom: 30px;">${estado.tela === 'cadastro' ? 'Crie sua conta para começar' : 'Bem-vindo de volta'}</p>
+                        <p style="color: #666;">${estado.tela === 'cadastro' ? 'Crie sua conta para começar' : 'Entre na sua conta'}</p>
                         <input type="email" id="email-input" class="input-nutri" placeholder="E-mail">
                         <input type="password" class="input-nutri" placeholder="Senha">
-                        <button class="btn-principal" onclick="realizarAcao()">Entrar</button>
-                        <div style="margin-top: 15px; font-size: 14px; color: #888;">
-                            Esqueceu a senha? | <span onclick="estado.tela='cadastro'; render()" style="color: #2ab573; font-weight: bold; cursor:pointer;">Cadastre-se</span>
-                        </div>
+                        <button class="btn-principal" onclick="realizarAcaoLogin()">Entrar</button>
                     </div>
                 `;
                 return;
             }
 
-            // DASHBOARD
             if (estado.tela === 'home') {
                 root.innerHTML = `
                     <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
-                        <b>Olá, Isaac!</b>
-                        <span onclick="estado.logado=false; salvar(); render()" style="font-size:12px; color:#888;">Sair</span>
+                        <div><b>Olá, ${estado.nomeUsuario}!</b></div>
+                        <span onclick="estado.logado=false; salvar(); render();" style="font-size: 11px; cursor:pointer;">Sair</span>
                     </div>
 
                     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin:0 20px;">
@@ -132,7 +129,7 @@
                         </div>
                     </div>
 
-                    <div class="card" style="border: 1px solid var(--primary); background: #fafffb;">
+                    <div class="card" style="border: 1px solid var(--primary); background: #fafffb; text-align:center;">
                         <button onclick="rodarAnuncio('Liberando Dica...', ()=>navegar('dica'))" style="width:100%; background:var(--primary); color:white; border:none; padding:12px; border-radius:30px; font-weight:bold;">📺 Assistir para Dica</button>
                     </div>
 
@@ -141,13 +138,13 @@
                 return;
             }
 
-            // TELA DICA
+            // TELA DE DICA
             if (estado.tela === 'dica') {
                 root.innerHTML = `
                     <div style="text-align:center; padding:60px 20px;">
                         <div style="font-size:40px; margin-bottom:10px;">🥗</div>
                         <h2 style="color:var(--primary); margin-bottom:30px;">Dica Liberada!</h2>
-                        <div class="card" style="padding:40px 20px; font-size:16px; line-height:1.5; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                        <div class="card" style="padding:40px 20px; font-size:16px; line-height:1.5;">
                             "Comer fibras (como saladas) antes do prato principal reduz o pico de insulina e ajuda a controlar o peso!"
                         </div>
                         <button class="btn-preto" onclick="navegar('home')">Voltar ao Dashboard</button>
@@ -156,12 +153,11 @@
                 return;
             }
 
-            // ADICIONAR REFEIÇÃO
             if (estado.tela === 'add_refeicao') {
                 root.innerHTML = `
                     <div style="padding: 20px;">
                         <div onclick="navegar('home')">← Voltar</div>
-                        <h2 style="text-align:center; margin-top:30px;">Qual é a refeição?</h2>
+                        <h2 style="text-align:center; margin-top:30px;">O que vamos comer?</h2>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
                             ${['Café', 'Almoço', 'Jantar', 'Lanche'].map(t => `
                                 <div onclick="estado.tempRefeicao='${t}'; render()" style="background: ${estado.tempRefeicao===t?'#f0fff7':'#fff'}; border: 2px solid ${estado.tempRefeicao===t?'#2ab573':'#eee'}; padding: 20px; border-radius: 15px; text-align: center;">
@@ -170,9 +166,9 @@
                             `).join('')}
                         </div>
                         <button class="btn-principal" onclick="document.getElementById('c-in').click()">📸 Tirar Foto</button>
-                        <input type="file" id="c-in" accept="image/*" style="display:none" onchange="rodarAnuncio('IA Analisando...', () => {
+                        <input type="file" id="c-in" accept="image/*" style="display:none" onchange="rodarAnuncio('Analisando...', () => {
                             estado.historico.unshift({tipo: estado.tempRefeicao, cal: 450});
-                            estado.prot += 20; estado.carb += 35; estado.gord += 10;
+                            estado.prot += 20;
                             navegar('home');
                         })">
                     </div>
