@@ -43,7 +43,13 @@
         
         .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; }
 
-        /* BANNER DENTRO DA PÁGINA (NÃO FIXO) */
+        /* PRODUTOS */
+        .prod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 10px; }
+        .prod-card { background: #fff; border-radius: 16px; padding: 12px; text-align: center; border: 1px solid #eee; display: flex; flex-direction: column; height: 210px; }
+        .prod-card img { width: 100%; height: 80px; object-fit: contain; margin-bottom: 10px; }
+        .prod-card b { font-size: 12px; flex-grow: 1; }
+        .prod-card button { width: 100%; background: var(--primary); color: #fff; border: none; padding: 8px; border-radius: 8px; font-weight: bold; }
+
         .banner-inline { background: #eee; border: 1px dashed #ccc; padding: 15px; margin: 20px; border-radius: 15px; text-align: center; color: #999; font-size: 12px; }
 
         .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
@@ -54,7 +60,7 @@
 <body>
 
     <div id="ads-overlay" class="ads-overlay">
-        <div id="ad-text" style="font-size: 18px; font-weight: bold;">Calculando Nutrientes...</div>
+        <div id="ad-text" style="font-size: 18px; font-weight: bold;">IA NutriShot em ação...</div>
         <div class="bar-container"><div id="bar-progress"></div></div>
     </div>
 
@@ -63,15 +69,24 @@
     <script>
         const LOGO_URL = "icone-512.png";
         
+        const SUPLEMENTOS = {
+            ganho: [
+                { nome:"Creatina Growth 100g", foto:"creatina-100g.png", link:"https://amzn.to/4b47g9o" },
+                { nome:"Whey Chocolate", foto:"wey-choco.png", link:"https://amzn.to/3LjWMIB" },
+                { nome:"Whey Morango", foto:"wey-moran.png", link:"https://amzn.to/4sPsdvg" },
+                { nome:"Whey Creme", foto:"wey-creme.png", link:"https://amzn.to/4qq9ODl" }
+            ],
+            perda: [
+                { nome:"Psyllium Cápsulas", foto:"Psyllium-caps.png", link:"https://amzn.to/4sBfMmq" },
+                { nome:"Ultra Burn Termogênico", foto:"termog.png", link:"https://amzn.to/4b5phUQ" },
+                { nome:"L-Carnitina 2000mg", foto:"l-creat2000.png", link:"https://amzn.to/4bBHcCw" }
+            ]
+        };
+
         let estado = JSON.parse(localStorage.getItem('nutrishot_v5')) || {
-            logado: false,
-            tela: 'cadastro',
-            nomeUsuario: 'Isaac',
-            objetivo: 'perda',
-            calorias: 0, prot: 0, carb: 0, gord: 0,
-            historico: [],
-            tempRefeicao: 'Almoço',
-            fotoSelecionada: false
+            logado: false, tela: 'cadastro', nomeUsuario: 'Isaac', objetivo: 'perda',
+            calorias: 0, prot: 0, carb: 0, gord: 0, historico: [],
+            tempRefeicao: 'Almoço', fotoSelecionada: false
         };
 
         function salvar() { localStorage.setItem('nutrishot_v5', JSON.stringify(estado)); }
@@ -80,12 +95,9 @@
         function validarEEntrar() {
             const email = document.getElementById('email-f').value;
             const pass = document.getElementById('pass-f').value;
-            if(email.length < 3 || pass.length < 3) { alert("Preencha os campos!"); return; }
+            if(email.length < 3) { alert("Preencha o e-mail!"); return; }
             if(document.getElementById('nome-f')) { estado.nomeUsuario = document.getElementById('nome-f').value || 'Usuário'; }
-            estado.logado = true;
-            estado.tela = 'home';
-            salvar();
-            render();
+            estado.logado = true; estado.tela = 'home'; salvar(); render();
         }
 
         function rodarAnuncio(texto, callback) {
@@ -97,18 +109,22 @@
             const tempo = setInterval(() => {
                 p += 5; bar.style.width = p + '%';
                 if(p >= 100) { clearInterval(tempo); overlay.style.display = 'none'; bar.style.width = '0%'; callback(); }
-            }, 70);
+            }, 50);
         }
 
+        // OTMIZAÇÃO PARA EVITAR ERRO DE MEMÓRIA
         function prepararFoto(event) {
-            if(event.target.files && event.target.files[0]) {
+            const file = event.target.files[0];
+            if(file) {
+                // Remove o arquivo do input imediatamente para liberar memória do sistema
+                event.target.value = ''; 
                 estado.fotoSelecionada = true;
                 render();
             }
         }
 
         function confirmarAnalise() {
-            rodarAnuncio("IA analisando refeição...", () => {
+            rodarAnuncio("IA analisando nutrientes...", () => {
                 const cal = Math.floor(Math.random() * 200 + 350);
                 estado.calorias += cal;
                 estado.prot += Math.floor(cal * 0.05);
@@ -137,8 +153,7 @@
                             ${estado.tela === 'cadastro' ? 'Já tem conta? Entrar' : 'Novo aqui? Cadastrar'}
                         </p>
                     </div>
-                `;
-                return;
+                `; return;
             }
 
             if (estado.tela === 'home') {
@@ -148,65 +163,39 @@
                         <b>Olá, ${estado.nomeUsuario}</b>
                         <span onclick="estado.logado=false; render()" style="opacity:0.4">Sair</span>
                     </div>
-
                     <div class="card card-fogo">
                         <small>Sequência Atual</small>
                         <div style="font-size: 32px; font-weight: bold;">1 Dia 🔥</div>
                     </div>
-
                     <div class="card">
                         <b>Últimos 7 Dias</b>
                         <div class="grid-7">
-                            ${['S','T','Q','Q','S','S','D'].map((d, i) => `
-                                <div class="col-dia">
-                                    <div class="barra-v ${i===4?'active':''}"></div>
-                                    <span class="dia-txt">${d}</span>
-                                </div>
-                            `).join('')}
+                            ${['S','T','Q','Q','S','S','D'].map((d, i) => `<div class="col-dia"><div class="barra-v ${i===4?'active':''}"></div><span class="dia-txt">${d}</span></div>`).join('')}
                         </div>
                     </div>
-
                     <div style="margin: 10px 20px 5px 20px; font-size: 14px; font-weight: bold;">Seu Objetivo:</div>
                     <div class="selector-objetivo">
                         <div class="opt-obj ${estado.objetivo === 'perda' ? 'active' : ''}" onclick="estado.objetivo='perda'; render()">Emagrecer</div>
                         <div class="opt-obj ${estado.objetivo === 'ganho' ? 'active' : ''}" onclick="estado.objetivo='ganho'; render()">Ganho Massa</div>
                     </div>
-
                     <button class="btn-loja" onclick="navegar('catalogo')">🛒 VER SUPLEMENTOS</button>
-
                     <div class="card">
-                        <small>Calorias</small>
+                        <small>Calorias Diárias</small>
                         <div style="font-size: 26px; font-weight: bold;">${estado.calorias} <span style="font-size:14px; color:#ccc">/ 2577 kcal</span></div>
                         <div class="progress-container"><div class="progress-bar" style="width: ${perc}%"></div></div>
                     </div>
-
                     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin:0 20px;">
                         <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Prot</small><br><b>${estado.prot}g</b></div>
                         <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Carb</small><br><b>${estado.carb}g</b></div>
                         <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Gord</small><br><b>${estado.gord}g</b></div>
                     </div>
-
                     <div class="card" style="border: 1px solid var(--primary); background: #fafffb;">
                         <b style="color:var(--primary)">Dica de Ouro ✨</b>
                         <button onclick="rodarAnuncio('Buscando Dica...', ()=>navegar('dica'))" style="width:100%; background:var(--primary); color:white; border:none; padding:12px; border-radius:12px; margin-top:10px; font-weight:bold;">📺 Ver Dica Exclusiva</button>
                     </div>
-
-                    <div class="card">
-                        <b>Refeições de Hoje</b>
-                        <div style="margin-top:10px;">
-                            ${estado.historico.length === 0 ? '<small>Nenhuma refeição ainda.</small>' : 
-                                estado.historico.map(r => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee"><span>${r.tipo}</span><b>+${r.cal} kcal</b></div>`).join('')}
-                        </div>
-                    </div>
-
-                    <div class="banner-inline">
-                        <small>PUBLICIDADE</small><br>
-                        <b>ESPAÇO PARA ANÚNCIO GOOGLE ADSENSE</b>
-                    </div>
-
+                    <div class="banner-inline"><small>PUBLICIDADE</small><br><b>ESPAÇO PARA ANÚNCIO</b></div>
                     <button class="fab" onclick="navegar('add_refeicao')">+</button>
-                `;
-                return;
+                `; return;
             }
 
             if (estado.tela === 'add_refeicao') {
@@ -217,12 +206,10 @@
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                             ${['Café', 'Almoço', 'Jantar', 'Lanche'].map(t => `<div onclick="estado.tempRefeicao='${t}'; render()" style="padding:20px; border-radius:15px; text-align:center; border: 2px solid ${estado.tempRefeicao===t?'var(--primary)':'#eee'}; background: ${estado.tempRefeicao===t?'#f0fff7':'#fff'}"><b>${t}</b></div>`).join('')}
                         </div>
-                        
                         <div class="card" style="text-align:center; margin-top: 40px;">
                             ${!estado.fotoSelecionada ? `
                                 <button class="btn-principal" style="width:100%; margin: 10px 0" onclick="document.getElementById('take-photo').click()">📸 Tirar Foto Agora</button>
                                 <button class="btn-outline" onclick="document.getElementById('pick-gallery').click()">📁 Escolher da Galeria</button>
-                                
                                 <input type="file" id="take-photo" capture="environment" accept="image/*" style="display:none" onchange="prepararFoto(event)">
                                 <input type="file" id="pick-gallery" accept="image/*" style="display:none" onchange="prepararFoto(event)">
                             ` : `
@@ -232,33 +219,38 @@
                             `}
                         </div>
                     </div>
-                `;
-                return;
+                `; return;
             }
 
             if (estado.tela === 'catalogo') {
+                const lista = estado.objetivo === 'ganho' ? SUPLEMENTOS.ganho : SUPLEMENTOS.perda;
                 root.innerHTML = `
                     <div style="padding: 20px;">
                         <div onclick="navegar('home')">← Voltar</div>
-                        <h3 style="margin:20px 0;">Produtos Recomendados</h3>
-                        <p style="color:#888; font-size:13px;">Sugestões com base no seu objetivo de ${estado.objetivo}.</p>
-                        <div style="text-align:center; padding: 50px 0; color:#ccc;">Carregando produtos da loja...</div>
+                        <h2 style="margin:20px 0;">Sugeridos para ${estado.objetivo === 'ganho' ? 'Ganho' : 'Perda'}</h2>
+                        <div class="prod-grid">
+                            ${lista.map(p => `
+                                <div class="prod-card">
+                                    <img src="${p.foto}" onerror="this.src='https://via.placeholder.com/150'">
+                                    <b>${p.nome}</b>
+                                    <a href="${p.link}" target="_blank" style="text-decoration:none"><button>Ver Oferta</button></a>
+                                </div>
+                            `).join("")}
+                        </div>
                     </div>
-                `;
-                return;
+                `; return;
             }
 
             if (estado.tela === 'dica') {
                 root.innerHTML = `
                     <div style="text-align:center; padding:60px 20px;">
                         <h2>Dica Nutricional 💡</h2>
-                        <div class="card" style="padding:30px;">"Priorize alimentos integrais. Eles possuem mais fibras, o que ajuda na digestão e no controle da fome!"</div>
+                        <div class="card" style="padding:30px;">"Beba 300ml de água antes de cada refeição para melhorar a digestão e o controle da fome."</div>
                         <button class="btn-principal" onclick="navegar('home')">Voltar ao Início</button>
                     </div>
                 `;
             }
         }
-
         render();
     </script>
 </body>
