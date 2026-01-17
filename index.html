@@ -40,6 +40,12 @@
         .imc-info { text-align: right; background: rgba(255,255,255,0.15); padding: 8px 12px; border-radius: 12px; min-width: 80px; }
         .imc-status { font-size: 10px; font-weight: bold; text-transform: uppercase; margin-top: 2px; display: block; }
 
+        .grid-7 { display: flex; justify-content: space-between; align-items: flex-end; height: 50px; margin-top: 15px; }
+        .col-dia { display: flex; flex-direction: column; align-items: center; flex: 1; }
+        .barra-v { width: 30px; height: 4px; background: #eee; border-radius: 2px; }
+        .barra-v.active { background: #6a11cb; width: 40px; }
+        .dia-txt { font-size: 10px; color: #aaa; margin-top: 5px; }
+
         .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--primary); transition: width 0.5s ease; }
         .progress-bar.water { background: var(--water); }
@@ -50,8 +56,8 @@
         .opt-obj { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #eee; background: #fff; text-align: center; font-weight: bold; cursor: pointer; font-size: 13px; }
         .opt-obj.active { border-color: var(--primary); background: #f0fff7; color: var(--primary); }
 
-        /* Estilo da Página de Dica/Resultado */
-        .dica-container { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; background: radial-gradient(circle at top right, #f0fff7, #ffffff); text-align: center; box-sizing: border-box; }
+        /* Estilo da Página de Resultado (IGUAL DICA DE OURO) */
+        .dica-container { min-height: 85vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; background: radial-gradient(circle at top right, #f0fff7, #ffffff); text-align: center; }
         .dica-texto-grande { font-size: 30px; font-weight: 800; line-height: 1.2; color: #222; margin: 30px 0; }
         
         .btn-principal { width: calc(100% - 40px); background: linear-gradient(to right, #667eea, #764ba2); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer; }
@@ -81,15 +87,40 @@
     <script>
         const LOGO_URL = "icone-512.png";
         
+        const SUPLEMENTOS = {
+            ganho: [
+                { nome:"Creatina Growth 100g", foto:"creatina-100g.png", link:"https://amzn.to/4b47g9o" },
+                { nome:"Whey Chocolate", foto:"wey-choco.png", link:"https://amzn.to/3LjWMIB" },
+                { nome:"Whey Morango", foto:"wey-moran.png", link:"https://amzn.to/4sPsdvg" },
+                { nome:"Whey Creme", foto:"wey-creme.png", link:"https://amzn.to/4qq9ODl" },
+                { nome:"Gainer Chocolate", foto:"Hipercalórico-choco.png", link:"https://amzn.to/4qpZKKC" },
+                { nome:"Gainer Cookies", foto:"Hipercalórico-cooki.png", link:"https://amzn.to/4bC9A7C" }
+            ],
+            perda: [
+                { nome:"Psyllium Cápsulas", foto:"Psyllium-caps.png", link:"https://amzn.to/4sBfMmq" },
+                { nome:"Psyllium em Pó", foto:"Psyllium-po.png", link:"https://amzn.to/3YINEAk" },
+                { nome:"Ultra Burn Termogênico", foto:"termog.png", link:"https://amzn.to/4b5phUQ" },
+                { nome:"L-Carnitina 2000mg", foto:"l-creat2000.png", link:"https://amzn.to/4bBHcCw" },
+                { nome:"L-Carnitina 1000mg", foto:"l-creat1000.png", link:"https://amzn.to/3LJAv6S" }
+            ]
+        };
+
         let estado = JSON.parse(localStorage.getItem('nutrishot_v5')) || {
             logado: false, tela: 'cadastro', nomeUsuario: 'Isaac', objetivo: 'perda',
             peso: 70, altura: 170, imc: 24.2, classification: 'Normal',
             calorias: 0, prot: 0, carb: 0, gord: 0, aguaAtual: 0, historico: [],
-            tempRefeicao: 'Almoço', fotoSelecionada: null, resultadoAnalise: null
+            tempRefeicao: 'Almoço', fotoSelecionada: null, ultimoResultado: null
         };
 
         function salvar() { localStorage.setItem('nutrishot_v5', JSON.stringify(estado)); }
         function navegar(tela) { estado.tela = tela; salvar(); render(); window.scrollTo(0,0); }
+
+        function infoIMC(peso, altura) {
+            const altM = altura / 100;
+            const imc = (peso / (altM * altM)).toFixed(1);
+            let classe = imc < 18.5 ? "Magreza" : imc < 25 ? "Normal" : imc < 30 ? "Sobrepeso" : imc < 35 ? "Obesidade I" : "Obesidade II";
+            return { valor: imc, texto: classe };
+        }
 
         function rodarAnuncio(texto, callback) {
             const overlay = document.getElementById('ads-overlay');
@@ -121,8 +152,7 @@
                 estado.gord += Math.floor(cal * 0.03);
                 estado.historico.unshift({tipo: estado.tempRefeicao, cal: cal});
                 
-                // Armazena o resultado para a tela de informação
-                estado.resultadoAnalise = { tipo: estado.tempRefeicao, cal: cal };
+                estado.ultimoResultado = { tipo: estado.tempRefeicao, cal: cal };
                 estado.fotoSelecionada = null;
                 navegar('resultado_analise');
             });
@@ -153,6 +183,9 @@
 
             if (estado.tela === 'home') {
                 const perc = Math.min((estado.calorias / 2577) * 100, 100);
+                const metaAgua = Math.round(estado.peso * 35);
+                const percAgua = Math.min((estado.aguaAtual / metaAgua) * 100, 100);
+
                 root.innerHTML = `
                     <div style="padding: 20px; display: flex; justify-content: space-between; align-items:center;">
                         <div><small style="color:#888;">Bom dia,</small><br><b>${estado.nomeUsuario}</b></div>
@@ -160,7 +193,7 @@
                     </div>
 
                     <div class="card card-fogo">
-                        <div><small>Sequência</small><div style="font-size: 26px; font-weight: bold;">1 Dia 🔥</div></div>
+                        <div><small>Sequência Ativa</small><div style="font-size: 26px; font-weight: bold;">1 Dia 🔥</div></div>
                         <div class="imc-info">
                             <div style="font-size: 22px; font-weight: bold;">${estado.imc}</div>
                             <span class="imc-status">${estado.classification}</span>
@@ -168,9 +201,25 @@
                     </div>
 
                     <div class="card" style="border-left: 5px solid var(--water);">
-                        <b>Hidratação 💧</b><br>
+                        <b>Hidratação Diária 💧</b><br>
+                        <small>${estado.aguaAtual}ml / ${metaAgua}ml</small>
+                        <div class="progress-container"><div class="progress-bar water" style="width: ${percAgua}%"></div></div>
                         <button class="btn-water" onclick="estado.aguaAtual+=250; render()">+ BEBER 250ML</button>
                     </div>
+
+                    <div class="card">
+                        <b>Progresso Semanal</b>
+                        <div class="grid-7">
+                            ${['S','T','Q','Q','S','S','D'].map((d, i) => `<div class="col-dia"><div class="barra-v ${i===4?'active':''}"></div><span class="dia-txt">${d}</span></div>`).join('')}
+                        </div>
+                    </div>
+
+                    <div class="selector-objetivo">
+                        <div class="opt-obj ${estado.objetivo === 'perda' ? 'active' : ''}" onclick="estado.objetivo='perda'; render()">Emagrecer</div>
+                        <div class="opt-obj ${estado.objetivo === 'ganho' ? 'active' : ''}" onclick="estado.objetivo='ganho'; render()">Ganho Massa</div>
+                    </div>
+
+                    <button class="btn-loja" onclick="navegar('catalogo')">🛒 VER SUPLEMENTOS</button>
 
                     <div class="card">
                         <small>Consumo de Calorias</small>
@@ -191,16 +240,29 @@
 
                     <div class="card">
                         <b style="display:block; margin-bottom:10px;">Refeições de Hoje</b>
-                        ${estado.historico.map(h => `
-                            <div class="refeicao-item">
-                                <span><b>${h.tipo}</b></span>
-                                <span style="color:var(--primary); font-weight:bold;">${h.cal} kcal</span>
-                            </div>
-                        `).join('')}
+                        ${estado.historico.map(h => `<div class="refeicao-item"><span><b>${h.tipo}</b></span><span style="color:var(--primary); font-weight:bold;">${h.cal} kcal</span></div>`).join('')}
                     </div>
 
                     <div class="banner-inline"><small>ANÚNCIO</small><br><b>ESPAÇO PUBLICITÁRIO</b></div>
                     <button class="fab" onclick="navegar('add_refeicao')">+</button>
+                `; return;
+            }
+
+            if (estado.tela === 'catalogo') {
+                const lista = estado.objetivo === 'ganho' ? SUPLEMENTOS.ganho : SUPLEMENTOS.perda;
+                root.innerHTML = `
+                    <div style="padding: 20px;">
+                        <div onclick="navegar('home')" style="margin-bottom:15px; cursor:pointer; color:var(--blue-action); font-weight:bold;">← Voltar</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            ${lista.map(p => `
+                                <div style="background:#fff; border-radius:16px; padding:12px; text-align:center; border:1px solid #eee; height:230px; display:flex; flex-direction:column; justify-content:space-between;">
+                                    <img src="${p.foto}" style="width:100%; height:85px; object-fit:contain;" onerror="this.src='https://via.placeholder.com/150'">
+                                    <b style="font-size:11px;">${p.nome}</b>
+                                    <a href="${p.link}" target="_blank"><button style="width:100%; background:var(--primary); color:#fff; border:none; padding:8px; border-radius:8px; font-weight:bold;">Ver Oferta</button></a>
+                                </div>
+                            `).join("")}
+                        </div>
+                    </div>
                 `; return;
             }
 
@@ -228,17 +290,13 @@
                 `; return;
             }
 
-            // TELA DE RESULTADO (ESTILO DICA DE OURO)
             if (estado.tela === 'resultado_analise') {
                 root.innerHTML = `
                     <div class="dica-container">
                         <div style="font-size:60px">🚀</div>
-                        <h2 style="color:var(--blue-action); margin:0; letter-spacing:1px;">ANÁLISE CONCLUÍDA</h2>
-                        <div class="dica-texto-grande">
-                            Sua refeição de <span style="color:var(--primary)">${estado.resultadoAnalise.tipo}</span> possui aproximadamente<br>
-                            <span style="color:var(--blue-action)">${estado.resultadoAnalise.cal} kcal</span>!
-                        </div>
-                        <button class="btn-principal" style="width:100%;" onclick="navegar('home')">VOLTAR AO INÍCIO</button>
+                        <h2 style="color:var(--blue-action); margin:0;">ANÁLISE CONCLUÍDA</h2>
+                        <div class="dica-texto-grande">Sua refeição de <span style="color:var(--primary)">${estado.ultimoResultado.tipo}</span> tem cerca de <span style="color:var(--blue-action)">${estado.ultimoResultado.cal} kcal</span>!</div>
+                        <button class="btn-principal" onclick="navegar('home')">VOLTAR AO INÍCIO</button>
                     </div>
                 `; return;
             }
@@ -247,9 +305,9 @@
                 root.innerHTML = `
                     <div class="dica-container">
                         <div style="font-size:60px">💡</div>
-                        <h2 style="color:var(--primary); margin:0; letter-spacing:1px;">DICA EXCLUSIVA</h2>
+                        <h2 style="color:var(--primary); margin:0;">DICA EXCLUSIVA</h2>
                         <div class="dica-texto-grande">"Mastigar devagar aumenta a saciedade e melhora a absorção dos nutrientes!"</div>
-                        <button class="btn-principal" style="width:100%;" onclick="navegar('home')">CONTINUAR</button>
+                        <button class="btn-principal" onclick="navegar('home')">CONTINUAR</button>
                     </div>
                 `;
             }
