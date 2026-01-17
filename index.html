@@ -12,7 +12,6 @@
         }
         body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; }
         
-        /* TÍTULO EM GRADIENTE */
         .texto-logo {
             font-size: 32px; 
             font-weight: 800;
@@ -37,6 +36,19 @@
             font-weight: bold; 
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(36, 144, 235, 0.3);
+        }
+
+        /* ESTILO DO RODAPÉ LOGIN/CADASTRO */
+        .footer-link { 
+            margin-top: 20px; 
+            font-size: 14px; 
+            cursor: pointer; 
+            color: #000; /* Texto base em preto */
+            font-weight: 500;
+        }
+        .footer-link span { 
+            color: var(--blue-action); /* Ação em azul */
+            font-weight: 700;
         }
 
         /* CARDS E GRÁFICOS */
@@ -172,8 +184,8 @@
                             ${estado.tela === 'cadastro' ? 'CRIAR MINHA CONTA' : 'ENTRAR NO APP'}
                         </button>
                         
-                        <p onclick="navegar('${estado.tela === 'cadastro' ? 'login' : 'cadastro'}')" style="cursor:pointer; color:var(--blue-action); font-weight: 600; margin-top: 15px; font-size: 13px;">
-                            ${estado.tela === 'cadastro' ? 'JÁ POSSUI UMA CONTA? ENTRAR' : 'NOVO POR AQUI? CADASTRE-SE'}
+                        <p class="footer-link" onclick="navegar('${estado.tela === 'cadastro' ? 'login' : 'cadastro'}')">
+                            ${estado.tela === 'cadastro' ? 'Novo por aqui? <span>Criar Conta</span>' : 'Já tem uma conta? <span>Entrar</span>'}
                         </p>
                     </div>
                 `; return;
@@ -253,7 +265,7 @@
                 root.innerHTML = `
                     <div style="padding: 20px;">
                         <div onclick="navegar('home')" style="margin-bottom:15px; cursor:pointer; color:var(--blue-action); font-weight:bold;">← Voltar</div>
-                        <h2 style="margin:10px 0; font-size:18px;">Produtos Sugeridos</h2>
+                        <h2 style="margin:10px 0; font-size:18px;">Suplementação Recomendada</h2>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px 0;">
                             ${lista.map(p => `
                                 <div style="background:#fff; border-radius:16px; padding:12px; text-align:center; border:1px solid #eee; display:flex; flex-direction:column; justify-content:space-between; height:230px;">
