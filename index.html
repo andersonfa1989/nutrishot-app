@@ -8,7 +8,6 @@
         :root { --primary: #2ab573; --secondary: #667eea; --bg: #f9fafb; }
         body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 80px; }
         
-        /* LOGIN & LOGO GRADIENTE */
         .texto-logo {
             font-size: 32px; font-weight: bold;
             background: linear-gradient(to right, #2ab573, #2490eb, #f39c12);
@@ -16,8 +15,7 @@
             margin: 10px 0;
         }
         .input-nutri { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; transition: 0.3s; }
-        .input-nutri:focus { border-color: var(--secondary); box-shadow: 0 0 8px rgba(102, 126, 234, 0.2); }
-
+        
         /* DASHBOARD */
         .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
         .card-fogo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; }
@@ -29,7 +27,7 @@
 
         /* SELETOR DE OBJETIVO */
         .selector-objetivo { display: flex; gap: 10px; margin: 0 20px 15px 20px; }
-        .opt-obj { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #eee; background: #fff; text-align: center; font-weight: bold; cursor: pointer; font-size: 13px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .opt-obj { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #eee; background: #fff; text-align: center; font-weight: bold; cursor: pointer; font-size: 13px; transition: 0.3s; }
         .opt-obj.active { border-color: var(--primary); background: #f0fff7; color: var(--primary); }
 
         /* BOTÕES */
@@ -37,15 +35,14 @@
         .btn-loja { background: #2ab573; color: white; border: none; padding: 15px; border-radius: 12px; width: calc(100% - 40px); margin: 0 20px; font-weight: bold; cursor: pointer; font-size: 14px; }
         .fab { position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 100; }
 
-        /* LOJA */
+        /* PRODUTOS */
         .prod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 10px; }
-        .prod-card { background: #fff; border-radius: 16px; padding: 12px; text-align: center; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .prod-card img { width: 100%; max-height: 110px; object-fit: contain; margin-bottom: 8px; }
-        .prod-card b { font-size: 13px; display: block; margin: 5px 0; height: 32px; overflow: hidden; }
-        .prod-card button { width: 100%; margin-top: 8px; background: var(--primary); color: #fff; border: none; padding: 10px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .prod-card { background: #fff; border-radius: 16px; padding: 12px; text-align: center; border: 1px solid #eee; }
+        .prod-card img { width: 100%; max-height: 100px; object-fit: contain; }
+        .prod-card button { width: 100%; margin-top: 8px; background: var(--primary); color: #fff; border: none; padding: 10px; border-radius: 10px; font-weight: bold; }
 
-        /* ANÚNCIO / PROGRESSO */
-        .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; }
+        /* ANÚNCIO */
+        .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
         .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; overflow: hidden; }
         #bar-progress { width: 0%; height: 100%; background: #2ab573; transition: width 0.1s linear; }
     </style>
@@ -134,12 +131,21 @@
             if (!estado.logado) {
                 root.innerHTML = `
                     <div style="padding: 60px 20px; text-align: center;">
-                        <img src="${LOGO_URL}" style="width: 150px;" onerror="this.src='https://i.ibb.co/Lz0D7Yd/icone-512.png'">
+                        <img src="${LOGO_URL}" style="width: 150px; margin-bottom: 15px;" onerror="this.src='https://i.ibb.co/Lz0D7Yd/icone-512.png'">
                         <h1 class="texto-logo">NutriShot Elements</h1>
-                        <p style="color: #666; margin-bottom: 30px;">Crie sua conta para começar</p>
-                        <input type="email" id="email-input" class="input-nutri" placeholder="E-mail">
+                        <p style="color: #666; margin-bottom: 30px;">${estado.tela === 'cadastro' ? 'Crie sua conta para começar' : 'Entre na sua conta'}</p>
+                        
+                        ${estado.tela === 'cadastro' ? '<input type="text" class="input-nutri" placeholder="Nome">' : ''}
+                        <input type="email" class="input-nutri" placeholder="E-mail">
                         <input type="password" class="input-nutri" placeholder="Senha">
-                        <button class="btn-principal" onclick="realizarAcaoLogin()">Entrar</button>
+                        
+                        <button class="btn-principal" onclick="realizarAcaoLogin()">${estado.tela === 'cadastro' ? 'Cadastrar' : 'Entrar'}</button>
+                        
+                        <p style="margin-top: 25px; color: #888;">
+                            ${estado.tela === 'cadastro' ? 
+                                'Já possui uma conta? <span onclick="navegar(\'login\')" style="color: #667eea; font-weight: bold; cursor:pointer;">Entrar</span>' : 
+                                'Novo por aqui? <span onclick="navegar(\'cadastro\')" style="color: #667eea; font-weight: bold; cursor:pointer;">Cadastre-se</span>'}
+                        </p>
                     </div>
                 `;
                 return;
@@ -177,27 +183,18 @@
                     </div>
 
                     <button class="btn-loja" onclick="navegar('catalogo')">
-                        🛒 VER SUPLEMENTOS PARA ${estado.objetivo === 'perda' ? 'EMAGRECER' : 'GANHAR MASSA'}
+                        🛒 VER SUPLEMENTOS PARA ${estado.objetivo === 'perda' ? 'EMAGRECER' : 'MASSA'}
                     </button>
 
                     <div class="card">
                         <small style="color:#888">Calorias Consumidas</small>
-                        <div style="font-size: 28px; font-weight: bold; margin: 8px 0;">${estado.calorias} <span style="font-size:14px; color:#ccc; font-weight:normal;">/ 2577 cal</span></div>
-                        <div style="width:100%; height:8px; background:#f0f0f0; border-radius:10px; overflow:hidden;">
-                            <div style="width:${Math.min((estado.calorias/2577)*100, 100)}%; height:100%; background:var(--primary);"></div>
-                        </div>
+                        <div style="font-size: 28px; font-weight: bold;">${estado.calorias} <span style="font-size:14px; color:#ccc; font-weight:normal;">/ 2577 cal</span></div>
                     </div>
 
                     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin:0 20px;">
                         <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Proteína</small><br><b>${estado.prot}g</b></div>
                         <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Carbos</small><br><b>${estado.carb}g</b></div>
                         <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Gordura</small><br><b>${estado.gord}g</b></div>
-                    </div>
-
-                    <div class="card" style="border: 1px solid var(--primary); background: #fafffb;">
-                        <b style="color:var(--primary)">Dica Especial</b><br>
-                        <small>Assista ao vídeo e libere uma dica nutricional!</small>
-                        <button onclick="rodarAnuncio('Carregando Dica Especial...', ()=>navegar('dica'))" style="width:100%; background:var(--primary); color:white; border:none; padding:12px; border-radius:30px; margin-top:10px; font-weight:bold;">📺 Assistir Anúncio</button>
                     </div>
 
                     <div class="card">
@@ -209,30 +206,6 @@
                     </div>
 
                     <button class="fab" onclick="navegar('add_refeicao')">+</button>
-                `;
-                return;
-            }
-
-            if (estado.tela === 'catalogo') {
-                const lista = estado.objetivo === 'ganho' ? SUPLEMENTOS.ganho : SUPLEMENTOS.perda;
-                const titulo = estado.objetivo === 'ganho' ? "💪 Suplementos para Massa" : "🔥 Suplementos para Emagrecer";
-                root.innerHTML = `
-                    <div style="padding: 20px;">
-                        <div style="font-size: 18px; cursor:pointer; margin-bottom:20px;" onclick="navegar('home')">← Voltar para o App</div>
-                        <h2 style="margin-bottom:20px;">${titulo}</h2>
-                        <div class="prod-grid">
-                            ${lista.map(p => `
-                                <div class="prod-card">
-                                    <img src="${p.foto}" onerror="this.src='https://via.placeholder.com/150'">
-                                    <b>${p.nome}</b>
-                                    <small style="color:var(--primary);font-weight:bold">${p.preco}</small>
-                                    <a href="${p.link}" target="_blank" style="text-decoration:none">
-                                        <button>Comprar</button>
-                                    </a>
-                                </div>
-                            `).join("")}
-                        </div>
-                    </div>
                 `;
                 return;
             }
@@ -249,24 +222,34 @@
                                 </div>
                             `).join('')}
                         </div>
-                        <div class="card" style="text-align:center; margin-top: 40px;">
-                            <button class="btn-principal" style="width:100%; margin: 10px 0;" onclick="document.getElementById('c-in').click()">📸 Tirar Foto</button>
+                        <div class="card" style="text-align:center; margin-top: 40px; display: flex; flex-direction: column; gap: 10px;">
+                            <button class="btn-principal" style="width:100%; margin:0" onclick="document.getElementById('c-in').click()">📸 Tirar Foto</button>
+                            <button class="btn-principal" style="width:100%; margin:0; background:#fff; color:#000; border:1px solid #ddd;" onclick="document.getElementById('g-in').click()">📁 Galeria</button>
+                            
                             <input type="file" id="c-in" capture="environment" accept="image/*" style="display:none" onchange="processarFoto()">
+                            <input type="file" id="g-in" accept="image/*" style="display:none" onchange="processarFoto()">
                         </div>
                     </div>
                 `;
                 return;
             }
 
-            if (estado.tela === 'dica') {
+            if (estado.tela === 'catalogo') {
+                const lista = estado.objetivo === 'ganho' ? SUPLEMENTOS.ganho : SUPLEMENTOS.perda;
                 root.innerHTML = `
-                    <div style="text-align:center; padding:60px 20px;">
-                        <div style="font-size:50px;">🥗</div>
-                        <h2 style="color:var(--primary)">Dica Liberada!</h2>
-                        <div class="card" style="padding:30px; font-size:18px;">
-                            "Comer fibras (como saladas) antes do prato principal ajuda no controle da saciedade!"
+                    <div style="padding: 20px;">
+                        <div style="font-size: 18px; cursor:pointer;" onclick="navegar('home')">← Voltar</div>
+                        <h2 style="margin:20px 0;">Recomendados para você</h2>
+                        <div class="prod-grid">
+                            ${lista.map(p => `
+                                <div class="prod-card">
+                                    <img src="${p.foto}" onerror="this.src='https://via.placeholder.com/150'">
+                                    <b>${p.nome}</b>
+                                    <small style="color:var(--primary);font-weight:bold">${p.preco}</small>
+                                    <a href="${p.link}" target="_blank"><button>Comprar</button></a>
+                                </div>
+                            `).join("")}
                         </div>
-                        <button class="btn-principal" style="background:#000" onclick="navegar('home')">Voltar ao Dashboard</button>
                     </div>
                 `;
             }
