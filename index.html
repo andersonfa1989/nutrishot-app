@@ -6,89 +6,131 @@
     <title>NutriShot Elements</title>
     <style>
         :root { --primary: #2ab573; --secondary: #6a11cb; --bg: #f8f9fa; --text: #333; }
-        body { margin: 0; font-family: -apple-system, sans-serif; background: #f8f9fa; color: var(--text); }
+        body { margin: 0; font-family: -apple-system, sans-serif; background: #f8f9fa; color: var(--text); padding-bottom: 100px; }
         
-        /* LOGO OFICIAL */
-        .header-logo { text-align: center; padding: 20px; }
-        .logo-img { width: 120px; height: auto; }
+        /* Header & Logo */
+        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo-container { text-align: center; padding: 40px 20px; }
+        .logo-img { width: 150px; height: auto; }
 
-        /* INPUTS E BOTÕES */
-        .input-group { margin: 10px 25px; }
-        input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #ddd; outline: none; box-sizing: border-box; }
-        .btn-black { background: #111; color: #fff; border: none; padding: 18px; border-radius: 30px; width: calc(100% - 50px); margin: 10px 25px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
-        .btn-green { background: var(--primary); color: #fff; border: none; width: calc(100% - 40px); margin: 10px 20px; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-
-        /* DASHBOARD ELEMENTS */
+        /* Cards e Layout */
         .card { background: #fff; border-radius: 15px; padding: 20px; margin: 10px 20px; border: 1px solid #f0f0f0; }
         .card-streak { background: linear-gradient(135deg, #4e54c8, #8f94fb); color: #fff; border: none; }
-        .grid-macros { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 0 20px; }
+        .grid-macros { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 0 20px 10px 20px; }
         .macro-box { background: #fff; padding: 15px; border-radius: 15px; border: 1px solid #f2f2f2; text-align: center; }
+        .macro-box small { color: #888; font-size: 11px; display: block; margin-bottom: 4px; }
 
-        /* TELA DE DICA PREMIUM */
-        .dica-container { 
-            min-height: 100vh; 
-            background: linear-gradient(180deg, #e8f5e9 0%, #ffffff 100%); 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            padding: 40px 20px;
-            text-align: center;
-        }
-        .dica-badge { background: #fff; padding: 10px 20px; border-radius: 30px; color: var(--primary); font-weight: bold; font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .dica-card { 
-            background: #fff; 
-            padding: 40px 30px; 
-            border-radius: 25px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08); 
-            margin: 20px 0; 
-            position: relative;
-            max-width: 400px;
-        }
-        .dica-card::before { content: "“"; position: absolute; top: 10px; left: 20px; font-size: 60px; color: #f0f0f0; font-family: serif; }
+        /* Botões */
+        .btn-green { background: var(--primary); color: #fff; border: none; width: calc(100% - 40px); margin: 10px 20px; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-black { background: #111; color: #fff; border: none; padding: 18px; border-radius: 30px; width: calc(100% - 40px); margin: 10px 20px; font-size: 16px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        
+        /* Inputs */
+        .input-group { margin: 10px 20px; }
+        input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #ddd; box-sizing: border-box; }
 
-        /* OVERLAYS */
-        #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: #000; color: white; flex-direction: column; align-items: center; justify-content: center; }
-        .fab { position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; background: #000; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; border: none; }
+        /* Dica Premium */
+        .dica-container { min-height: 100vh; background: linear-gradient(180deg, #e8f5e9 0%, #ffffff 100%); display: flex; flex-direction: column; align-items: center; padding: 40px 20px; text-align: center; }
+        .dica-card { background: #fff; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin: 20px 0; }
+
+        /* Overlays */
+        #loading-overlay, #ai-loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5000; flex-direction: column; align-items: center; justify-content: center; }
+        #loading-overlay { background: #000; color: white; }
+        #ai-loader { background: rgba(255,255,255,0.9); }
+
+        .fab { position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; background: #000; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: none; z-index: 999; }
     </style>
 </head>
 <body>
 
     <div id="loading-overlay">
-        <div style="font-size: 18px; margin-bottom: 20px; font-weight: bold;">Gerando Dica Exclusiva...</div>
+        <div style="font-size: 18px; margin-bottom: 20px; font-weight: bold;">Carregando Dica Especial...</div>
         <div style="width: 70%; height: 6px; background: #333; border-radius: 10px; overflow: hidden;">
             <div id="progress-bar" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.1s linear;"></div>
         </div>
     </div>
 
+    <div id="ai-loader">
+        <div style="font-size: 50px;">🤖</div>
+        <div style="font-weight: bold; margin-top: 15px;">IA Analisando Refeição...</div>
+    </div>
+
     <div id="app"></div>
 
-    <input type="file" id="cam-input" accept="image/*" capture="environment" style="display:none" onchange="processarAnalise()">
+    <input type="file" id="cam-input" accept="image/*" capture="environment" style="display:none" onchange="processarAnaliseIA()">
 
     <script>
-        let estado = {
-            tela: 'login',
-            calorias: 450,
-            proteina: 20,
-            carbos: 50,
-            gordura: 15,
-            refeicoes: [{ nome: 'Almoço', cal: 450 }]
+        // LÓGICA DE PERSISTÊNCIA: Recupera dados salvos ou inicia zerado
+        let dadosIniciais = JSON.parse(localStorage.getItem('nutrishot_data')) || {
+            logado: false,
+            calorias: 0,
+            proteina: 0,
+            carbos: 0,
+            gordura: 0,
+            refeicoes: []
         };
 
-        function navegar(tela) { estado.tela = tela; render(); window.scrollTo(0,0); }
+        let estado = { ...dadosIniciais, tela: dadosIniciais.logado ? 'home' : 'login' };
 
-        function processarAnalise() {
-            navegar('dashboard'); // Simulação
+        function salvar() {
+            localStorage.setItem('nutrishot_data', JSON.stringify({
+                logado: estado.logado,
+                calorias: estado.calorias,
+                proteina: estado.proteina,
+                carbos: estado.carbos,
+                gordura: estado.gordura,
+                refeicoes: estado.refeicoes
+            }));
         }
 
-        function iniciarAnuncio() {
+        function navegar(tela) { 
+            estado.tela = tela; 
+            render(); 
+            window.scrollTo(0,0); 
+        }
+
+        function login() {
+            estado.logado = true;
+            salvar();
+            navegar('home');
+        }
+
+        function logout() {
+            estado.logado = false;
+            estado.calorias = 0; estado.proteina = 0; estado.carbos = 0; estado.gordura = 0;
+            estado.refeicoes = [];
+            salvar();
+            navegar('login');
+        }
+
+        function iniciarAnuncioDica() {
             const overlay = document.getElementById('loading-overlay');
             const bar = document.getElementById('progress-bar');
             overlay.style.display = 'flex';
-            let p = 0;
-            const int = setInterval(() => {
-                p += 4; bar.style.width = p + '%';
-                if(p >= 100) { clearInterval(int); overlay.style.display = 'none'; navegar('tela_dica'); }
-            }, 50);
+            let progresso = 0;
+            const intervalo = setInterval(() => {
+                progresso += 5;
+                bar.style.width = progresso + '%';
+                if (progresso >= 100) {
+                    clearInterval(intervalo);
+                    overlay.style.display = 'none';
+                    navegar('tela_dica');
+                }
+            }, 100);
+        }
+
+        function processarAnaliseIA() {
+            document.getElementById('ai-loader').style.display = 'flex';
+            setTimeout(() => {
+                const cal = Math.floor(Math.random() * 200 + 350);
+                estado.calorias += cal;
+                estado.proteina += Math.floor(cal * 0.05);
+                estado.carbos += Math.floor(cal * 0.1);
+                estado.gordura += Math.floor(cal * 0.02);
+                estado.refeicoes.unshift({ nome: 'Foto Refeição', cal: cal });
+                salvar();
+                document.getElementById('ai-loader').style.display = 'none';
+                navegar('home');
+            }, 1500);
         }
 
         function render() {
@@ -96,66 +138,76 @@
             
             if (estado.tela === 'login') {
                 root.innerHTML = `
-                    <div class="header-logo">
-                        <img src="https://i.ibb.co/Lz0D7Yd/icone-512.png" class="logo-img" alt="Logo">
+                    <div class="logo-container">
+                        <img src="https://i.ibb.co/Lz0D7Yd/icone-512.png" class="logo-img">
+                        <h2 style="margin-top:0; letter-spacing:-1px;">NUTRI<span style="color:var(--primary)">SHOT</span></h2>
                     </div>
                     <div class="input-group"><input type="email" placeholder="E-mail"></div>
                     <div class="input-group"><input type="password" placeholder="Senha"></div>
-                    <button class="btn-black" onclick="navegar('dashboard')">Entrar</button>
-                    <p style="text-align:center; font-size:14px;">Novo por aqui? <span onclick="navegar('registro')" style="color:var(--primary); font-weight:bold; cursor:pointer;">Criar Conta</span></p>
+                    <button class="btn-black" onclick="login()">Entrar</button>
+                    <p style="text-align:center; font-size:14px; color:#888;">Esqueceu a senha?</p>
                 `;
             }
 
-            else if (estado.tela === 'dashboard') {
+            else if (estado.tela === 'home') {
                 root.innerHTML = `
-                    <div style="padding: 20px; display:flex; justify-content:space-between; align-items:center;">
+                    <div class="header">
                         <img src="https://i.ibb.co/Lz0D7Yd/icone-512.png" style="height:40px;">
-                        <div onclick="navegar('login')" style="color:#888;">Sair</div>
+                        <button onclick="logout()" style="background:none; border:none; color:#888; font-weight:bold; cursor:pointer;">Sair</button>
                     </div>
 
                     <div class="card card-streak">
                         <small>Fogo na Sequência</small>
-                        <div style="font-size: 32px; font-weight: bold;">1 🔥</div>
+                        <div style="font-size: 40px; font-weight: bold;">1 🔥</div>
                     </div>
+
+                    <button class="btn-green">🛒 VER SUPLEMENTOS RECOMENDADOS</button>
 
                     <div class="card">
                         <b style="font-size:14px; color:#555;">Calorias Consumidas</b>
-                        <div style="font-size: 24px; font-weight: bold; margin: 10px 0;">450 <span style="font-size:14px; color:#aaa; font-weight:normal;">/ 2577 cal</span></div>
-                        <div style="width:100%; height:8px; background:#f0f0f0; border-radius:10px;"><div style="width:18%; height:100%; background:var(--primary); border-radius:10px;"></div></div>
+                        <div style="font-size: 24px; font-weight: bold; margin: 10px 0;">
+                            ${estado.calorias} <span style="font-size:14px; color:#aaa; font-weight:normal;">/ 2577 cal</span>
+                        </div>
+                        <div style="width:100%; height:8px; background:#f0f0f0; border-radius:10px;">
+                            <div style="width:${Math.min((estado.calorias/2577)*100, 100)}%; height:100%; background:var(--primary); border-radius:10px;"></div>
+                        </div>
                     </div>
 
                     <div class="grid-macros">
-                        <div class="macro-box"><small>Proteína</small><b>20g</b></div>
-                        <div class="macro-box"><small>Carbos</small><b>50g</b></div>
-                        <div class="macro-box"><small>Gordura</small><b>15g</b></div>
+                        <div class="macro-box"><small>Proteína</small><b>${estado.proteina}g</b></div>
+                        <div class="macro-box"><small>Carbos</small><b>${estado.carbos}g</b></div>
+                        <div class="macro-box"><small>Gordura</small><b>${estado.gordura}g</b></div>
                     </div>
 
                     <div class="card" style="border: 1px solid var(--primary); background: #fafffb;">
                         <b style="color:var(--primary); font-size:14px;">Dica Especial</b>
-                        <button class="btn-green" style="margin-top:10px; width:100%;" onclick="iniciarAnuncio()">💡 Ver aqui a dica especial</button>
+                        <button class="btn-green" style="margin-top:10px; width:100%;" onclick="iniciarAnuncioDica()">💡 Ver aqui a dica especial</button>
+                    </div>
+
+                    <div class="card">
+                        <b style="font-size:14px; color:#555;">Refeições de Hoje</b>
+                        <div style="margin-top:10px;">
+                            ${estado.refeicoes.length === 0 ? '<p style="color:#ccc; text-align:center;">Nenhuma foto ainda.</p>' : 
+                                estado.refeicoes.map(r => `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #fcfcfc;"><span>${r.nome}</span><b>+${r.cal} cal</b></div>`).join('')
+                            }
+                        </div>
                     </div>
 
                     <button class="fab" onclick="document.getElementById('cam-input').click()">+</button>
                 `;
-            }
+            } 
 
             else if (estado.tela === 'tela_dica') {
                 root.innerHTML = `
                     <div class="dica-container">
-                        <div class="dica-badge">CONSELHO DO ESPECIALISTA</div>
-                        <img src="https://i.ibb.co/Lz0D7Yd/icone-512.png" style="height:60px; margin-bottom:10px;">
-                        <h1 style="font-size: 28px; margin: 0; color: #1b5e20;">Dica Especial Liberada!</h1>
-                        <p style="color: #666; margin-top: 5px;">Seu plano alimentar mais inteligente</p>
-                        
+                        <img src="https://i.ibb.co/Lz0D7Yd/icone-512.png" style="height:60px; margin-bottom:20px;">
+                        <h1 style="color: #1b5e20; margin:0;">Dica Liberada!</h1>
                         <div class="dica-card">
-                            <p style="font-size: 18px; line-height: 1.6; color: #333; margin: 0;">
-                                "Tente comer <b>fibras (como saladas)</b> antes do prato principal. Isso reduz o pico de insulina e ajuda no controle do peso!"
+                            <p style="font-size: 18px; line-height: 1.6; color: #333;">
+                                "Comer fibras (como saladas) antes do prato principal reduz o pico de insulina e ajuda a controlar o peso!"
                             </p>
                         </div>
-                        
-                        <button class="btn-black" onclick="navegar('dashboard')" style="width:100%; max-width:350px;">
-                            🏠 Voltar ao Dashboard
-                        </button>
+                        <button class="btn-black" onclick="navegar('home')">Voltar ao Dashboard</button>
                     </div>
                 `;
             }
