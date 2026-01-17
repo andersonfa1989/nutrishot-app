@@ -48,9 +48,10 @@
     <div id="app"></div>
 
     <script>
-        const LOGO_URL = "https://i.ibb.co/Lz0D7Yd/icone-512.png";
+        // Caminho da logo conforme solicitado
+        const LOGO_URL = "icone-512.png";
 
-        // Inicializa o estado. Se 'logado' for false, ele sempre mostrará o login.
+        // Estado do app com persistência
         let estado = JSON.parse(localStorage.getItem('nutrishot_v5')) || {
             logado: false,
             tela: 'cadastro',
@@ -76,8 +77,7 @@
             }, 70);
         }
 
-        // Função de Login Real
-        function realizarAcaoLogin(modo) {
+        function realizarAcaoLogin() {
             const email = document.getElementById('email-input').value;
             if(email.length < 5) {
                 alert("Por favor, preencha o e-mail corretamente.");
@@ -109,11 +109,11 @@
         function render() {
             const root = document.getElementById('app');
 
-            // TELA DE LOGIN / CADASTRO (Só entra se preencher)
+            // TELA DE LOGIN / CADASTRO COM LOGO
             if (!estado.logado) {
                 root.innerHTML = `
                     <div style="padding: 60px 20px; text-align: center;">
-                        <img src="${LOGO_URL}" style="width: 150px; height: auto; margin-bottom: 5px;">
+                        <img src="${LOGO_URL}" style="width: 150px; height: auto; margin-bottom: 15px;" onerror="this.src='https://i.ibb.co/Lz0D7Yd/icone-512.png'">
                         <h1 class="texto-logo">NutriShot Elements</h1>
                         <p style="color: #666; margin-bottom: 30px;">${estado.tela === 'cadastro' ? 'Crie sua conta para começar' : 'Entre na sua conta'}</p>
                         
@@ -177,14 +177,6 @@
                         <b style="color:var(--primary)">Dica Especial</b><br>
                         <small>Assista ao vídeo e libere uma dica nutricional!</small>
                         <button onclick="rodarAnuncio('Carregando Dica Especial...', ()=>navegar('dica'))" style="width:100%; background:var(--primary); color:white; border:none; padding:12px; border-radius:30px; margin-top:10px; font-weight:bold;">📺 Assistir Anúncio</button>
-                    </div>
-
-                    <div class="card">
-                        <b>Conquistas Desbloqueadas</b>
-                        <div style="display:flex; align-items:center; background:#f8f8f8; padding:12px; border-radius:12px; margin-top:10px;">
-                            <div style="font-size:24px; margin-right:12px;">🏆</div>
-                            <div><b>Primeira Refeição</b><br><small style="color:#888;">${estado.calorias>0?'Desbloqueado!':'Falta pouco...'}</small></div>
-                        </div>
                     </div>
 
                     <div class="card">
