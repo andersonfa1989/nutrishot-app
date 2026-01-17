@@ -30,6 +30,9 @@
             box-shadow: 0 4px 15px rgba(36, 144, 235, 0.3);
         }
 
+        .footer-link { margin-top: 20px; font-size: 14px; cursor: pointer; color: #000; font-weight: 500; }
+        .footer-link span { color: var(--blue-action); font-weight: 700; }
+
         .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
         .card-fogo { 
             background: linear-gradient(135deg, #667eea, #764ba2); 
@@ -37,7 +40,7 @@
             display: flex; justify-content: space-between; align-items: center;
         }
         .imc-badge { background: rgba(255,255,255,0.2); padding: 8px 12px; border-radius: 12px; text-align: right; }
-        .edit-icon { font-size: 14px; cursor: pointer; margin-left: 5px; opacity: 0.8; }
+        .edit-icon { font-size: 14px; cursor: pointer; margin-left: 5px; }
         .status-imc { font-size: 10px; font-weight: bold; text-transform: uppercase; display: block; margin-top: 2px; }
 
         .grid-7 { display: flex; justify-content: space-between; align-items: flex-end; height: 50px; margin-top: 15px; }
@@ -70,8 +73,19 @@
     <div id="app"></div>
 
     <script>
-        const LOGO_URL = "icone-512.png";
+        const LOGO_URL = "https://i.ibb.co/Lz0D7Yd/icone-512.png";
         
+        const SUPLEMENTOS = {
+            ganho: [
+                { nome:"Creatina Growth 100g", link:"https://amzn.to/4b47g9o" },
+                { nome:"Whey Chocolate", link:"https://amzn.to/3LjWMIB" }
+            ],
+            perda: [
+                { nome:"Psyllium Cápsulas", link:"https://amzn.to/4sBfMmq" },
+                { nome:"Ultra Burn Termogênico", link:"https://amzn.to/4b5phUQ" }
+            ]
+        };
+
         let estado = JSON.parse(localStorage.getItem('nutrishot_v5')) || {
             logado: false, tela: 'cadastro', nomeUsuario: 'Isaac', objetivo: 'perda',
             peso: 70, altura: 170, imc: 24.2, classification: 'Normal',
@@ -136,7 +150,7 @@
                 const isCadastro = estado.tela === 'cadastro';
                 root.innerHTML = `
                     <div style="padding: 40px 20px; text-align: center;">
-                        <img src="${LOGO_URL}" class="img-logo-principal" onerror="this.src='https://i.ibb.co/Lz0D7Yd/icone-512.png'">
+                        <img src="${LOGO_URL}" class="img-logo-principal">
                         <h1 class="texto-logo">NutriShot Elements</h1>
                         ${isCadastro ? `
                             <input type="text" id="nome-f" class="input-nutri" placeholder="Nome">
@@ -148,6 +162,9 @@
                         <input type="email" id="email-f" class="input-nutri" placeholder="E-mail">
                         <input type="password" id="pass-f" class="input-nutri" placeholder="Senha">
                         <button class="btn-azul" onclick="validarEEntrar()">${isCadastro ? 'CRIAR MINHA CONTA' : 'ENTRAR NO APP'}</button>
+                        <p class="footer-link" onclick="navegar('${isCadastro ? 'login' : 'cadastro'}')">
+                            ${isCadastro ? 'Já tem uma conta? <span>Entrar</span>' : 'Novo por aqui? <span>Criar Conta</span>'}
+                        </p>
                     </div>
                 `; return;
             }
@@ -201,6 +218,22 @@
                     <div class="banner-inline"><small>ANÚNCIO</small><br><b>ESPAÇO PUBLICITÁRIO</b></div>
 
                     <button class="fab" onclick="navegar('add_refeicao')">+</button>
+                `; return;
+            }
+
+            if (estado.tela === 'catalogo') {
+                const lista = estado.objetivo === 'ganho' ? SUPLEMENTOS.ganho : SUPLEMENTOS.perda;
+                root.innerHTML = `
+                    <div style="padding: 20px;">
+                        <div onclick="navegar('home')" style="cursor:pointer; color:var(--blue-action); font-weight:bold;">← Voltar</div>
+                        <h2 style="margin:20px 0;">Suplementos Recomendados</h2>
+                        <div style="display:grid; gap:10px;">
+                            ${lista.map(s => `<div class="card" style="margin:0; display:flex; justify-content:space-between; align-items:center;">
+                                <b>${s.nome}</b>
+                                <a href="${s.link}" target="_blank"><button style="background:var(--primary); color:#fff; border:none; padding:8px 12px; border-radius:10px;">Comprar</button></a>
+                            </div>`).join('')}
+                        </div>
+                    </div>
                 `; return;
             }
 
