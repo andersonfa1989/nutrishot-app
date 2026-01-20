@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <title>NutriShot Pro - Versão Completa</title>
+    <title>NutriShot Pro</title>
     <style>
         :root { 
             --primary: #2ab573; 
@@ -21,15 +21,15 @@
         .card-main { background: var(--purple-grad); color: white; margin: 15px; padding: 25px; border-radius: 20px; position: relative; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2); }
         
         .perfil-box { background: rgba(255,255,255,0.2); padding: 10px 15px; border-radius: 15px; text-align: right; border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(5px); }
-        .perfil-box small { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; display: block; }
+        .perfil-box small { font-size: 10px; text-transform: uppercase; display: block; }
         .perfil-box b { font-size: 18px; display: block; }
 
-        /* --- CARDS BRANCOS --- */
+        /* --- CARDS --- */
         .card-white { background: #fff; border-radius: 20px; padding: 20px; margin: 0 15px 15px 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin: 12px 0; overflow: hidden; }
-        .progress-bar { height: 100%; transition: 0.8s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
+        .progress-bar { height: 100%; transition: 0.8s; }
 
-        /* --- PROGRESSO SEMANAL (ESTILO IMAGEM) --- */
+        /* --- PROGRESSO SEMANAL --- */
         .progresso-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .btn-ver-tudo { color: var(--blue-action); text-decoration: none; font-size: 13px; font-weight: bold; cursor: pointer; }
         .semana-grid { display: flex; justify-content: space-between; text-align: center; padding: 10px 0; }
@@ -38,49 +38,42 @@
         .dia-bar.active { background: #764ba2; }
         .dia-label { font-size: 11px; color: #999; font-weight: bold; }
 
-        /* --- GRIDS DE MACROS E REFEIÇÕES --- */
+        /* --- GRIDS --- */
         .grid-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 0 15px 15px 15px; }
         .stat-item { background: #fff; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .stat-item b { display: block; font-size: 18px; color: var(--dark); }
         .stat-item small { color: #888; font-size: 12px; font-weight: bold; }
 
         /* --- BOTÕES --- */
-        .btn-action { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 15px; }
+        .btn-action { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; font-size: 15px; }
         .btn-water { background: var(--water); color: white; margin-top: 10px; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-outline { background: #fff; border: 2px solid #eee; color: #666; font-weight: bold; }
         .btn-outline.active { border-color: var(--primary); color: var(--primary); background: #f0fff7; }
 
-        /* --- LOJA E PRODUTOS --- */
-        .grid-loja { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .card-produto { background: #fff; border-radius: 18px; padding: 15px; text-align: center; border: 1px solid #eee; }
-        .card-produto img { width: 100%; height: 100px; object-fit: contain; margin-bottom: 10px; }
-        .card-produto b { font-size: 13px; display: block; margin-bottom: 10px; height: 32px; overflow: hidden; }
-
         /* --- PUBLICIDADE --- */
         .ad-banner { background: #fff; margin: 15px; padding: 15px; border-radius: 15px; border: 1px dashed var(--blue-action); display: flex; align-items: center; gap: 15px; }
         .ad-tag { background: var(--blue-action); color: white; font-size: 10px; padding: 3px 6px; border-radius: 4px; font-weight: bold; }
 
-        /* --- OVERLAY IA --- */
-        .loading-ia { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 20000; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
-        .ia-bar-bg { width: 70%; height: 6px; background: #333; border-radius: 10px; margin: 25px 0; overflow: hidden; }
-        .ia-bar-fill { width: 0%; height: 100%; background: var(--primary); }
-
-        /* --- SIDEBAR E FAB --- */
+        /* --- SIDEBAR & FAB --- */
         .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; z-index: 10000; transition: 0.3s; padding: 25px; box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
         .sidebar.active { left: 0; }
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: none; }
         .sidebar-item { padding: 15px 0; border-bottom: 1px solid #f5f5f5; cursor: pointer; display: flex; align-items: center; gap: 15px; font-weight: 600; }
-
-        .fab { position: fixed; bottom: 30px; right: 25px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 35px; border: none; box-shadow: 0 10px 20px rgba(0,0,0,0.3); z-index: 999; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .fab { position: fixed; bottom: 30px; right: 25px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 35px; border: none; z-index: 999; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        
+        /* --- IA OVERLAY --- */
+        .loading-ia { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 20000; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
+        .ia-bar-bg { width: 70%; height: 6px; background: #333; border-radius: 10px; margin: 25px 0; overflow: hidden; }
+        .ia-bar-fill { width: 0%; height: 100%; background: var(--primary); }
     </style>
 </head>
 <body>
 
     <div id="loading-ia" class="loading-ia">
-        <div id="ia-text" style="font-size: 20px; font-weight: bold; text-align: center; padding: 0 40px;">Analisando sua Refeição...</div>
-        <div class="ia-bar-bg"><div id="ia-bar-fill" class="ia-bar-fill"></div></div>
-        <div style="font-size: 12px; color: #aaa;">ANÚNCIO: Whey Protein com 15% OFF na Loja</div>
+        <div id="ia-text" style="font-weight: bold; text-align: center;">Analisando sua Refeição...</div>
+        <div class="ia-bar-bg"><div id="ia-bar-fill" class="ia-bar-fill" style="width:0%"></div></div>
+        <div style="font-size: 12px; color: #aaa;">ANÚNCIO: Creatina Growth com 10% de desconto no PIX</div>
     </div>
 
     <div id="sidebar-overlay" onclick="toggleMenu(false)" class="sidebar-overlay"></div>
@@ -95,23 +88,17 @@
     <div id="app"></div>
 
     <script>
-        let estado = JSON.parse(localStorage.getItem('nutrishot_pro_v1')) || {
-            nome: 'Isaac',
-            peso: 80, imc: 24.7,
-            cal: 0, agua: 0, objetivo: 'perda',
-            tela: 'home',
+        let estado = JSON.parse(localStorage.getItem('nutrishot_pro_v2')) || {
+            nome: 'Isaac', peso: 80, imc: 24.7, cal: 0, agua: 0, objetivo: 'perda', tela: 'home',
+            refeicoesHoje: [],
             historico: [
-                { data: '20 de Janeiro', itens: [{t: 'Almoço', c: 620}] },
-                { data: '19 de Janeiro', itens: [{t: 'Jantar', c: 450}, {t: 'Café', c: 300}] }
+                { data: '19 de Janeiro', itens: [{t: 'Jantar', c: 520}] }
             ]
         };
 
-        function salvar() { localStorage.setItem('nutrishot_pro_v1', JSON.stringify(estado)); render(); }
+        function salvar() { localStorage.setItem('nutrishot_pro_v2', JSON.stringify(estado)); render(); }
         function navegar(t) { estado.tela = t; toggleMenu(false); window.scrollTo(0,0); salvar(); }
-        function toggleMenu(s) { 
-            document.getElementById('sidebar').classList.toggle('active', s);
-            document.getElementById('sidebar-overlay').style.display = s ? 'block' : 'none';
-        }
+        function toggleMenu(s) { document.getElementById('sidebar').classList.toggle('active', s); document.getElementById('sidebar-overlay').style.display = s ? 'block' : 'none'; }
 
         function rodarIA(texto, callback) {
             const overlay = document.getElementById('loading-ia');
@@ -128,7 +115,6 @@
         function render() {
             const root = document.getElementById('app');
 
-            // --- DASHBOARD ---
             if (estado.tela === 'home') {
                 root.innerHTML = `
                     <div class="header-app">
@@ -138,39 +124,22 @@
 
                     <div class="card-main">
                         <div>Sequência Ativa<br><b style="font-size:24px">1 Dia 🔥</b></div>
-                        <div class="perfil-box">
-                            <small>Perfil Físico</small>
-                            <b>${estado.imc}</b>
-                        </div>
+                        <div class="perfil-box"><small>Perfil Físico</small><b>${estado.imc}</b></div>
                     </div>
 
                     <div class="card-white" style="border-left: 5px solid var(--water)">
-                        <div style="display:flex; justify-content:space-between;">
-                            <b>Hidratação Diária 💧</b>
-                            <small>${estado.agua}ml / 2500ml</small>
-                        </div>
+                        <div style="display:flex; justify-content:space-between;"><b>Hidratação Diária 💧</b><small>${estado.agua}ml / 2500ml</small></div>
                         <div class="progress-container"><div class="progress-bar" style="background:var(--water); width:${(estado.agua/2500)*100}%"></div></div>
                         <button class="btn-action btn-water" onclick="estado.agua+=250; salvar()">+ BEBER 250ML</button>
                     </div>
 
                     <div class="card-white">
-                        <div class="progresso-header">
-                            <b>Progresso Semanal</b>
-                            <span class="btn-ver-tudo" onclick="navegar('historico')">Ver tudo →</span>
-                        </div>
-                        <div class="semana-grid">
-                            ${['S','T','Q','Q','S','S','D'].map((d, i) => `
-                                <div class="dia-col">
-                                    <div class="dia-bar ${i===0?'active':''}"></div>
-                                    <span class="dia-label">${d}</span>
-                                </div>
-                            `).join('')}
-                        </div>
+                        <div class="progresso-header"><b>Progresso Semanal</b><span class="btn-ver-tudo" onclick="navegar('historico')">Ver tudo →</span></div>
+                        <div class="semana-grid">${['S','T','Q','Q','S','S','D'].map((d, i) => `<div class="dia-col"><div class="dia-bar ${i===0?'active':''}"></div><span class="dia-label">${d}</span></div>`).join('')}</div>
                     </div>
 
                     <div class="card-white">
-                        <small style="color:#888">Consumo de Calorias</small><br>
-                        <b style="font-size:22px">${estado.cal} <span style="color:#ccc; font-size:14px">/ 2577 kcal</span></b>
+                        <small style="color:#888">Consumo de Calorias</small><br><b style="font-size:22px">${estado.cal} <span style="color:#ccc; font-size:14px">/ 2577 kcal</span></b>
                         <div class="progress-container"><div class="progress-bar" style="background:var(--primary); width:${(estado.cal/2577)*100}%"></div></div>
                     </div>
 
@@ -180,9 +149,22 @@
                         <div class="stat-item"><small>Gord</small><b>0g</b></div>
                     </div>
 
+                    <div class="card-white" style="text-align:center; border: 1px solid var(--primary); background:#fafffb">
+                        <b style="color:var(--primary)">Dica de Ouro ✨</b>
+                        <p style="font-size:12px; color:#666">Receba uma dica baseada no seu objetivo!</p>
+                        <button class="btn-action btn-primary" onclick="rodarIA('Buscando Dica do Nutri...', ()=>navegar('dica'))">VER DICA</button>
+                    </div>
+
+                    <div class="card-white">
+                        <b style="font-size: 14px; display: block; margin-bottom: 10px;">Refeições de Hoje</b>
+                        ${estado.refeicoesHoje.length === 0 ? 
+                            '<div style="text-align:center; padding:10px; color:#bbb; font-size:12px;">Nenhuma refeição registrada hoje.</div>' : 
+                            estado.refeicoesHoje.map(r => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f9f9f9"><b>${r.t}</b><span style="color:var(--primary)">+${r.c} kcal</span></div>`).join('')}
+                    </div>
+
                     <div class="ad-banner">
                         <div class="ad-tag">ADS</div>
-                        <div style="flex:1"><small><b>Dica do Dia:</b> Mantenha o foco e ganhe 10% de desconto em Creatina.</small></div>
+                        <div style="flex:1"><small><b>Combo Massa Muscular</b><br>Ofertas exclusivas na loja NutriShot.</small></div>
                         <button class="btn-primary" style="padding:8px; font-size:11px; width:auto" onclick="navegar('loja')">VER</button>
                     </div>
 
@@ -190,103 +172,77 @@
                 `;
             }
 
-            // --- HISTÓRICO POR DATA ---
-            if (estado.tela === 'historico') {
-                root.innerHTML = `
-                    <div style="padding:20px">
-                        <div onclick="navegar('home')" style="color:var(--blue-action); font-weight:bold; cursor:pointer; margin-bottom:20px">← Voltar</div>
-                        <h2>Histórico por Data</h2>
-                        
-                        ${estado.historico.length === 0 ? `
-                            <div style="text-align:center; padding:60px 20px; color:#aaa;">
-                                <p>Nenhum histórico disponível.</p>
-                                <small>Os dados aparecerão aqui após a virada do dia.</small>
-                            </div>
-                        ` : estado.historico.map(dia => `
-                            <div style="font-size:12px; font-weight:bold; color:#999; margin:20px 0 10px 5px; text-transform:uppercase">${dia.data}</div>
-                            <div class="card-white" style="margin:0 0 10px 0">
-                                ${dia.itens.map(i => `
-                                    <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f9f9f9">
-                                        <b>${i.t}</b>
-                                        <span style="color:var(--primary); font-weight:bold">+${i.c} kcal</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        `).join('')}
-
-                        <div class="ad-banner" style="margin-top:40px">
-                            <div class="ad-tag">PUBLICIDADE</div>
-                            <div style="font-size:12px">Potencialize seus resultados com suplementos originais.</div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // --- TELA ADICIONAR (ANEXAR IMAGEM) ---
             if (estado.tela === 'add') {
                 root.innerHTML = `
                     <div style="padding:20px; text-align:center">
                         <div onclick="navegar('home')" style="text-align:left; color:var(--blue-action); font-weight:bold; cursor:pointer">← Voltar</div>
                         <h2 style="margin:40px 0 30px 0">Qual é a refeição?</h2>
-                        
                         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:30px">
-                            ${['Café', 'Almoço', 'Jantar', 'Lanche'].map(r => `
-                                <button class="btn-outline" style="padding:25px; border-radius:20px" onclick="fazerAnalise('${r}')">
-                                    <b>${r}</b>
-                                </button>
-                            `).join('')}
+                            ${['Café', 'Almoço', 'Jantar', 'Lanche'].map(r => `<button class="btn-outline" style="padding:25px; border-radius:20px" onclick="fazerAnalise('${r}')"><b>${r}</b></button>`).join('')}
                         </div>
-
                         <div style="background:var(--purple-grad); color:white; padding:40px; border-radius:25px; cursor:pointer; margin-bottom:15px">
-                            <div style="font-size:40px; margin-bottom:10px">📸</div>
-                            <b>Tirar Foto</b>
+                            <div style="font-size:40px; margin-bottom:10px">📸</div><b>Tirar Foto</b>
                         </div>
-
-                        <div style="background:#fff; border:2px solid #eee; padding:20px; border-radius:20px; color:#888; cursor:pointer">
-                            📁 Galeria de Fotos
-                        </div>
-
-                        <div class="ad-banner" style="margin-top:40px">
-                            <small>Análise nutricional via Inteligência Artificial.</small>
+                        <div style="background:#fff; border:2px solid #eee; padding:20px; border-radius:20px; color:#888; cursor:pointer">📁 Galeria</div>
+                        
+                        <div class="ad-banner" style="margin-top:30px">
+                            <div class="ad-tag">AD</div><small>Análise via IA patrocinada por <b>Growth</b></small>
                         </div>
                     </div>
                 `;
             }
 
-            // --- TELA LOJA ---
+            if (estado.tela === 'historico') {
+                root.innerHTML = `
+                    <div style="padding:20px">
+                        <div onclick="navegar('home')" style="color:var(--blue-action); font-weight:bold; cursor:pointer; margin-bottom:20px">← Voltar</div>
+                        <h2>Histórico por Data</h2>
+                        ${estado.historico.map(dia => `
+                            <div style="font-size:12px; font-weight:bold; color:#999; margin:20px 0 10px 5px; text-transform:uppercase">${dia.data}</div>
+                            <div class="card-white" style="margin:0 0 10px 0">
+                                ${dia.itens.map(i => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f9f9f9"><b>${i.t}</b><span style="color:var(--primary); font-weight:bold">+${i.c} kcal</span></div>`).join('')}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            if (estado.tela === 'dica') {
+                root.innerHTML = `
+                    <div style="padding:40px 20px; text-align:center">
+                        <div style="font-size:50px">💡</div>
+                        <h2 style="color:var(--primary)">Dica de Ouro</h2>
+                        <div class="card-white" style="font-size:18px; line-height:1.4; font-weight:bold; padding:30px">
+                            "Comer fibras antes dos carboidratos reduz o pico de insulina e ajuda no emagrecimento!"
+                        </div>
+                        <div class="ad-banner">
+                            <small><b>Publicidade:</b> Confira nossa linha de suplementos naturais.</small>
+                        </div>
+                        <button class="btn-action btn-primary" onclick="navegar('home')">VOLTAR AO FOCO</button>
+                    </div>
+                `;
+            }
+
             if (estado.tela === 'loja') {
                 root.innerHTML = `
                     <div style="padding:20px">
                         <div onclick="navegar('home')" style="color:var(--blue-action); font-weight:bold; cursor:pointer">← Voltar</div>
-                        <h2 style="margin:20px 0">Suplementos Recomendados</h2>
-                        
+                        <h2>Suplementos & Objetivo</h2>
                         <div style="display:flex; gap:10px; margin-bottom:25px">
                             <button class="btn-outline ${estado.objetivo==='perda'?'active':''}" style="flex:1" onclick="estado.objetivo='perda'; salvar()">Emagrecer</button>
                             <button class="btn-outline ${estado.objetivo==='ganho'?'active':''}" style="flex:1" onclick="estado.objetivo='ganho'; salvar()">Ganho Massa</button>
                         </div>
-
-                        <div class="grid-loja">
-                            ${(estado.objetivo === 'ganho' ? 
-                                [{n:'Creatina Growth 100g', i:'creatina.png'}, {n:'Whey Protein Chocolate', i:'whey.png'}] : 
-                                [{n:'Termogênico Ultra Burn', i:'termo.png'}, {n:'Psyllium Cápsulas', i:'psyllium.png'}]
-                            ).map(p => `
-                                <div class="card-produto">
-                                    <div style="height:80px; background:#f9f9f9; border-radius:10px; margin-bottom:10px"></div>
-                                    <b>${p.n}</b>
-                                    <button class="btn-action btn-primary" style="padding:8px; font-size:12px">VER OFERTA</button>
-                                </div>
-                            `).join('')}
-                        </div>
+                        <div style="text-align:center; padding:20px; border: 1px dashed #ccc; border-radius:15px; color:#888">Loja de Suplementos em breve...</div>
                     </div>
                 `;
             }
         }
 
         function fazerAnalise(tipo) {
-            rodarIA(`IA NutriShot analisando seu ${tipo}...`, () => {
-                const calFake = 480;
-                estado.cal += calFake;
-                estado.historico.unshift({ data: 'Hoje, 20 Jan', itens: [{t: tipo, c: calFake}] });
+            rodarIA(`IA analisando seu ${tipo}...`, () => {
+                const c = 480;
+                estado.cal += c;
+                estado.refeicoesHoje.unshift({t: tipo, c: c});
                 navegar('home');
             });
         }
