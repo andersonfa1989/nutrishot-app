@@ -114,12 +114,39 @@
             }
         }
 
-        // --- FUNÇÃO PARA ENVIAR PLANO VIA WHATSAPP ---
+        // --- SISTEMA DE PLANO ALIMENTAR AUTOMÁTICO IA ---
         function enviarPlanoWhatsApp() {
-            const saudacao = `Olá! Sou a IA do NutriShot. 🍏\nAqui está o relatório do *${estado.nomeUsuario}*:\n\n`;
-            const dados = `📊 *Status Atual:*\n- IMC: ${estado.imc} (${estado.classification})\n- Peso: ${estado.peso}kg\n- Objetivo: ${estado.objetivo === 'perda' ? 'Emagrecer' : 'Ganho de Massa'}\n\n✅ *Progresso de Hoje:*\n- Calorias: ${estado.calorias} kcal\n- Água: ${estado.aguaAtual}ml`;
+            const obj = estado.objetivo === 'perda' ? 'EMAGRECIMENTO' : 'GANHO DE MASSA';
             
-            const link = `https://wa.me/?text=${encodeURIComponent(saudacao + dados)}`;
+            // Definição de Cardápios Baseados no Objetivo
+            const cardapio = estado.objetivo === 'perda' ? 
+                `🍳 Café: 2 ovos mexidos + 1 fruta (mamão/morango)
+🍎 Lanche: 1 iogurte natural ou 10 castanhas
+🥗 Almoço: 150g Frango/Peixe + Muita salada verde + 2 colheres de arroz
+☕ Tarde: Café s/ açúcar + 1 fatia de queijo branco
+🍲 Jantar: Sopa de legumes com carne ou Omelete recheado` :
+                `🍳 Café: 3 ovos + Cuscuz ou Pão Integral + Suco de uva
+🍎 Lanche: Vitamina de Banana com aveia e Whey
+🥗 Almoço: 200g Carne moída + Arroz + Feijão + Batata Doce
+☕ Tarde: Sanduíche de frango desfiado com requeijão
+🍲 Jantar: Macarrão com frango ou Carne e bastante arroz`;
+
+            const textoFinal = `*NUTRI-SHOT AI - SEU PLANO SEMANAL* 🍏
+            
+Olá *${estado.nomeUsuario}*, geramos seu plano focado em *${obj}*!
+
+📊 *PERFIL ATUAL:*
+- Peso: ${estado.peso}kg | Altura: ${estado.altura}cm
+- IMC: ${estado.imc} (${estado.classification})
+
+🍴 *SUGESTÃO DE CARDÁPIO IA:*
+${cardapio}
+
+💧 *META DE ÁGUA:* ${Math.round(estado.peso * 35)}ml/dia
+
+🔥 *Dica:* Mantenha sua sequência de ${estado.sequencia} dias ativa para melhores resultados!`;
+
+            const link = `https://wa.me/?text=${encodeURIComponent(textoFinal)}`;
             window.open(link, '_blank');
         }
 
@@ -241,7 +268,7 @@
                             <div class="menu-item" onclick="menuNav('home')">🏠 Dashboard</div>
                             <div class="menu-item" onclick="menuNav('catalogo')">🛒 Loja de Suplementos</div>
                             <div class="menu-item" onclick="editarMedidas(); toggleMenu()">⚖️ Atualizar Medidas</div>
-                            <div class="menu-item" onclick="rodarAnuncio('Gerando Plano...', () => enviarPlanoWhatsApp()); toggleMenu()">💬 Enviar para WhatsApp</div>
+                            <div class="menu-item" onclick="rodarAnuncio('Gerando Plano IA...', () => enviarPlanoWhatsApp()); toggleMenu()">📅 Gerar Plano (WhatsApp)</div>
                             <div class="menu-item" onclick="rodarAnuncio('Saindo...', () => {estado.logado=false; render()})" style="color:#e74c3c; border-top:1px solid #eee; margin-top:20px;">🚪 Sair da Conta</div>
                         </div>
                     </div>
@@ -311,6 +338,7 @@
                 `; return;
             }
 
+            // [Telas de Catálogo, Add Refeição, Resultado e Dica seguem as mesmas originais enviadas anteriormente]
             if (estado.tela === 'catalogo') {
                 const lista = estado.objetivo === 'ganho' ? SUPLEMENTOS.ganho : SUPLEMENTOS.perda;
                 root.innerHTML = `
