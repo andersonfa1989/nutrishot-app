@@ -4,78 +4,60 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>NutriShot Pro</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3677443152648780" crossorigin="anonymous"></script>
     
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3677443152648780" crossorigin="anonymous"></script>
+
     <style>
         :root { 
-            --primary: #2ab573; 
-            --blue-action: #2490eb; 
-            --bg: #f4f7f6; 
-            --water: #3498db;
+            --primary: #2ab573; --blue-action: #2490eb; --bg: #f4f7f6; --water: #3498db;
             --purple-grad: linear-gradient(135deg, #667eea, #764ba2);
             --dark: #2c3e50;
-            --btn-foto: linear-gradient(90deg, #6e8efb, #a777e3);
         }
         
         body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; overflow-x: hidden; padding-bottom: 50px; }
 
-        /* --- HEADER & MENU --- */
-        .header-app { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: #fff; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .sidebar { position: fixed; top: 0; left: -280px; width: 250px; height: 100%; background: #fff; z-index: 10000; transition: 0.3s; padding: 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
-        .sidebar.active { left: 0; }
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: none; }
-
-        /* --- CARDS PRINCIPAIS --- */
-        .card-main { background: var(--purple-grad); color: white; margin: 15px; padding: 20px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 20px rgba(118, 75, 162, 0.2); }
-        .perfil-box { background: rgba(255,255,255,0.2); padding: 10px 15px; border-radius: 15px; text-align: right; backdrop-filter: blur(5px); }
-        .perfil-status { font-size: 10px; font-weight: bold; background: #fff; color: #764ba2; padding: 3px 8px; border-radius: 20px; margin-top: 5px; display: inline-block; }
-
-        .card-white { background: #fff; border-radius: 18px; padding: 18px; margin: 0 15px 15px 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+        /* --- HEADER --- */
+        .header-app { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: #fff; border-bottom: 1px solid #eee; }
+        .card-main { background: var(--purple-grad); color: white; margin: 15px; padding: 20px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.25); }
+        .card-white { background: #fff; border-radius: 15px; padding: 18px; margin: 0 15px 15px 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         
-        /* --- PROGRESSO --- */
-        .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin: 12px 0; overflow: hidden; }
-        .progress-bar { height: 100%; transition: 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        /* --- PROGRESS --- */
+        .progress-container { width: 100%; height: 8px; background: #eee; border-radius: 10px; margin: 10px 0; overflow: hidden; }
+        .progress-bar { height: 100%; transition: 0.8s ease-in-out; }
         
         .grid-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 0 15px 15px 15px; }
         .stat-item { background: #fff; padding: 15px; border-radius: 15px; text-align: center; border: 1px solid #f0f0f0; }
-        .stat-item b { display: block; font-size: 18px; color: var(--dark); }
-        .stat-item small { color: #888; font-size: 11px; font-weight: 600; }
 
-        /* --- BOTÕES --- */
-        .btn-action { width: 100%; padding: 14px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; font-size: 14px; }
-        .btn-water { background: var(--water); color: white; box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3); }
+        /* --- BOTOES --- */
+        .btn-action { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; font-size: 14px; }
         .btn-primary { background: var(--primary); color: white; }
-        .btn-foto-pro { background: var(--btn-foto); color: white; padding: 18px; border-radius: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 16px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(110, 142, 251, 0.4); }
+        .btn-outline { background: #fff; border: 1px solid #ddd; color: #444; }
+        .btn-outline.active { border-color: var(--primary); color: var(--primary); background: #f0fff7; }
 
-        /* --- ADMOB BANNERS --- */
-        .ad-slot-container { width: 100%; text-align: center; margin: 10px 0; min-height: 55px; display: flex; justify-content: center; }
+        /* --- LOJA --- */
+        .grid-loja { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        .card-produto { background: #fff; border-radius: 12px; padding: 15px; text-align: center; border: 1px solid #eee; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-produto b { font-size: 13px; margin: 10px 0; display: block; height: 35px; overflow: hidden; }
+        .card-produto span { color: var(--primary); font-weight: bold; font-size: 12px; margin-bottom: 10px; display: block; }
 
-        /* --- OVERLAY IA --- */
+        /* --- ADMOB --- */
+        .ad-banner { background: #f9f9f9; margin: 15px; padding: 5px; border-radius: 10px; text-align: center; min-height: 55px; display: flex; align-items: center; justify-content: center; border: 1px dashed #ddd; }
+
+        /* --- IA OVERLAY --- */
         .loading-ia { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 20000; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
-        .ia-bar-bg { width: 70%; height: 6px; background: #222; border-radius: 10px; margin: 25px 0; overflow: hidden; }
-        .ia-bar-fill { width: 0%; height: 100%; background: var(--primary); transition: 0.1s; }
+        .ia-bar-bg { width: 60%; height: 4px; background: #333; border-radius: 10px; margin: 20px 0; overflow: hidden; }
+        .ia-bar-fill { width: 0%; height: 100%; background: var(--primary); }
 
-        .fab { position: fixed; bottom: 25px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 32px; border: none; z-index: 999; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
+        .fab { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; z-index: 999; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
     <div id="loading-ia" class="loading-ia">
-        <b id="ia-text">IA PROCESSANDO...</b>
+        <div id="ia-text" style="font-weight: bold; font-size: 18px;">Analisando com IA...</div>
         <div class="ia-bar-bg"><div id="ia-bar-fill" class="ia-bar-fill"></div></div>
-        <div style="font-size: 12px; color: #aaa; text-align: center; padding: 0 40px;">
-            Enquanto a IA calcula os macros, confira as ofertas da <b>Growth Supplements</b> na loja!
-        </div>
-    </div>
-
-    <div id="sidebar-overlay" onclick="toggleMenu(false)" class="sidebar-overlay"></div>
-    <div id="sidebar" class="sidebar">
-        <h2 style="color:var(--primary); margin-bottom:30px;">NutriShot Pro</h2>
-        <div onclick="navegar('home')" style="padding:15px 0; border-bottom:1px solid #eee; font-weight:bold;">🏠 Dashboard</div>
-        <div onclick="navegar('historico')" style="padding:15px 0; border-bottom:1px solid #eee;">📊 Histórico</div>
-        <div onclick="navegar('loja')" style="padding:15px 0; border-bottom:1px solid #eee;">🛒 Loja de Suplementos</div>
-        <div onclick="location.reload()" style="padding:15px 0; color:red; margin-top:50px;">🚪 Sair / Reset</div>
+        <div style="font-size: 11px; color: #888;">PROCESSANDO NUTRISHOT PRO</div>
     </div>
 
     <div id="app"></div>
@@ -83,44 +65,45 @@
     <script>
         const AD_CLIENT = "ca-pub-3677443152648780";
         const AD_SLOT = "6944634280";
-        const DATA_ATUAL = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long' }).format(new Date());
+        const DATA_HOJE = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long' }).format(new Date());
 
-        let estado = JSON.parse(localStorage.getItem('nutrishot_vFinal')) || {
-            nome: 'Isaac', peso: 80, imc: 24.7, cat: 'Normal',
-            cal: 1250, agua: 1500, objetivo: 'perda', tela: 'home',
-            macros: { p: 85, c: 140, g: 45 },
-            historico: [
-                { data: DATA_ATUAL, itens: [{t: 'Almoço', c: 650, p:40, c2:60, g:15}] }
+        // --- CATALOGO DE PRODUTOS ---
+        const CATALOGO = {
+            ganho: [
+                { n: "Creatina Growth 100g", p: "Melhor Custo Benefício", l: "https://amzn.to/4b47g9o", i: "⚡" },
+                { n: "Whey Chocolate", p: "Proteína Isolada", l: "https://amzn.to/3LjWMIB", i: "🥤" },
+                { n: "Whey Morango", p: "Sabor Incrível", l: "https://amzn.to/4sPsdvg", i: "🍓" },
+                { n: "Hipercalórico Chocolate", p: "Ganho de Peso Rápido", l: "https://amzn.to/4qpZKKC", i: "🍫" }
+            ],
+            perda: [
+                { n: "Psyllium Cápsulas", p: "Controle da Saciedade", l: "https://amzn.to/4sBfMmq", i: "🌿" },
+                { n: "Ultra Burn Termogênico", p: "Queima de Gordura", l: "https://amzn.to/4b5phUQ", i: "🔥" },
+                { n: "L-Carnitina 2000mg", p: "Energia e Definição", l: "https://amzn.to/4bBHcCw", i: "🔋" }
             ]
         };
 
-        function salvar() { localStorage.setItem('nutrishot_vFinal', JSON.stringify(estado)); render(); }
-        function navegar(t) { estado.tela = t; toggleMenu(false); window.scrollTo(0,0); salvar(); }
-        function toggleMenu(s) { 
-            document.getElementById('sidebar').classList.toggle('active', s);
-            document.getElementById('sidebar-overlay').style.display = s ? 'block' : 'none';
-        }
+        let estado = JSON.parse(localStorage.getItem('nutrishot_vFinal')) || {
+            tela: 'home', nome: 'Isaac',
+            cal: 1420, agua: 1250, objetivo: 'perda',
+            macros: { p: 72, c: 130, g: 42 },
+            historico: [{ data: DATA_HOJE, itens: [{t: 'Refeição Anterior', c: 450}] }]
+        };
 
-        // --- SISTEMA DE CÂMERA E IA ---
+        function salvar() { localStorage.setItem('nutrishot_vFinal', JSON.stringify(estado)); render(); }
+        function navegar(t) { estado.tela = t; window.scrollTo(0,0); salvar(); }
+
         function dispararIA(tipo) {
             const overlay = document.getElementById('loading-ia');
             const bar = document.getElementById('ia-bar-fill');
-            document.getElementById('ia-text').innerText = "ANALISANDO " + tipo.toUpperCase() + "...";
             overlay.style.display = 'flex';
-            
             let p = 0;
             const timer = setInterval(() => {
-                p += 2;
-                bar.style.width = p + '%';
-                if(p >= 100) {
-                    clearInterval(timer);
-                    overlay.style.display = 'none';
-                    bar.style.width = '0%';
-                    // Adiciona dados fakes baseados no tipo
-                    const calAdd = Math.floor(Math.random() * 300) + 200;
-                    estado.cal += calAdd;
-                    estado.macros.p += 20;
-                    estado.historico[0].itens.unshift({t: tipo, c: calAdd, p:20, c2:30, g:10});
+                p += 5; bar.style.width = p + '%';
+                if(p >= 100) { 
+                    clearInterval(timer); overlay.style.display = 'none'; bar.style.width = '0%';
+                    estado.cal += 520;
+                    estado.macros.p += 30;
+                    estado.historico[0].itens.unshift({t: tipo, c: 520});
                     navegar('home');
                 }
             }, 40);
@@ -132,110 +115,64 @@
             if (estado.tela === 'home') {
                 root.innerHTML = `
                     <div class="header-app">
-                        <div onclick="toggleMenu(true)" style="font-size:26px; cursor:pointer">☰</div>
-                        <div style="text-align:right"><small style="color:#888">${DATA_ATUAL}</small><br><b>Olá, ${estado.nome}</b></div>
+                        <div style="font-size:18px"><b>NutriShot Pro</b></div>
+                        <div style="text-align:right"><small style="color:#888">${DATA_HOJE}</small><br><b>${estado.nome}</b></div>
                     </div>
 
                     <div class="card-main">
-                        <div>Sequência Ativa<br><b style="font-size:28px">1 Dia 🔥</b></div>
-                        <div class="perfil-box">
-                            <small>IMC ATUAL</small>
-                            <b>${estado.imc}</b>
-                            <div class="perfil-status">${estado.cat}</div>
+                        <div>Foco Ativo<br><b style="font-size:24px">1 Dia 🔥</b></div>
+                        <div style="background:rgba(255,255,255,0.2); padding:10px; border-radius:10px; text-align:center">
+                            <small>OBJETIVO</small><br><b>${estado.objetivo == 'perda' ? 'EMAGRECER' : 'GANHAR'}</b>
                         </div>
                     </div>
 
-                    <div class="ad-slot-container">
+                    <div class="ad-banner">
                         <ins class="adsbygoogle" style="display:inline-block;width:320px;height:50px" data-ad-client="${AD_CLIENT}" data-ad-slot="${AD_SLOT}"></ins>
                         <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
                     </div>
 
                     <div class="card-white">
-                        <div style="display:flex; justify-content:space-between; align-items:center">
-                            <b>Hidratação 💧</b>
-                            <small style="color:var(--water); font-weight:bold">${estado.agua}ml / 2500ml</small>
-                        </div>
+                        <div style="display:flex; justify-content:space-between"><b>Hidratação Diária</b><small>${estado.agua}ml/2500ml</small></div>
                         <div class="progress-container"><div class="progress-bar" style="background:var(--water); width:${(estado.agua/2500)*100}%"></div></div>
-                        <button class="btn-action btn-water" onclick="estado.agua+=250; salvar()">+ ADICIONAR 250ML</button>
-                    </div>
-
-                    <div class="card-white">
-                        <small style="color:#888">Meta de Calorias Diária</small><br>
-                        <b style="font-size:20px">${estado.cal} <span style="color:#ccc; font-weight:normal">/ 2500 kcal</span></b>
-                        <div class="progress-container"><div class="progress-bar" style="background:var(--primary); width:${(estado.cal/2500)*100}%"></div></div>
+                        <button class="btn-action" style="background:var(--water); color:#fff" onclick="estado.agua+=250; salvar()">+ COPO DE ÁGUA (250ML)</button>
                     </div>
 
                     <div class="grid-stats">
-                        <div class="stat-item"><small>PROT</small><b>${estado.macros.p}g</b></div>
-                        <div class="stat-item"><small>CARB</small><b>${estado.macros.c}g</b></div>
-                        <div class="stat-item"><small>GORD</small><b>${estado.macros.g}g</b></div>
+                        <div class="stat-item"><small>PROT</small><br><b>${estado.macros.p}g</b></div>
+                        <div class="stat-item"><small>CARB</small><br><b>${estado.macros.c}g</b></div>
+                        <div class="stat-item"><small>GORD</small><br><b>${estado.macros.g}g</b></div>
                     </div>
 
-                    <div class="card-white" style="border: 1px solid #e0e0e0; background:#fff">
-                        <b style="color:var(--primary)">Dica Personalizada ✨</b>
-                        <p style="font-size:13px; color:#666">Com base no seu IMC de ${estado.imc}, foque em proteínas magras hoje.</p>
-                    </div>
-
-                    <div class="ad-slot-container">
-                        <ins class="adsbygoogle" style="display:inline-block;width:320px;height:50px" data-ad-client="${AD_CLIENT}" data-ad-slot="${AD_SLOT}"></ins>
-                        <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
+                    <div class="card-white" style="border: 1px solid var(--primary)">
+                        <b style="color:var(--primary)">🛒 Loja Exclusiva</b><br>
+                        <p style="font-size:12px">Encontre os melhores suplementos para ${estado.objetivo == 'perda' ? 'queimar gordura' : 'ganhar massa'}.</p>
+                        <button class="btn-action btn-primary" onclick="navegar('loja')">VER PRODUTOS</button>
                     </div>
 
                     <button class="fab" onclick="navegar('add')">+</button>
                 `;
             }
 
-            if (estado.tela === 'add') {
-                root.innerHTML = `
-                    <div style="padding:20px">
-                        <div onclick="navegar('home')" style="color:var(--blue-action); font-weight:bold; margin-bottom:20px; cursor:pointer">← Voltar</div>
-                        <h2 style="text-align:center; margin-bottom:30px">Analisar com IA</h2>
-
-                        <input type="file" id="camera-input" capture="environment" accept="image/*" class="hidden" onchange="dispararIA('Prato')">
-                        <input type="file" id="galeria-input" accept="image/*" class="hidden" onchange="dispararIA('Galeria')">
-
-                        <button class="btn-foto-pro" onclick="document.getElementById('camera-input').click()">
-                            <span>📸</span> TIRAR FOTO DO PRATO
-                        </button>
-
-                        <button class="btn-action btn-outline" style="background:#fff; border:1px solid #ddd; color:#666; margin-bottom:30px" onclick="document.getElementById('galeria-input').click()">
-                            📁 ESCOLHER DA GALERIA
-                        </button>
-
-                        <div style="text-align:center; color:#888; margin:20px 0">Ou selecione o tipo:</div>
-                        
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
-                            <button class="btn-action btn-primary" onclick="dispararIA('Café da Manhã')">☕ Café</button>
-                            <button class="btn-action btn-primary" onclick="dispararIA('Almoço')">🍲 Almoço</button>
-                            <button class="btn-action btn-primary" onclick="dispararIA('Jantar')">🥗 Jantar</button>
-                            <button class="btn-action btn-primary" onclick="dispararIA('Lanche')">🥪 Lanche</button>
-                        </div>
-                    </div>
-                `;
-            }
-
             if (estado.tela === 'loja') {
+                const itens = estado.objetivo === 'perda' ? CATALOGO.perda : CATALOGO.ganho;
                 root.innerHTML = `
                     <div style="padding:20px">
-                        <div onclick="navegar('home')" style="color:var(--blue-action); font-weight:bold; cursor:pointer">← Voltar</div>
-                        <h2 style="margin:20px 0">Loja de Suplementos</h2>
+                        <div onclick="navegar('home')" style="color:var(--blue-action); font-weight:bold; cursor:pointer">← Voltar para Início</div>
+                        <h2 style="margin:15px 0">Suplementos para Você</h2>
                         
                         <div style="display:flex; gap:10px; margin-bottom:20px">
-                            <button class="btn-action" style="background:${estado.objetivo==='perda'?'var(--primary)':'#eee'}; color:${estado.objetivo==='perda'?'#fff':'#666'}" onclick="estado.objetivo='perda'; salvar()">🔥 Emagrecer</button>
-                            <button class="btn-action" style="background:${estado.objetivo==='ganho'?'var(--primary)':'#eee'}; color:${estado.objetivo==='ganho'?'#fff':'#666'}" onclick="estado.objetivo='ganho'; salvar()">💪 Ganhar Massa</button>
+                            <button class="btn-outline ${estado.objetivo==='perda'?'active':''}" style="flex:1" onclick="estado.objetivo='perda'; salvar()">Emagrecer</button>
+                            <button class="btn-outline ${estado.objetivo==='ganho'?'active':''}" style="flex:1" onclick="estado.objetivo='ganho'; salvar()">Ganhar Massa</button>
                         </div>
 
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px">
-                            ${(estado.objetivo === 'ganho' ? 
-                                [{n:'Creatina Monoidratada', l:'https://amzn.to/4b47g9o', p:'R$ 89,90'}, {n:'Whey Protein 1kg', l:'https://amzn.to/3LjWMIB', p:'R$ 99,00'}] :
-                                [{n:'Termogênico Ultra', l:'https://amzn.to/4b5phUQ', p:'R$ 110,00'}, {n:'Psyllium Fibras', l:'https://amzn.to/4sBfMmq', p:'R$ 45,00'}]
-                            ).map(prod => `
-                                <div class="card-white" style="margin:0; text-align:center; padding:15px">
-                                    <div style="font-size:40px; margin-bottom:10px">📦</div>
-                                    <b style="font-size:12px; height:30px; display:block">${prod.n}</b>
-                                    <div style="color:var(--primary); margin:10px 0">${prod.p}</div>
+                        <div class="grid-loja">
+                            ${itens.map(prod => `
+                                <div class="card-produto">
+                                    <div style="font-size:35px">${prod.i}</div>
+                                    <b>${prod.n}</b>
+                                    <span>${prod.p}</span>
                                     <a href="${prod.l}" target="_blank" style="text-decoration:none">
-                                        <button class="btn-action btn-primary" style="padding:8px; font-size:12px">COMPRAR</button>
+                                        <button class="btn-action btn-primary" style="padding:8px; font-size:11px">COMPRAR</button>
                                     </a>
                                 </div>
                             `).join('')}
@@ -244,22 +181,25 @@
                 `;
             }
 
-            if (estado.tela === 'historico') {
+            if (estado.tela === 'add') {
                 root.innerHTML = `
                     <div style="padding:20px">
-                        <div onclick="navegar('home')" style="color:var(--blue-action); font-weight:bold; cursor:pointer">← Voltar</div>
-                        <h2>Meu Histórico</h2>
-                        ${estado.historico.map(dia => `
-                            <div style="margin-top:20px">
-                                <small style="font-weight:bold; color:#999">${dia.data}</small>
-                                ${dia.itens.map(i => `
-                                    <div class="card-white" style="margin:10px 0; display:flex; justify-content:space-between; align-items:center">
-                                        <div><b>${i.t}</b><br><small style="color:#888">${i.p}g Prot | ${i.c2}g Carb</small></div>
-                                        <b style="color:var(--primary)">+${i.c} kcal</b>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        `).join('')}
+                        <div onclick="navegar('home')" style="color:var(--blue-action); font-weight:bold; cursor:pointer">← Cancelar</div>
+                        <h2 style="text-align:center; margin:40px 0">O que você comeu?</h2>
+                        
+                        <div style="background:var(--purple-grad); color:white; padding:40px; border-radius:20px; text-align:center; cursor:pointer" onclick="dispararIA('Foto')">
+                            <div style="font-size:50px">📸</div>
+                            <b>TIRAR FOTO DO PRATO</b>
+                        </div>
+
+                        <div style="background:#fff; border:1px solid #ddd; margin-top:20px; padding:20px; border-radius:15px; text-align:center; color:#888" onclick="dispararIA('Galeria')">
+                            📁 Selecionar da Galeria
+                        </div>
+
+                        <div class="ad-banner" style="margin-top:50px">
+                            <ins class="adsbygoogle" style="display:inline-block;width:320px;height:50px" data-ad-client="${AD_CLIENT}" data-ad-slot="${AD_SLOT}"></ins>
+                            <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
+                        </div>
                     </div>
                 `;
             }
