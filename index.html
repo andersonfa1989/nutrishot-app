@@ -11,8 +11,56 @@
             --bg: #f9fafb; 
             --water: #3498db;
         }
-        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; }
+        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; overflow-x: hidden; }
         
+        /* Estilos do Menu Lateral (Sidebar) */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100%;
+            background: white;
+            z-index: 10000;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 2px 0 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar.active { left: 0; }
+        
+        .sidebar-header {
+            padding: 40px 20px 20px 20px;
+            background: linear-gradient(135deg, var(--blue-action), var(--primary));
+            color: white;
+        }
+        
+        .sidebar-menu { padding: 20px 0; flex-grow: 1; }
+        
+        .menu-item {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.2s;
+            color: #444;
+        }
+        .menu-item:hover { background: #f0f7f4; color: var(--primary); }
+        
+        .sidebar-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 9999;
+            backdrop-filter: blur(2px);
+        }
+        .sidebar-overlay.active { display: block; }
+
+        /* Elementos da Interface */
         .img-logo-principal { width: 170px; margin-bottom: 5px; } 
         .texto-logo {
             font-size: 24px; 
@@ -79,7 +127,7 @@
         .refeicao-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
         .refeicao-item:last-child { border-bottom: none; }
 
-        .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
+        .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
         .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; overflow: hidden; }
         #bar-progress { width: 0%; height: 100%; background: #2ab573; transition: width 0.1s linear; }
     </style>
@@ -125,6 +173,21 @@
         function salvar() { localStorage.setItem('nutrishot_v5', JSON.stringify(estado)); }
         function navegar(tela) { estado.tela = tela; salvar(); render(); window.scrollTo(0,0); }
 
+        // Funções do Menu Lateral
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if(sidebar && overlay) {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            }
+        }
+
+        function menuNav(tela) {
+            toggleMenu();
+            navegar(tela);
+        }
+
         function infoIMC(peso, altura) {
             const altM = altura / 100;
             const imc = (peso / (altM * altM)).toFixed(1);
@@ -138,13 +201,11 @@
             return { valor: imc, texto: classe };
         }
 
-        // Lógica de Sequência Ativa
         function verificarSequencia() {
             const hoje = new Date().toDateString();
             if (estado.ultimoAcesso !== hoje) {
                 const ontem = new Date();
                 ontem.setDate(ontem.getDate() - 1);
-                
                 if (estado.ultimoAcesso === ontem.toDateString()) {
                     estado.sequencia++;
                 } else {
@@ -256,15 +317,31 @@
                 const perc = Math.min((estado.calorias / 2577) * 100, 100);
                 const metaAgua = Math.round(estado.peso * 35);
                 const percAgua = Math.min((estado.aguaAtual / metaAgua) * 100, 100);
-
-                // Dia da semana dinâmico
                 let diaSemanaJS = new Date().getDay(); 
                 let indiceAtivo = diaSemanaJS === 0 ? 6 : diaSemanaJS - 1;
 
                 root.innerHTML = `
+                    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleMenu()"></div>
+                    <div id="sidebar" class="sidebar">
+                        <div class="sidebar-header">
+                            <b style="font-size: 22px;">NutriShot AI</b><br>
+                            <small>${estado.nomeUsuario} • ${estado.objetivo === 'perda' ? 'Foco Perda' : 'Foco Ganho'}</small>
+                        </div>
+                        <div class="sidebar-menu">
+                            <div class="menu-item" onclick="menuNav('home')">🏠 Dashboard</div>
+                            <div class="menu-item" onclick="menuNav('catalogo')">🛒 Loja de Suplementos</div>
+                            <div class="menu-item" onclick="editarMedidas(); toggleMenu()">⚖️ Atualizar Medidas</div>
+                            <div class="menu-item" onclick="rodarAnuncio('Gerando Plano...', () => alert('Seu plano semanal foi enviado ao e-mail!')); toggleMenu()">📅 Plano Alimentar</div>
+                            <div class="menu-item" onclick="rodarAnuncio('Saindo...', () => {estado.logado=false; render()})" style="color:#e74c3c; border-top:1px solid #eee; margin-top:20px;">🚪 Sair da Conta</div>
+                        </div>
+                    </div>
+
                     <div style="padding: 20px; display: flex; justify-content: space-between; align-items:center;">
-                        <div><small style="color:#888; display:block;">Bom dia,</small><b style="font-size:18px;">${estado.nomeUsuario}</b></div>
-                        <span onclick="estado.logado=false; render()" style="background:#eee; padding:5px 12px; border-radius:10px; font-size:12px; cursor:pointer;">Sair</span>
+                        <div style="display:flex; align-items:center; gap:15px;">
+                            <div onclick="toggleMenu()" style="font-size:24px; cursor:pointer; padding:5px;">☰</div>
+                            <div><small style="color:#888; display:block;">Olá,</small><b style="font-size:18px;">${estado.nomeUsuario}</b></div>
+                        </div>
+                        <div onclick="navegar('catalogo')" style="background:#fff; border:1px solid #eee; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 5px rgba(0,0,0,0.05);">🛒</div>
                     </div>
 
                     <div class="card card-fogo">
@@ -300,7 +377,7 @@
                         <div class="opt-obj ${estado.objetivo === 'ganho' ? 'active' : ''}" onclick="estado.objetivo='ganho'; render()">Ganho Massa</div>
                     </div>
 
-                    <button class="btn-loja" onclick="navegar('catalogo')">🛒 VER SUPLEMENTOS</button>
+                    <button class="btn-loja" onclick="navegar('catalogo')">🛒 VER SUPLEMENTOS RECOMENDADOS</button>
 
                     <div class="card">
                         <small>Consumo de Calorias</small>
