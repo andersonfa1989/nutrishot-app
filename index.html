@@ -5,267 +5,226 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>NutriShot Pro</title>
     <style>
-        :root { --primary: #2ab573; --blue: #2490eb; --bg: #f4f7f6; --dark: #1a1a1a; }
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #333; padding-bottom: 90px; }
+        :root { --primary: #2ab573; --blue: #2490eb; --bg: #f8f9fa; --dark: #212529; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: #333; padding-bottom: 100px; }
         
-        /* Estrutura Menu */
-        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; z-index: 10000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.1); padding: 20px; }
+        /* Menu Lateral */
+        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; z-index: 10000; transition: 0.3s; padding: 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
         .sidebar.active { left: 0; }
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: none; }
-        .sidebar-item { padding: 15px; border-bottom: 1px solid #eee; font-weight: bold; cursor: pointer; }
 
-        /* Logos e Inputs */
-        .texto-logo { font-size: 28px; font-weight: 800; text-align: center; background: linear-gradient(45deg, var(--blue), var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 20px 0; }
-        .input-group { width: 85%; margin: 10px auto; }
-        .input-nutri { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; box-sizing: border-box; margin-bottom: 10px; }
+        /* Login e Cadastro */
+        .auth-container { padding: 40px 25px; text-align: center; background: #fff; min-height: 100vh; }
+        .logo-text { font-size: 32px; font-weight: 800; color: var(--primary); margin-bottom: 30px; letter-spacing: -1px; }
+        .input-nutri { width: 100%; padding: 16px; margin: 8px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; box-sizing: border-box; }
+
+        /* Dashboard */
+        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: #fff; border-bottom: 1px solid #eee; }
+        .card { background: #fff; border-radius: 18px; padding: 20px; margin: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .card-summary { background: var(--dark); color: #fff; }
         
-        /* Botões */
-        .btn-acao { width: 85%; background: var(--blue); color: #fff; border: none; padding: 18px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; display: block; margin: 20px auto; }
-        .btn-sec { background: transparent; color: #666; border: 1px solid #ddd; width: 85%; padding: 12px; border-radius: 15px; margin: 0 auto; display: block; cursor: pointer; }
-        .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: var(--dark); color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 999; }
+        /* Progress Bar */
+        .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); transition: 0.5s; width: 0%; }
 
-        /* Cards Dashboard */
-        .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-        .card-resumo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; display: flex; justify-content: space-between; align-items: center; }
+        /* Macronutrientes */
+        .macro-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 0 15px; }
+        .macro-box { background: #fff; padding: 12px; border-radius: 12px; text-align: center; border: 1px solid #eee; }
+
+        /* FAB - Botão Flutuante */
+        .fab { position: fixed; bottom: 90px; right: 20px; width: 65px; height: 65px; background: var(--primary); color: white; border-radius: 50%; border: none; font-size: 30px; box-shadow: 0 4px 15px rgba(42, 181, 115, 0.4); z-index: 999; cursor: pointer; }
+
+        /* Anúncio Fixo no Rodapé */
+        .footer-ad { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: #fff; border-top: 1px solid #ddd; display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 5px; }
+        .ad-banner { width: 95%; height: 50px; background: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Tela de IA / Anúncio de Carregamento */
+        .ia-loading { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
         
-        .progresso-semanal { display: flex; justify-content: space-between; align-items: flex-end; height: 40px; margin-top: 10px; }
-        .barra-dia { width: 25px; height: 10px; background: #eee; border-radius: 5px; }
-        .barra-dia.hoje { background: var(--primary); height: 30px; }
-
-        .prog-bg { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin: 10px 0; overflow: hidden; }
-        .prog-fill { height: 100%; background: var(--primary); transition: 0.5s; }
-
-        .macro-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 0 15px; }
-        .macro-item { background: #fff; padding: 15px; border-radius: 15px; text-align: center; border: 1px solid #eee; }
-
-        /* Anúncios e IA */
-        .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; }
-        .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; }
-        #bar-fill { width: 0%; height: 100%; background: var(--primary); border-radius: 10px; }
+        .btn-main { width: 100%; background: var(--blue); color: white; border: none; padding: 18px; border-radius: 15px; font-weight: bold; font-size: 16px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="overlay" class="sidebar-overlay" onclick="toggleMenu()"></div>
+    <div id="overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
     <div id="sidebar" class="sidebar">
-        <h3 class="texto-logo">NutriShot</h3>
-        <div class="sidebar-item" onclick="navegar('home')">🏠 Dashboard</div>
-        <div class="sidebar-item" onclick="navegar('catalogo')">🛒 Suplementos</div>
-        <div class="sidebar-item" style="color:red; margin-top:30px;" onclick="sair()">🚪 Sair</div>
+        <h2 class="logo-text">NutriShot</h2>
+        <p onclick="navegar('home')">🏠 Dashboard</p>
+        <p onclick="navegar('catalogo')">🛒 Suplementos</p>
+        <hr>
+        <p style="color:red" onclick="sair()">🚪 Sair</p>
     </div>
 
-    <div id="ads-overlay" class="ads-overlay">
-        <div id="ad-text">Processando com IA NutriShot...</div>
-        <div class="bar-container"><div id="bar-fill"></div></div>
+    <div id="ia-loading" class="ia-loading">
+        <p id="ia-text">IA ANALISANDO CALORIAS...</p>
+        <div class="progress-container" style="width: 70%;"><div id="ia-bar" class="progress-fill"></div></div>
     </div>
 
     <div id="app"></div>
 
+    <div class="footer-ad" id="footer-ad">
+        <div class="ad-banner">ANÚNCIO: Whey Protein em oferta na Growth!</div>
+    </div>
+
     <script>
-        // Dados de Suplementos
-        const PRODUTOS = {
-            perda: [
-                { nome: "Psyllium Fibras", img: "https://growthsupplements.com.br/media/catalog/product/p/s/psyllium-60-caps.png" },
-                { nome: "Termogênico Hot", img: "https://growthsupplements.com.br/media/catalog/product/h/o/hot-termogenico-60-caps.png" }
-            ],
-            ganho: [
-                { nome: "Creatina Monohidratada", img: "https://growthsupplements.com.br/media/catalog/product/c/r/creatina-monohidratada-100g.png" },
-                { nome: "Whey Protein 1kg", img: "https://growthsupplements.com.br/media/catalog/product/w/h/whey-protein-isolado-1kg.png" }
-            ]
+        let state = JSON.parse(localStorage.getItem('nutri_v12')) || {
+            isLogged: false, page: 'login', user: 'Usuário', weight: 70, height: 170,
+            kcal: 0, prot: 0, carb: 0, fat: 0, photo: null, history: []
         };
 
-        let estado = JSON.parse(localStorage.getItem('nutri_v11')) || {
-            logado: false, tela: 'cadastro', nome: '', peso: 70, altura: 170, 
-            objetivo: 'perda', calorias: 0, prot: 0, carb: 0, gord: 0, 
-            historico: [], foto: null, ultimoRes: null
-        };
-
-        function salvar() { localStorage.setItem('nutri_v11', JSON.stringify(estado)); }
-        function navegar(t) { estado.tela = t; render(); toggleMenu(false); }
-        function toggleMenu(force) {
+        function save() { localStorage.setItem('nutri_v12', JSON.stringify(state)); }
+        function navegar(p) { state.page = p; render(); toggleSidebar(false); window.scrollTo(0,0); }
+        function toggleSidebar(force) {
             const s = document.getElementById('sidebar');
             const o = document.getElementById('overlay');
             if(force === false) { s.classList.remove('active'); o.style.display='none'; return; }
             s.classList.toggle('active');
             o.style.display = s.classList.contains('active') ? 'block' : 'none';
         }
-        function sair() { estado.logado = false; estado.tela = 'login'; salvar(); render(); }
-
-        function rodarProcesso(callback) {
-            const ads = document.getElementById('ads-overlay');
-            const fill = document.getElementById('bar-fill');
-            ads.style.display = 'flex';
-            let p = 0;
-            const int = setInterval(() => {
-                p += 4; fill.style.width = p + '%';
-                if(p >= 100) { clearInterval(int); ads.style.display = 'none'; fill.style.width = '0%'; callback(); }
-            }, 80);
-        }
 
         function handleFile(e) {
-            const f = e.target.files[0];
-            if(f) {
-                const r = new FileReader();
-                r.onload = ev => { estado.foto = ev.target.result; render(); };
-                r.readAsDataURL(f);
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = (event) => { state.photo = event.target.result; render(); };
+                reader.readAsDataURL(file);
             }
         }
 
-        function analisarIA() {
-            rodarProcesso(() => {
-                const c = Math.floor(Math.random() * 250 + 300);
-                estado.calorias += c;
-                estado.prot += Math.floor(c * 0.06);
-                estado.carb += Math.floor(c * 0.1);
-                estado.gord += Math.floor(c * 0.03);
-                estado.ultimoRes = c;
-                estado.historico.unshift({ nome: 'Refeição', cal: c });
-                estado.foto = null;
-                salvar();
-                navegar('dica');
-            });
+        function runIA() {
+            const load = document.getElementById('ia-loading');
+            const bar = document.getElementById('ia-bar');
+            load.style.display = 'flex';
+            let p = 0;
+            const interval = setInterval(() => {
+                p += 5; bar.style.width = p + '%';
+                if(p >= 100) {
+                    clearInterval(interval);
+                    load.style.display = 'none';
+                    bar.style.width = '0%';
+                    // Resultado Simulado
+                    const c = Math.floor(Math.random() * 200 + 350);
+                    state.kcal += c;
+                    state.prot += 25; state.carb += 40; state.fat += 12;
+                    state.history.unshift({ kcal: c, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
+                    state.photo = null;
+                    state.lastKcal = c;
+                    save();
+                    navegar('dica');
+                }
+            }, 100);
         }
 
         function render() {
-            const root = document.getElementById('app');
+            const app = document.getElementById('app');
+            const footer = document.getElementById('footer-ad');
+            
+            // Controle de exibição do anúncio no rodapé
+            footer.style.display = state.isLogged ? 'flex' : 'none';
 
-            // TELAS DE ACESSO
-            if (!estado.logado) {
-                const isCad = estado.tela === 'cadastro';
-                root.innerHTML = `
-                    <div style="padding: 40px 20px;">
-                        <h1 class="texto-logo">NutriShot</h1>
-                        <div class="input-group">
-                            ${isCad ? '<input type="text" id="f-nome" class="input-nutri" placeholder="Nome">' : ''}
-                            <input type="email" class="input-nutri" placeholder="E-mail">
-                            <input type="password" class="input-nutri" placeholder="Senha">
-                            ${isCad ? `
-                                <div style="display:flex; gap:10px;">
-                                    <input type="number" id="f-peso" class="input-nutri" placeholder="Peso (kg)">
-                                    <input type="number" id="f-alt" class="input-nutri" placeholder="Altura (cm)">
-                                </div>
-                            ` : ''}
-                        </div>
-                        <button class="btn-acao" onclick="entrar(${isCad})">${isCad ? 'CRIAR CONTA' : 'ENTRAR'}</button>
-                        <p style="text-align:center" onclick="navegar('${isCad?'login':'cadastro'}')">
-                            ${isCad ? 'Já tem conta? <b>Login</b>' : 'Não tem conta? <b>Cadastrar</b>'}
+            if (!state.isLogged) {
+                const isReg = state.page === 'cadastro';
+                app.innerHTML = `
+                    <div class="auth-container">
+                        <h1 class="logo-text">NutriShot</h1>
+                        <p>${isReg ? 'Crie sua conta grátis' : 'Bem-vindo de volta'}</p>
+                        ${isReg ? '<input type="text" id="reg-name" class="input-nutri" placeholder="Nome Completo">' : ''}
+                        <input type="email" class="input-nutri" placeholder="E-mail">
+                        <input type="password" class="input-nutri" placeholder="Senha">
+                        <button class="btn-main" style="margin-top:20px" onclick="login(${isReg})">${isReg ? 'CADASTRAR' : 'ENTRAR'}</button>
+                        <p style="margin-top:20px" onclick="navegar('${isReg ? 'login' : 'cadastro'}')">
+                            ${isReg ? 'Já tem conta? <b>Login</b>' : 'Não tem conta? <b>Cadastre-se</b>'}
                         </p>
                     </div>`;
                 return;
             }
 
-            // DASHBOARD
-            if (estado.tela === 'home') {
-                root.innerHTML = `
-                    <div style="padding:20px; display:flex; align-items:center; gap:15px;">
-                        <span style="font-size:24px" onclick="toggleMenu()">☰</span>
-                        <b>Dashboard de ${estado.nome}</b>
+            if (state.page === 'home') {
+                app.innerHTML = `
+                    <div class="header">
+                        <span style="font-size:24px" onclick="toggleSidebar()">☰</span>
+                        <b>NutriShot Elements</b>
+                        <div style="width:24px"></div>
                     </div>
 
-                    <div class="card card-resumo">
-                        <div><small>Sequência</small><br><b style="font-size:20px">1 Dia 🔥</b></div>
-                        <div style="text-align:right"><small>IMC</small><br><b style="font-size:20px">24.5</b></div>
+                    <div class="card card-summary">
+                        <small>Meta Diária</small>
+                        <h2 style="margin:5px 0">${state.kcal} / 2500 kcal</h2>
+                        <div class="progress-container"><div class="progress-fill" style="width: ${(state.kcal/2500)*100}%"></div></div>
+                    </div>
+
+                    <div class="macro-row">
+                        <div class="macro-box"><small>Prot</small><br><b>${state.prot}g</b></div>
+                        <div class="macro-box"><small>Carb</small><br><b>${state.carb}g</b></div>
+                        <div class="macro-box"><small>Gord</small><br><b>${state.fat}g</b></div>
                     </div>
 
                     <div class="card">
-                        <b>Progresso Semanal</b>
-                        <div class="progresso-semanal">
-                            <div class="barra-dia"></div><div class="barra-dia"></div><div class="barra-dia hoje"></div><div class="barra-dia"></div><div class="barra-dia"></div><div class="barra-dia"></div><div class="barra-dia"></div>
+                        <b>Refeições de Hoje</b>
+                        <div style="margin-top:15px">
+                            ${state.history.length === 0 ? '<p style="color:#999; font-size:14px">Nenhuma refeição registrada.</p>' : 
+                            state.history.map(h => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f5f5f5"><span>Refeição (${h.time})</span><b>${h.kcal} kcal</b></div>`).join('')}
                         </div>
                     </div>
 
-                    <div class="card">
-                        <small>Calorias de Hoje</small>
-                        <div style="font-size:24px; font-weight:800">${estado.calorias} <span style="font-size:14px; color:#999">/ 2500 kcal</span></div>
-                        <div class="prog-bg"><div class="prog-fill" style="width:${(estado.calorias/2500)*100}%"></div></div>
-                    </div>
-
-                    <div class="macro-grid">
-                        <div class="macro-item"><small>Prot</small><br><b>${estado.prot}g</b></div>
-                        <div class="macro-item"><small>Carb</small><br><b>${estado.carb}g</b></div>
-                        <div class="macro-item"><small>Gord</small><br><b>${estado.gord}g</b></div>
-                    </div>
-
-                    <div class="card">
-                        <b>Últimas Refeições</b>
-                        ${estado.historico.length === 0 ? '<p style="font-size:12px; color:#999">Nenhuma hoje.</p>' : 
-                        estado.historico.map(h => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee;"><span>${h.nome}</span><b>${h.cal} kcal</b></div>`).join('')}
-                    </div>
-
-                    <button class="fab" onclick="navegar('add')">+</button>
+                    <button class="fab" onclick="navegar('analisar')">+</button>
                 `;
             }
 
-            // ADICIONAR REFEIÇÃO
-            if (estado.tela === 'add') {
-                root.innerHTML = `
+            if (state.page === 'analisar') {
+                app.innerHTML = `
                     <div style="padding:20px">
-                        <div onclick="navegar('home')" style="font-weight:bold; color:var(--blue)">← Voltar</div>
-                        <h2 style="text-align:center">Nova Análise</h2>
+                        <div onclick="navegar('home')" style="margin-bottom:20px; font-weight:bold; color:var(--blue)">← VOLTAR</div>
+                        <h2 style="text-align:center">Analisar com IA</h2>
                         <div class="card" style="text-align:center">
-                            ${!estado.foto ? `
-                                <button class="btn-acao" onclick="document.getElementById('c').click()">📸 Tirar Foto</button>
-                                <button class="btn-sec" onclick="document.getElementById('g').click()">📁 Galeria</button>
-                                <input type="file" id="c" capture="environment" accept="image/*" style="display:none" onchange="handleFile(event)">
-                                <input type="file" id="g" accept="image/*" style="display:none" onchange="handleFile(event)">
+                            ${!state.photo ? `
+                                <div style="padding:40px 0">
+                                    <button class="btn-main" onclick="document.getElementById('cam').click()">📸 TIRAR FOTO</button>
+                                    <button class="btn-main" style="background:#6c757d; margin-top:10px" onclick="document.getElementById('gal').click()">📁 GALERIA</button>
+                                </div>
+                                <input type="file" id="cam" capture="environment" accept="image/*" style="display:none" onchange="handleFile(event)">
+                                <input type="file" id="gal" accept="image/*" style="display:none" onchange="handleFile(event)">
                             ` : `
-                                <img src="${estado.foto}" style="width:100%; border-radius:15px; margin-bottom:15px;">
-                                <button class="btn-acao" onclick="analisarIA()">🚀 ANALISAR COM IA</button>
-                                <button class="btn-sec" onclick="estado.foto=null; render()">Trocar</button>
+                                <img src="${state.photo}" style="width:100%; border-radius:12px; margin-bottom:20px">
+                                <button class="btn-main" style="background:var(--primary)" onclick="runIA()">🚀 ANALISAR AGORA</button>
+                                <button class="btn-main" style="background:#eee; color:#333; margin-top:10px" onclick="state.photo=null; render()">TROCAR FOTO</button>
                             `}
                         </div>
-                    </div>`;
+                    </div>
+                `;
             }
 
-            // TELA DE DICA E RESULTADO
-            if (estado.tela === 'dica') {
-                root.innerHTML = `
-                    <div style="padding:40px 20px; text-align:center;">
-                        <div style="font-size:50px">🥗</div>
-                        <h2 style="color:var(--primary)">Refeição Analisada!</h2>
+            if (state.page === 'dica') {
+                app.innerHTML = `
+                    <div style="padding:40px 25px; text-align:center">
+                        <div style="font-size:60px">🥗</div>
+                        <h2 style="color:var(--primary)">Análise Concluída!</h2>
                         <div class="card">
-                            <p>Estimamos que este prato possui:</p>
-                            <h1 style="font-size:45px; margin:10px 0;">${estado.ultimoRes} kcal</h1>
+                            <p>Sua refeição possui aproximadamente:</p>
+                            <h1 style="font-size:48px; color:var(--blue)">${state.lastKcal} kcal</h1>
                         </div>
-                        <div style="background:#e8f5e9; padding:20px; border-radius:15px; text-align:left; border-left:5px solid var(--primary)">
-                            <b>💡 Dica Diária:</b><br>
-                            <p>Procure beber 200ml de água 15 minutos antes de comer para ajudar na saciedade.</p>
+                        <div style="background:#e7f3ff; padding:20px; border-radius:15px; text-align:left; border-left:5px solid var(--blue)">
+                            <b>💡 DICA DA NUTRI:</b>
+                            <p style="margin:5px 0; font-size:14px">Sabia que mastigar cada garfada pelo menos 15 vezes ajuda seu corpo a queimar calorias de forma mais eficiente?</p>
                         </div>
-                        <button class="btn-acao" onclick="navegar('home')">FINALIZAR</button>
-                    </div>`;
-            }
-
-            // CATÁLOGO
-            if (estado.tela === 'catalogo') {
-                const lista = estado.objetivo === 'ganho' ? PRODUTOS.ganho : PRODUTOS.perda;
-                root.innerHTML = `
-                    <div style="padding:20px">
-                        <div onclick="navegar('home')" style="font-weight:bold; color:var(--blue)">← Voltar</div>
-                        <div style="display:flex; gap:10px; margin:20px 0;">
-                            <button class="btn-sec" style="${estado.objetivo==='perda'?'border-color:var(--primary); color:var(--primary)':''}" onclick="estado.objetivo='perda'; render()">Emagrecer</button>
-                            <button class="btn-sec" style="${estado.objetivo==='ganho'?'border-color:var(--primary); color:var(--primary)':''}" onclick="estado.objetivo='ganho'; render()">Ganhar Massa</button>
-                        </div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
-                            ${lista.map(p => `
-                                <div class="card" style="margin:0; padding:10px; text-align:center;">
-                                    <img src="${p.img}" style="width:100%; height:90px; object-fit:contain;">
-                                    <p style="font-size:12px; height:30px; overflow:hidden;">${p.nome}</p>
-                                    <button style="background:var(--primary); color:#fff; border:none; width:100%; padding:8px; border-radius:10px; font-weight:bold;">Ver Preço</button>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>`;
+                        <button class="btn-main" style="margin-top:30px" onclick="navegar('home')">VOLTAR AO DASHBOARD</button>
+                    </div>
+                `;
             }
         }
 
-        function entrar(isCad) {
-            if(isCad) {
-                estado.nome = document.getElementById('f-nome').value || 'Usuário';
-                estado.peso = document.getElementById('f-peso').value || 70;
-            }
-            estado.logado = true;
-            estado.tela = 'home';
-            salvar();
+        function login(isReg) {
+            if(isReg) state.user = document.getElementById('reg-name').value || 'Usuário';
+            state.isLogged = true;
+            state.page = 'home';
+            save();
+            render();
+        }
+
+        function sair() {
+            state.isLogged = false;
+            state.page = 'login';
+            save();
             render();
         }
 
