@@ -130,6 +130,30 @@
         .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
         .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; overflow: hidden; }
         #bar-progress { width: 0%; height: 100%; background: #2ab573; transition: width 0.1s linear; }
+
+        /* Estilos específicos para os Cards de Suplementos */
+        .suplemento-card {
+            background: #fff; 
+            border-radius: 16px; 
+            padding: 12px; 
+            text-align: center; 
+            border: 1px solid #eee; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            height: 230px;
+        }
+        .suplemento-btn {
+            width: 100%; 
+            background: var(--primary); 
+            color: #fff; 
+            border: none; 
+            padding: 8px; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            font-size: 11px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -173,7 +197,6 @@
         function salvar() { localStorage.setItem('nutrishot_v5', JSON.stringify(estado)); }
         function navegar(tela) { estado.tela = tela; salvar(); render(); window.scrollTo(0,0); }
 
-        // Funções do Menu Lateral
         function toggleMenu() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
@@ -422,10 +445,12 @@
                         <h2 style="margin:10px 0; font-size:18px;">Suplementação Recomendada</h2>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                             ${lista.map(p => `
-                                <div style="background:#fff; border-radius:16px; padding:12px; text-align:center; border:1px solid #eee; display:flex; flex-direction:column; justify-content:space-between; height:230px;">
+                                <div class="suplemento-card">
                                     <img src="${p.foto}" style="width:100%; height:85px; object-fit:contain;" onerror="this.src='https://via.placeholder.com/150'">
-                                    <b style="font-size:11px;">${p.nome}</b>
-                                    <a href="${p.link}" target="_blank" style="text-decoration:none"><button style="width:100%; background:var(--primary); color:#fff; border:none; padding:8px; border-radius:8px; font-weight:bold; font-size:11px;">Ver Oferta</button></a>
+                                    <b style="font-size:11px; margin: 8px 0;">${p.nome}</b>
+                                    <a href="${p.link}" target="_blank" style="text-decoration:none; width: 100%;">
+                                        <button class="suplemento-btn">Ver Oferta</button>
+                                    </a>
                                 </div>
                             `).join("")}
                         </div>
