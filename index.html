@@ -3,165 +3,86 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <title>NutriShot Elements</title>
+    <title>NutriShot Pro</title>
     <style>
         :root { 
             --primary: #2ab573; 
-            --blue-action: #2490eb; 
-            --bg: #f9fafb; 
-            --water: #3498db;
-            --purple: #6a11cb;
+            --blue-action: #3498db; 
+            --purple-gradient: linear-gradient(135deg, #6a11cb, #2575fc);
+            --bg: #f8f9fa; 
         }
-        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #333; padding-bottom: 20px; }
         
         /* Menu Lateral */
-        .sidebar {
-            position: fixed; top: 0; left: -280px; width: 260px; height: 100%;
-            background: #fff; z-index: 10000; transition: 0.3s;
-            box-shadow: 5px 0 15px rgba(0,0,0,0.1); padding: 20px;
-        }
+        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; z-index: 10000; transition: 0.3s; padding: 20px; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
         .sidebar.active { left: 0; }
-        .sidebar-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 9999; display: none;
-        }
-        .sidebar-item { padding: 18px 10px; border-bottom: 1px solid #f8f9fa; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 12px; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 9999; display: none; }
+        .sidebar-item { padding: 15px; border-bottom: 1px solid #f1f1f1; cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: 600; color: #444; }
 
-        /* Typography & Inputs */
-        .texto-logo { font-size: 24px; font-weight: 800; background: linear-gradient(to right, #2490eb, #2ab573, #f39c12); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
-        .input-nutri { width: 90%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; }
-        .input-metade { width: 42%; display: inline-block; }
+        /* Estilo dos Cards (Baseado na Imagem) */
+        .card-main { background: var(--purple-gradient); color: white; margin: 15px; padding: 25px; border-radius: 18px; position: relative; box-shadow: 0 4px 15px rgba(106, 17, 203, 0.2); }
+        .perfil-tag { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.15); padding: 10px; border-radius: 12px; text-align: right; border: 1px solid rgba(255,255,255,0.2); }
+        .card-white { background: #fff; border-radius: 16px; padding: 18px; margin: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #eee; }
 
-        /* Cards */
-        .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-        .card-fogo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; display: flex; justify-content: space-between; align-items: center; }
-        
-        /* IMC Info */
-        .imc-box { text-align: right; background: rgba(255,255,255,0.15); padding: 8px 12px; border-radius: 12px; }
-        .imc-num { font-size: 22px; font-weight: bold; }
-        .imc-label { font-size: 10px; text-transform: uppercase; font-weight: 800; }
+        /* Botões de Refeição */
+        .grid-refeicao { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+        .btn-refeicao { background: #fff; border: 1px solid #e0e0e0; padding: 18px; border-radius: 14px; font-weight: bold; text-align: center; cursor: pointer; transition: 0.2s; }
+        .btn-refeicao.active { border-color: var(--primary); background: #f0fff4; color: var(--primary); }
 
-        /* Barra Semanal */
-        .grid-7 { display: flex; justify-content: space-between; align-items: flex-end; height: 45px; margin-top: 15px; }
-        .col-dia { display: flex; flex-direction: column; align-items: center; flex: 1; }
-        .barra-v { width: 28px; height: 5px; background: rgba(255,255,255,0.2); border-radius: 3px; }
-        .barra-v.active { background: #fff; height: 8px; box-shadow: 0 0 10px #fff; }
-        .dia-txt { font-size: 10px; margin-top: 5px; color: #fff; opacity: 0.7; }
+        /* Barras de Progresso */
+        .bar-bg { height: 10px; background: #e9ecef; border-radius: 10px; margin: 10px 0; overflow: hidden; }
+        .bar-fill { height: 100%; transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        /* Progress Bars */
-        .prog-bg { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin: 10px 0; overflow: hidden; }
-        .prog-fill { height: 100%; background: var(--primary); transition: 0.5s; }
-        .prog-fill.water { background: var(--water); }
+        /* Histórico Semanal */
+        .semana-grid { display: flex; justify-content: space-between; align-items: flex-end; height: 50px; padding: 10px 0; }
+        .dia-col { display: flex; flex-direction: column; align-items: center; flex: 1; }
+        .dia-bar { width: 30px; height: 4px; background: #eee; border-radius: 2px; }
+        .dia-bar.active { background: #6a11cb; height: 6px; box-shadow: 0 0 8px rgba(106,17,203,0.4); }
 
-        /* Buttons */
-        .btn-azul { width: calc(100% - 40px); background: var(--blue-action); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer; }
-        .btn-water { background: var(--water); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; width: 100%; margin-top: 10px; }
-        
-        /* Suplementos Grid */
-        .grid-sup { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px; }
-        .item-sup { background: #fff; border-radius: 15px; padding: 15px; border: 1px solid #eee; text-align: center; text-decoration: none; color: inherit; }
-        .item-sup img { width: 100%; height: 90px; object-fit: contain; }
-        .btn-buy { background: var(--primary); color: white; border: none; padding: 8px; border-radius: 8px; width: 100%; margin-top: 8px; font-weight: bold; font-size: 12px; }
+        /* Anúncio Estilizado */
+        .ad-footer { background: #fff; margin: 15px; padding: 15px; border-radius: 12px; border: 1px dashed #3498db; display: flex; align-items: center; gap: 15px; }
+        .ad-badge { background: #3498db; color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
 
-        .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 35px; border: none; z-index: 99; }
-        .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
-        #bar-progress { width: 0%; height: 100%; background: var(--primary); transition: width 0.1s linear; }
+        /* Loja */
+        .grid-loja { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; }
+        .item-loja { background: #fff; border-radius: 15px; padding: 15px; text-align: center; border: 1px solid #eee; text-decoration: none; color: inherit; }
+        .item-loja img { width: 100%; height: 100px; object-fit: contain; }
+
+        .fab { position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; z-index: 99; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
 
-    <div id="overlay" class="sidebar-overlay" onclick="toggleMenu()"></div>
+    <div id="overlay" class="sidebar-overlay" onclick="toggleMenu(false)"></div>
     <div id="sidebar" class="sidebar">
-        <h2 class="texto-logo">NutriShot</h2>
-        <div class="sidebar-item" onclick="navegar('home'); toggleMenu()">🏠 Dashboard</div>
-        <div class="sidebar-item" onclick="navegar('progresso_semanal'); toggleMenu()">📊 Histórico Semanal</div>
-        <div class="sidebar-item" onclick="navegar('catalogo'); toggleMenu()">🛒 Loja de Suplementos</div>
-        <div class="sidebar-item" style="color:#e74c3c; margin-top:50px;" onclick="sair()">🚪 Sair da Conta</div>
-    </div>
-
-    <div id="ads-overlay" class="ads-overlay">
-        <div id="ad-text" style="font-size: 18px; font-weight: bold;">IA NutriShot em ação...</div>
-        <div style="width:70%; height:8px; background:#333; border-radius:10px; margin-top:25px; overflow:hidden;">
-            <div id="bar-progress"></div>
-        </div>
+        <h2 style="color:var(--primary); margin-bottom:30px;">NutriShot</h2>
+        <div class="sidebar-item" onclick="navegar('home')">🏠 Dashboard</div>
+        <div class="sidebar-item" onclick="navegar('historico')">📊 Progresso Semanal</div>
+        <div class="sidebar-item" onclick="navegar('loja')">🛒 Suplementos</div>
+        <div class="sidebar-item" style="color:#e74c3c; margin-top:40px;" onclick="sair()">🚪 Sair da Conta</div>
     </div>
 
     <div id="app"></div>
 
     <script>
-        const SUPLEMENTOS = {
-            ganho: [
-                { nome:"Creatina Growth 100g", foto:"creatina-100g.png", link:"https://amzn.to/4b47g9o" },
-                { nome:"Whey Chocolate", foto:"wey-choco.png", link:"https://amzn.to/3LjWMIB" },
-                { nome:"Whey Morango", foto:"wey-moran.png", link:"https://amzn.to/4sPsdvg" },
-                { nome:"Whey Creme", foto:"wey-creme.png", link:"https://amzn.to/4qq9ODl" },
-                { nome:"Gainer Chocolate", foto:"Hipercalórico-choco.png", link:"https://amzn.to/4qpZKKC" },
-                { nome:"Gainer Cookies", foto:"Hipercalórico-cooki.png", link:"https://amzn.to/4bC9A7C" }
-            ],
-            perda: [
-                { nome:"Psyllium Cápsulas", foto:"Psyllium-caps.png", link:"https://amzn.to/4sBfMmq" },
-                { nome:"Psyllium em Pó", foto:"Psyllium-po.png", link:"https://amzn.to/3YINEAk" },
-                { nome:"Ultra Burn Termogênico", foto:"termog.png", link:"https://amzn.to/4b5phUQ" },
-                { nome:"L-Carnitina 2000mg", foto:"l-creat2000.png", link:"https://amzn.to/4bBHcCw" },
-                { nome:"L-Carnitina 1000mg", foto:"l-creat1000.png", link:"https://amzn.to/3LJAv6S" }
-            ]
+        const DICAS = [
+            "Beba 500ml de água logo ao acordar para ativar o metabolismo.",
+            "Consumir fibras no jantar melhora a qualidade do seu sono.",
+            "A canela ajuda a controlar picos de insulina após as refeições.",
+            "Creatina não retém líquido intramuscular, ela hidrata a célula."
+        ];
+
+        let estado = JSON.parse(localStorage.getItem('nutrishot_final')) || {
+            logado: false, nome: 'Isaac', peso: 75, altura: 175, imc: 24.5, cat: 'Normal',
+            cal: 450, agua: 500, objetivo: 'perda', tela: 'home', 
+            dica: DICAS[0], historico: [], diaSemana: new Date().getDay()
         };
 
-        let estado = JSON.parse(localStorage.getItem('nutrishot_v6')) || {
-            logado: false, tela: 'cadastro', nomeUsuario: 'Isaac', objetivo: 'perda',
-            peso: 70, altura: 170, imc: 24.2, classification: 'Normal',
-            calorias: 0, prot: 0, carb: 0, gord: 0, aguaAtual: 0, 
-            historico: [], historicoSemanal: [],
-            sequencia: 1, ultimoAcesso: new Date().toLocaleDateString()
-        };
-
-        function salvar() { localStorage.setItem('nutrishot_v6', JSON.stringify(estado)); }
-        function navegar(tela) { estado.tela = tela; salvar(); render(); window.scrollTo(0,0); }
-        function toggleMenu() {
-            const s = document.getElementById('sidebar');
-            const o = document.getElementById('overlay');
-            const isOpen = s.classList.contains('active');
-            s.classList.toggle('active');
-            o.style.display = isOpen ? 'none' : 'block';
-        }
-
-        function calcularIMC(p, a) {
-            const imc = (p / ((a/100) * (a/100))).toFixed(1);
-            let cat = imc < 18.5 ? "Magreza" : imc < 25 ? "Normal" : imc < 30 ? "Sobrepeso" : "Obesidade";
-            return { imc, cat };
-        }
-
-        function cadastrar() {
-            estado.nomeUsuario = document.getElementById('nome-f').value || 'Usuário';
-            estado.peso = parseFloat(document.getElementById('peso-f').value) || 70;
-            estado.altura = parseFloat(document.getElementById('altura-f').value) || 170;
-            const res = calcularIMC(estado.peso, estado.altura);
-            estado.imc = res.imc;
-            estado.classification = res.cat;
-            estado.logado = true;
-            navegar('home');
-        }
-
-        function sair() { estado.logado = false; salvar(); render(); }
-
-        function rodarAnaliseIA() {
-            const overlay = document.getElementById('ads-overlay');
-            const bar = document.getElementById('bar-progress');
-            overlay.style.display = 'flex';
-            let p = 0;
-            const tempo = setInterval(() => {
-                p += 4; bar.style.width = p + '%';
-                if(p >= 100) { 
-                    clearInterval(tempo); 
-                    overlay.style.display = 'none'; 
-                    bar.style.width = '0%'; 
-                    const cal = Math.floor(Math.random() * 200 + 400);
-                    estado.calorias += cal;
-                    estado.prot += Math.floor(cal * 0.06);
-                    estado.historico.unshift({tipo: 'Análise IA', cal: cal, hora: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})});
-                    navegar('home');
-                }
-            }, 60);
+        function salvar() { localStorage.setItem('nutrishot_final', JSON.stringify(estado)); render(); }
+        function navegar(t) { estado.tela = t; toggleMenu(false); window.scrollTo(0,0); salvar(); }
+        function toggleMenu(open) { 
+            document.getElementById('sidebar').classList.toggle('active', open); 
+            document.getElementById('overlay').style.display = open ? 'block' : 'none';
         }
 
         function render() {
@@ -169,120 +90,159 @@
 
             if (!estado.logado) {
                 root.innerHTML = `
-                    <div style="padding: 60px 20px; text-align: center;">
-                        <img src="icone-512.png" style="width:140px; margin-bottom:10px" onerror="this.src='https://i.ibb.co/Lz0D7Yd/icone-512.png'">
-                        <h1 class="texto-logo">NutriShot Elements</h1>
-                        <input type="text" id="nome-f" class="input-nutri" placeholder="Seu Nome">
-                        <div style="display:flex; justify-content:center; gap:10px;">
-                            <input type="number" id="peso-f" class="input-nutri input-metade" placeholder="Peso (kg)">
-                            <input type="number" id="altura-f" class="input-nutri input-metade" placeholder="Altura (cm)">
+                    <div style="padding:60px 25px; text-align:center;">
+                        <h1 style="font-size:32px; color:var(--primary)">NutriShot</h1>
+                        <p>Preencha para começar seu plano</p>
+                        <input id="in-nome" class="btn-refeicao" style="width:90%; margin-bottom:10px" placeholder="Seu Nome">
+                        <div style="display:flex; gap:10px; justify-content:center">
+                            <input id="in-peso" type="number" class="btn-refeicao" style="width:40%" placeholder="Peso (kg)">
+                            <input id="in-altura" type="number" class="btn-refeicao" style="width:40%" placeholder="Altura (cm)">
                         </div>
-                        <input type="email" class="input-nutri" placeholder="E-mail">
-                        <input type="password" class="input-nutri" placeholder="Senha">
-                        <button class="btn-azul" onclick="cadastrar()">CRIAR MINHA CONTA</button>
+                        <button class="btn-refeicao" style="width:95%; background:var(--primary); color:white; border:none; margin-top:20px" onclick="fazerLogin()">CRIAR PERFIL</button>
                     </div>`;
                 return;
             }
 
             if (estado.tela === 'home') {
-                const diaAtual = new Date().getDay();
-                const indiceDia = diaAtual === 0 ? 6 : diaAtual - 1;
-
                 root.innerHTML = `
-                    <div style="padding: 20px; display: flex; justify-content: space-between; align-items:center;">
-                        <span style="font-size:24px; cursor:pointer;" onclick="toggleMenu()">☰</span>
-                        <div style="text-align:right"><small style="color:#888;">Bem-vindo,</small><br><b>${estado.nomeUsuario}</b></div>
+                    <div style="padding:20px; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:24px" onclick="toggleMenu(true)">☰</span>
+                        <div style="text-align:right"><small>Bom dia,</small><br><b>${estado.nome}</b></div>
                     </div>
 
-                    <div class="card card-fogo">
-                        <div><small>Sequência Ativa</small><div style="font-size: 26px; font-weight: bold;">${estado.sequencia} Dias 🔥</div></div>
-                        <div class="imc-box">
-                            <div class="imc-label">Meu IMC</div>
-                            <div class="imc-num">${estado.imc}</div>
-                            <small>${estado.classification}</small>
+                    <div class="card-main">
+                        <div>Sequência Ativa<br><b style="font-size:26px">1 Dia 🔥</b></div>
+                        <div class="perfil-tag">
+                            <small>Perfil Físico ✏️</small><br><b>${estado.cat}</b><br><small>IMC: ${estado.imc}</small>
                         </div>
                     </div>
 
-                    <div class="card" style="padding:15px">
-                        <div class="grid-7">
-                            ${['S','T','Q','Q','S','S','D'].map((d, i) => `
-                                <div class="col-dia">
-                                    <div class="barra-v ${i === indiceDia ? 'active' : ''}"></div>
-                                    <div class="dia-txt">${d}</div>
-                                </div>
-                            `).join('')}
+                    <div class="card-white" style="border-left: 5px solid #3498db;">
+                        <b>Hidratação Diária 💧</b><br>
+                        <small>${estado.agua}ml / 2500ml</small>
+                        <div class="bar-bg"><div class="bar-fill" style="background:#3498db; width:${(estado.agua/2500)*100}%"></div></div>
+                        <button class="btn-refeicao" style="width:100%; padding:10px; background:#3498db; color:white;" onclick="estado.agua+=250; salvar()">+ BEBER 250ML</button>
+                    </div>
+
+                    <div class="card-white">
+                        <div style="display:flex; gap:10px; margin-bottom:15px;">
+                            <div class="btn-refeicao ${estado.objetivo==='perda'?'active':''}" style="flex:1; padding:10px;" onclick="estado.objetivo='perda'; salvar()">Emagrecer</div>
+                            <div class="btn-refeicao ${estado.objetivo==='ganho'?'active':''}" style="flex:1; padding:10px;" onclick="estado.objetivo='ganho'; salvar()">Ganho Massa</div>
                         </div>
+                        <small>Consumo de Calorias</small><br>
+                        <b>${estado.cal} <span style="color:#999; font-weight:normal;">/ 2577 kcal</span></b>
+                        <div class="bar-bg"><div class="bar-fill" style="background:var(--primary); width:${(estado.cal/2577)*100}%"></div></div>
                     </div>
 
-                    <div class="card">
-                        <small>Meta Diária: 2577 kcal</small>
-                        <div style="font-size: 26px; font-weight: bold; margin: 5px 0;">${estado.calorias} <span style="font-size:14px; color:#ccc">kcal</span></div>
-                        <div class="prog-bg"><div class="prog-fill" style="width: ${Math.min((estado.calorias/2577)*100, 100)}%"></div></div>
+                    <div class="card-white" style="background:#f0f7ff; border:none;">
+                        <b>Dica da IA ✨</b><br>
+                        <p style="font-size:14px; margin:5px 0;">${estado.dica}</p>
                     </div>
 
-                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin:0 20px;">
-                        <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Prot</small><br><b>${estado.prot}g</b></div>
-                        <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Carb</small><br><b>${estado.carb}g</b></div>
-                        <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Gord</small><br><b>${estado.gord}g</b></div>
-                    </div>
-
-                    <div class="card" style="border-left: 6px solid var(--water);">
-                        <b>Hidratação 💧</b><br>
-                        <small>${estado.aguaAtual}ml / 2500ml</small>
-                        <div class="prog-bg"><div class="prog-fill water" style="width: ${(estado.aguaAtual/2500)*100}%"></div></div>
-                        <button class="btn-water" onclick="estado.aguaAtual+=250; salvar(); render()">+ 250ML</button>
-                    </div>
-
-                    <div class="card">
+                    <div class="card-white">
                         <b>Refeições de Hoje</b>
-                        ${estado.historico.length === 0 ? '<p style="color:#999; text-align:center">Nenhum registro.</p>' : 
-                        estado.historico.map(h => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee;"><span>${h.tipo} <small>${h.hora}</small></span><b>${h.cal} kcal</b></div>`).join('')}
+                        ${estado.historico.length === 0 ? '<p style="color:#999; font-size:14px; text-align:center">Nenhuma refeição registrada.</p>' : 
+                        estado.historico.map(h => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee;"><span>${h.tipo}</span><b>${h.kcal} kcal</b></div>`).join('')}
                     </div>
 
-                    <button class="fab" onclick="navegar('add_refeicao')">+</button>
+                    <button class="fab" onclick="navegar('add')">+</button>
                 `;
             }
 
-            if (estado.tela === 'catalogo') {
-                const lista = SUPLEMENTOS[estado.objetivo];
+            if (estado.tela === 'historico') {
                 root.innerHTML = `
-                    <div style="padding: 20px;">
-                        <div onclick="navegar('home')" style="cursor:pointer; font-weight:bold; color:var(--blue-action);">← Dashboard</div>
-                        <h2 style="margin: 20px 0;">Suplementos Recomendados</h2>
-                        <div style="display:flex; gap:10px; margin-bottom:20px;">
-                            <div onclick="estado.objetivo='perda'; render()" style="flex:1; padding:10px; border-radius:10px; text-align:center; font-weight:bold; cursor:pointer; background:${estado.objetivo==='perda'? 'var(--primary)':'#eee'}; color:${estado.objetivo==='perda'?'white':'#666'}">Emagrecer</div>
-                            <div onclick="estado.objetivo='ganho'; render()" style="flex:1; padding:10px; border-radius:10px; text-align:center; font-weight:bold; cursor:pointer; background:${estado.objetivo==='ganho'? 'var(--primary)':'#eee'}; color:${estado.objetivo==='ganho'?'white':'#666'}">Ganhar Massa</div>
+                    <div style="padding:20px">
+                        <b onclick="navegar('home')">← Voltar</b>
+                        <h2 style="margin-top:20px">Progresso Semanal</h2>
+                        
+                        <div class="card-white">
+                            <div class="semana-grid">
+                                ${['S','T','Q','Q','S','S','D'].map((d, i) => `
+                                    <div class="dia-col">
+                                        <div class="dia-bar ${i === (estado.diaSemana-1) ? 'active' : ''}"></div>
+                                        <small style="margin-top:5px; color:#999">${d}</small>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="card-white">
+                            <p><b>Média de Calorias:</b> 1.840 kcal</p>
+                            <p><b>Média de Água:</b> 2.100 ml</p>
+                        </div>
+
+                        <div class="ad-footer">
+                            <div style="font-size:24px;">📦</div>
+                            <div>
+                                <span class="ad-badge">PATROCINADO</span><br>
+                                <small><b>Combo Ganho de Massa Growth</b></small><br>
+                                <small style="color:#666">Melhor preço do Brasil hoje.</small>
+                            </div>
                         </div>
                     </div>
-                    <div class="grid-sup">
-                        ${lista.map(s => `
-                            <a href="${s.link}" target="_blank" class="item-sup">
-                                <img src="${s.foto}" onerror="this.src='https://via.placeholder.com/100'">
-                                <div style="font-size:12px; font-weight:bold; margin-top:10px; height:32px; overflow:hidden;">${s.nome}</div>
-                                <button class="btn-buy">VER PREÇO</button>
+                `;
+            }
+
+            if (estado.tela === 'add') {
+                root.innerHTML = `
+                    <div style="padding:20px; text-align:center">
+                        <div onclick="navegar('home')" style="text-align:left">← Voltar</div>
+                        <h3 style="margin-top:40px">Qual é a refeição?</h3>
+                        <div class="grid-refeicao">
+                            <div class="btn-refeicao" onclick="registrarRefeicao('Café')">Café</div>
+                            <div class="btn-refeicao" onclick="registrarRefeicao('Almoço')">Almoço</div>
+                            <div class="btn-refeicao" onclick="registrarRefeicao('Jantar')">Jantar</div>
+                            <div class="btn-refeicao" onclick="registrarRefeicao('Lanche')">Lanche</div>
+                        </div>
+                        <div class="card-white" style="margin-top:30px; background:var(--purple-gradient); color:white; padding:30px">
+                            <div style="font-size:40px">📸</div>
+                            <b>Analisar Prato com IA</b>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (estado.tela === 'loja') {
+                root.innerHTML = `
+                    <div style="padding:20px">
+                        <b onclick="navegar('home')">← Voltar</b>
+                        <h2>Suplementos</h2>
+                        <div class="grid-loja">
+                            <a href="#" class="item-loja">
+                                <img src="creatina-100g.png" onerror="this.src='https://via.placeholder.com/100'">
+                                <p><small>Creatina Growth</small></p>
+                                <button style="background:var(--primary); color:white; border:none; padding:5px 10px; border-radius:5px">R$ 89,90</button>
                             </a>
-                        `).join('')}
+                            <a href="#" class="item-loja">
+                                <img src="wey-choco.png" onerror="this.src='https://via.placeholder.com/100'">
+                                <p><small>Whey Protein</small></p>
+                                <button style="background:var(--primary); color:white; border:none; padding:5px 10px; border-radius:5px">R$ 99,00</button>
+                            </a>
+                        </div>
                     </div>
                 `;
-            }
-
-            if (estado.tela === 'add_refeicao') {
-                root.innerHTML = `
-                    <div style="padding: 20px; text-align:center;">
-                        <div onclick="navegar('home')" style="text-align:left; cursor:pointer; color:var(--blue-action); font-weight:bold;">← Voltar</div>
-                        <h2 style="margin-top:50px;">Analisar Nutrientes</h2>
-                        <div class="card" onclick="document.getElementById('fileIn').click()" style="cursor:pointer; padding:40px;">
-                            <div style="font-size:50px;">🖼️</div>
-                            <b>Abrir Galeria</b>
-                            <input type="file" id="fileIn" hidden accept="image/*" onchange="rodarAnaliseIA()">
-                        </div>
-                        <div class="card" onclick="rodarAnaliseIA()" style="cursor:pointer; padding:40px;">
-                            <div style="font-size:50px;">📸</div>
-                            <b>Usar Câmera IA</b>
-                        </div>
-                    </div>`;
             }
         }
+
+        function fazerLogin() {
+            estado.nome = document.getElementById('in-nome').value || 'Isaac';
+            const p = parseFloat(document.getElementById('in-peso').value) || 70;
+            const a = parseFloat(document.getElementById('in-altura').value) || 170;
+            estado.imc = (p / ((a/100)*(a/100))).toFixed(1);
+            estado.cat = estado.imc < 18.5 ? "Magreza" : estado.imc < 25 ? "Normal" : "Sobrepeso";
+            estado.logado = true;
+            salvar();
+        }
+
+        function registrarRefeicao(tipo) {
+            const kc = tipo === 'Almoço' || tipo === 'Jantar' ? 600 : 300;
+            estado.cal += kc;
+            estado.historico.unshift({ tipo, kcal: kc });
+            estado.dica = DICAS[Math.floor(Math.random()*DICAS.length)];
+            navegar('home');
+        }
+
+        function sair() { localStorage.clear(); location.reload(); }
 
         render();
     </script>
