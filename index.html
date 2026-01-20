@@ -3,52 +3,45 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <title>NutriShot Elements</title>
+    <title>NutriShot Pro</title>
     <style>
-        :root { 
-            --primary: #2ab573; 
-            --blue-action: #2490eb; 
-            --bg: #f9fafb; 
-            --water: #3498db;
-        }
-        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 80px; overflow-x: hidden; }
+        :root { --primary: #2ab573; --blue: #2490eb; --bg: #f4f7f6; --dark: #1a1a1a; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #333; padding-bottom: 90px; }
         
-        .sidebar { position: fixed; top: 0; left: -280px; width: 250px; height: 100%; background: #fff; z-index: 10000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.1); padding: 20px; }
+        /* Estrutura Menu */
+        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; z-index: 10000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.1); padding: 20px; }
         .sidebar.active { left: 0; }
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: none; }
-        .sidebar-item { padding: 15px; border-bottom: 1px solid #eee; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .sidebar-item { padding: 15px; border-bottom: 1px solid #eee; font-weight: bold; cursor: pointer; }
 
-        .texto-logo {
-            font-size: 24px; font-weight: 800; text-align: center;
-            background: linear-gradient(to right, #2490eb, #2ab573, #f39c12);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
-        }
-
-        .input-nutri { width: 85%; padding: 15px; margin: 10px auto; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; display: block; }
-        .input-metade { width: 40%; display: inline-block; margin: 5px; }
+        /* Logos e Inputs */
+        .texto-logo { font-size: 28px; font-weight: 800; text-align: center; background: linear-gradient(45deg, var(--blue), var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 20px 0; }
+        .input-group { width: 85%; margin: 10px auto; }
+        .input-nutri { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; box-sizing: border-box; margin-bottom: 10px; }
         
-        .btn-azul { width: calc(100% - 40px); background: var(--blue-action); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        /* Botões */
+        .btn-acao { width: 85%; background: var(--blue); color: #fff; border: none; padding: 18px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; display: block; margin: 20px auto; }
+        .btn-sec { background: transparent; color: #666; border: 1px solid #ddd; width: 85%; padding: 12px; border-radius: 15px; margin: 0 auto; display: block; cursor: pointer; }
+        .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: var(--dark); color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 999; }
 
-        .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-        .card-fogo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; display: flex; justify-content: space-between; align-items: center; }
+        /* Cards Dashboard */
+        .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .card-resumo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; display: flex; justify-content: space-between; align-items: center; }
         
-        .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--primary); transition: width 0.5s; }
-        .progress-bar.water { background: var(--water); }
+        .progresso-semanal { display: flex; justify-content: space-between; align-items: flex-end; height: 40px; margin-top: 10px; }
+        .barra-dia { width: 25px; height: 10px; background: #eee; border-radius: 5px; }
+        .barra-dia.hoje { background: var(--primary); height: 30px; }
 
-        .selector-objetivo { display: flex; gap: 10px; margin-bottom: 20px; }
-        .opt-obj { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #eee; text-align: center; font-weight: bold; cursor: pointer; }
-        .opt-obj.active { border-color: var(--primary); background: #f0fff7; color: var(--primary); }
+        .prog-bg { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin: 10px 0; overflow: hidden; }
+        .prog-fill { height: 100%; background: var(--primary); transition: 0.5s; }
 
-        .btn-principal { width: 100%; background: linear-gradient(to right, #667eea, #764ba2); color: white; border: none; padding: 18px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .btn-outline { width: 100%; background: transparent; color: #666; border: 1px solid #ddd; padding: 15px; border-radius: 15px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        
-        .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 35px; border: none; z-index: 999; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        
-        .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
+        .macro-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 0 15px; }
+        .macro-item { background: #fff; padding: 15px; border-radius: 15px; text-align: center; border: 1px solid #eee; }
+
+        /* Anúncios e IA */
+        .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; }
         .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; }
-        #bar-progress { width: 0%; height: 100%; background: #2ab573; border-radius: 10px; transition: width 0.1s linear; }
+        #bar-fill { width: 0%; height: 100%; background: var(--primary); border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -56,157 +49,208 @@
     <div id="overlay" class="sidebar-overlay" onclick="toggleMenu()"></div>
     <div id="sidebar" class="sidebar">
         <h3 class="texto-logo">NutriShot</h3>
-        <div class="sidebar-item" onclick="navegar('home'); toggleMenu()">🏠 Dashboard</div>
-        <div class="sidebar-item" onclick="navegar('catalogo'); toggleMenu()">🛒 Suplementos</div>
-        <div class="sidebar-item" style="color: #e74c3c; margin-top: 20px;" onclick="estado.logado=false; salvar(); toggleMenu(); render()">🚪 Sair</div>
+        <div class="sidebar-item" onclick="navegar('home')">🏠 Dashboard</div>
+        <div class="sidebar-item" onclick="navegar('catalogo')">🛒 Suplementos</div>
+        <div class="sidebar-item" style="color:red; margin-top:30px;" onclick="sair()">🚪 Sair</div>
     </div>
 
     <div id="ads-overlay" class="ads-overlay">
-        <div id="ad-text" style="font-size: 18px; font-weight: bold; text-align: center;">IA NutriShot analisando...</div>
-        <div class="bar-container"><div id="bar-progress"></div></div>
+        <div id="ad-text">Processando com IA NutriShot...</div>
+        <div class="bar-container"><div id="bar-fill"></div></div>
     </div>
 
     <div id="app"></div>
 
     <script>
-        const SUPLEMENTOS = {
-            ganho: [
-                { nome:"Creatina Growth 100g", foto:"https://growthsupplements.com.br/media/catalog/product/c/r/creatina-monohidratada-100g.png", link:"#" },
-                { nome:"Whey Protein Isolado", foto:"https://growthsupplements.com.br/media/catalog/product/w/h/whey-protein-isolado-1kg.png", link:"#" }
-            ],
+        // Dados de Suplementos
+        const PRODUTOS = {
             perda: [
-                { nome:"Psyllium Cápsulas", foto:"https://growthsupplements.com.br/media/catalog/product/p/s/psyllium-60-caps.png", link:"#" },
-                { nome:"Termogênico Burn", foto:"https://growthsupplements.com.br/media/catalog/product/h/o/hot-termogenico-60-caps.png", link:"#" }
+                { nome: "Psyllium Fibras", img: "https://growthsupplements.com.br/media/catalog/product/p/s/psyllium-60-caps.png" },
+                { nome: "Termogênico Hot", img: "https://growthsupplements.com.br/media/catalog/product/h/o/hot-termogenico-60-caps.png" }
+            ],
+            ganho: [
+                { nome: "Creatina Monohidratada", img: "https://growthsupplements.com.br/media/catalog/product/c/r/creatina-monohidratada-100g.png" },
+                { nome: "Whey Protein 1kg", img: "https://growthsupplements.com.br/media/catalog/product/w/h/whey-protein-isolado-1kg.png" }
             ]
         };
 
-        let estado = JSON.parse(localStorage.getItem('nutrishot_v10')) || {
-            logado: false, tela: 'cadastro', nomeUsuario: '', objetivo: 'perda',
-            peso: 70, altura: 170, imc: 24.2, calorias: 0, prot: 0, carb: 0, gord: 0,
-            historico: [], aguaAtual: 0, fotoSelecionada: null, ultimoResultado: null
+        let estado = JSON.parse(localStorage.getItem('nutri_v11')) || {
+            logado: false, tela: 'cadastro', nome: '', peso: 70, altura: 170, 
+            objetivo: 'perda', calorias: 0, prot: 0, carb: 0, gord: 0, 
+            historico: [], foto: null, ultimoRes: null
         };
 
-        function salvar() { localStorage.setItem('nutrishot_v10', JSON.stringify(estado)); }
-        function navegar(tela) { estado.tela = tela; render(); window.scrollTo(0,0); }
-        function toggleMenu() {
+        function salvar() { localStorage.setItem('nutri_v11', JSON.stringify(estado)); }
+        function navegar(t) { estado.tela = t; render(); toggleMenu(false); }
+        function toggleMenu(force) {
             const s = document.getElementById('sidebar');
             const o = document.getElementById('overlay');
+            if(force === false) { s.classList.remove('active'); o.style.display='none'; return; }
             s.classList.toggle('active');
             o.style.display = s.classList.contains('active') ? 'block' : 'none';
         }
+        function sair() { estado.logado = false; estado.tela = 'login'; salvar(); render(); }
 
-        function rodarAnuncio(texto, callback) {
-            const overlay = document.getElementById('ads-overlay');
-            const bar = document.getElementById('bar-progress');
-            document.getElementById('ad-text').innerText = texto;
-            overlay.style.display = 'flex';
+        function rodarProcesso(callback) {
+            const ads = document.getElementById('ads-overlay');
+            const fill = document.getElementById('bar-fill');
+            ads.style.display = 'flex';
             let p = 0;
-            const tempo = setInterval(() => {
-                p += 5; bar.style.width = p + '%';
-                if(p >= 100) { clearInterval(tempo); overlay.style.display = 'none'; bar.style.width = '0%'; callback(); }
-            }, 100);
+            const int = setInterval(() => {
+                p += 4; fill.style.width = p + '%';
+                if(p >= 100) { clearInterval(int); ads.style.display = 'none'; fill.style.width = '0%'; callback(); }
+            }, 80);
         }
 
-        function confirmarAnalise() {
-            rodarAnuncio("Analisando densidade calórica e macronutrientes...", () => {
-                const cal = Math.floor(Math.random() * 200 + 350);
-                estado.calorias += cal;
-                estado.prot += Math.floor(cal * 0.05);
-                estado.carb += Math.floor(cal * 0.12);
-                estado.gord += Math.floor(cal * 0.03);
-                estado.ultimoResultado = { tipo: estado.tempRefeicao || 'Refeição', cal: cal };
-                estado.historico.unshift(estado.ultimoResultado);
-                estado.fotoSelecionada = null;
+        function handleFile(e) {
+            const f = e.target.files[0];
+            if(f) {
+                const r = new FileReader();
+                r.onload = ev => { estado.foto = ev.target.result; render(); };
+                r.readAsDataURL(f);
+            }
+        }
+
+        function analisarIA() {
+            rodarProcesso(() => {
+                const c = Math.floor(Math.random() * 250 + 300);
+                estado.calorias += c;
+                estado.prot += Math.floor(c * 0.06);
+                estado.carb += Math.floor(c * 0.1);
+                estado.gord += Math.floor(c * 0.03);
+                estado.ultimoRes = c;
+                estado.historico.unshift({ nome: 'Refeição', cal: c });
+                estado.foto = null;
                 salvar();
-                navegar('resultado_analise');
+                navegar('dica');
             });
         }
 
         function render() {
             const root = document.getElementById('app');
+
+            // TELAS DE ACESSO
             if (!estado.logado) {
+                const isCad = estado.tela === 'cadastro';
                 root.innerHTML = `
-                    <div style="padding: 50px 20px; text-align: center;">
+                    <div style="padding: 40px 20px;">
                         <h1 class="texto-logo">NutriShot</h1>
-                        <input type="text" id="nome-f" class="input-nutri" placeholder="Nome">
-                        <input type="number" id="peso-f" class="input-nutri" placeholder="Peso (kg)">
-                        <input type="number" id="altura-f" class="input-nutri" placeholder="Altura (cm)">
-                        <button class="btn-azul" onclick="entrar()">CRIAR CONTA</button>
+                        <div class="input-group">
+                            ${isCad ? '<input type="text" id="f-nome" class="input-nutri" placeholder="Nome">' : ''}
+                            <input type="email" class="input-nutri" placeholder="E-mail">
+                            <input type="password" class="input-nutri" placeholder="Senha">
+                            ${isCad ? `
+                                <div style="display:flex; gap:10px;">
+                                    <input type="number" id="f-peso" class="input-nutri" placeholder="Peso (kg)">
+                                    <input type="number" id="f-alt" class="input-nutri" placeholder="Altura (cm)">
+                                </div>
+                            ` : ''}
+                        </div>
+                        <button class="btn-acao" onclick="entrar(${isCad})">${isCad ? 'CRIAR CONTA' : 'ENTRAR'}</button>
+                        <p style="text-align:center" onclick="navegar('${isCad?'login':'cadastro'}')">
+                            ${isCad ? 'Já tem conta? <b>Login</b>' : 'Não tem conta? <b>Cadastrar</b>'}
+                        </p>
                     </div>`;
                 return;
             }
 
+            // DASHBOARD
             if (estado.tela === 'home') {
                 root.innerHTML = `
-                    <div style="padding: 20px; display:flex; align-items:center; gap:10px;">
-                        <span style="font-size:24px; cursor:pointer;" onclick="toggleMenu()">☰</span>
-                        <b>Olá, ${estado.nomeUsuario}</b>
+                    <div style="padding:20px; display:flex; align-items:center; gap:15px;">
+                        <span style="font-size:24px" onclick="toggleMenu()">☰</span>
+                        <b>Dashboard de ${estado.nome}</b>
                     </div>
-                    <div class="card card-fogo">
-                        <div><small>Sequência</small><br><b>1 Dia 🔥</b></div>
-                        <div style="text-align:right"><small>IMC</small><br><b>${estado.imc}</b></div>
+
+                    <div class="card card-resumo">
+                        <div><small>Sequência</small><br><b style="font-size:20px">1 Dia 🔥</b></div>
+                        <div style="text-align:right"><small>IMC</small><br><b style="font-size:20px">24.5</b></div>
                     </div>
+
                     <div class="card">
-                        <small>Calorias</small>
-                        <div style="font-size:24px; font-weight:bold;">${estado.calorias} / 2577 kcal</div>
-                        <div class="progress-container"><div class="progress-bar" style="width:${(estado.calorias/2577)*100}%"></div></div>
+                        <b>Progresso Semanal</b>
+                        <div class="progresso-semanal">
+                            <div class="barra-dia"></div><div class="barra-dia"></div><div class="barra-dia hoje"></div><div class="barra-dia"></div><div class="barra-dia"></div><div class="barra-dia"></div><div class="barra-dia"></div>
+                        </div>
                     </div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:0 20px;">
-                        <div class="card" style="margin:0; text-align:center; padding:10px;"><small>Prot</small><br><b>${estado.prot}g</b></div>
-                        <div class="card" style="margin:0; text-align:center; padding:10px;"><small>Carb</small><br><b>${estado.carb}g</b></div>
-                        <div class="card" style="margin:0; text-align:center; padding:10px;"><small>Gord</small><br><b>${estado.gord}g</b></div>
+
+                    <div class="card">
+                        <small>Calorias de Hoje</small>
+                        <div style="font-size:24px; font-weight:800">${estado.calorias} <span style="font-size:14px; color:#999">/ 2500 kcal</span></div>
+                        <div class="prog-bg"><div class="prog-fill" style="width:${(estado.calorias/2500)*100}%"></div></div>
                     </div>
-                    <button class="fab" onclick="navegar('add_refeicao')">+</button>
+
+                    <div class="macro-grid">
+                        <div class="macro-item"><small>Prot</small><br><b>${estado.prot}g</b></div>
+                        <div class="macro-item"><small>Carb</small><br><b>${estado.carb}g</b></div>
+                        <div class="macro-item"><small>Gord</small><br><b>${estado.gord}g</b></div>
+                    </div>
+
+                    <div class="card">
+                        <b>Últimas Refeições</b>
+                        ${estado.historico.length === 0 ? '<p style="font-size:12px; color:#999">Nenhuma hoje.</p>' : 
+                        estado.historico.map(h => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee;"><span>${h.nome}</span><b>${h.cal} kcal</b></div>`).join('')}
+                    </div>
+
+                    <button class="fab" onclick="navegar('add')">+</button>
                 `;
             }
 
-            if (estado.tela === 'add_refeicao') {
+            // ADICIONAR REFEIÇÃO
+            if (estado.tela === 'add') {
                 root.innerHTML = `
-                    <div style="padding:20px;">
-                        <div onclick="navegar('home')" style="cursor:pointer; color:var(--blue-action); font-weight:bold;">← Voltar</div>
-                        <h2 style="text-align:center;">Analisar Prato</h2>
-                        <div class="card" style="text-align:center;">
-                            ${!estado.fotoSelecionada ? `
-                                <button class="btn-principal" onclick="document.getElementById('cam').click()">📸 Tirar Foto</button>
-                                <button class="btn-outline" onclick="document.getElementById('gal').click()">📁 Galeria</button>
-                                <input type="file" id="cam" capture="environment" accept="image/*" style="display:none" onchange="lerFoto(this)">
-                                <input type="file" id="gal" accept="image/*" style="display:none" onchange="lerFoto(this)">
+                    <div style="padding:20px">
+                        <div onclick="navegar('home')" style="font-weight:bold; color:var(--blue)">← Voltar</div>
+                        <h2 style="text-align:center">Nova Análise</h2>
+                        <div class="card" style="text-align:center">
+                            ${!estado.foto ? `
+                                <button class="btn-acao" onclick="document.getElementById('c').click()">📸 Tirar Foto</button>
+                                <button class="btn-sec" onclick="document.getElementById('g').click()">📁 Galeria</button>
+                                <input type="file" id="c" capture="environment" accept="image/*" style="display:none" onchange="handleFile(event)">
+                                <input type="file" id="g" accept="image/*" style="display:none" onchange="handleFile(event)">
                             ` : `
-                                <img src="${estado.fotoSelecionada}" style="width:100%; border-radius:15px; margin-bottom:15px;">
-                                <button class="btn-principal" onclick="confirmarAnalise()">🚀 ANALISAR COM IA</button>
-                                <button class="btn-outline" onclick="estado.fotoSelecionada=null; render()">Trocar Foto</button>
+                                <img src="${estado.foto}" style="width:100%; border-radius:15px; margin-bottom:15px;">
+                                <button class="btn-acao" onclick="analisarIA()">🚀 ANALISAR COM IA</button>
+                                <button class="btn-sec" onclick="estado.foto=null; render()">Trocar</button>
                             `}
                         </div>
                     </div>`;
             }
 
-            if (estado.tela === 'resultado_analise') {
+            // TELA DE DICA E RESULTADO
+            if (estado.tela === 'dica') {
                 root.innerHTML = `
                     <div style="padding:40px 20px; text-align:center;">
-                        <h2 style="color:var(--primary);">Resultado Nutricional</h2>
-                        <div class="card"><h1>${estado.ultimoResultado.cal} kcal</h1></div>
-                        <div style="background:#f0fff7; padding:15px; border-radius:15px; margin-bottom:20px; text-align:left;">
-                            <b>💡 Dica Nutri:</b><br><small>Mastigue devagar para melhorar a saciedade.</small>
+                        <div style="font-size:50px">🥗</div>
+                        <h2 style="color:var(--primary)">Refeição Analisada!</h2>
+                        <div class="card">
+                            <p>Estimamos que este prato possui:</p>
+                            <h1 style="font-size:45px; margin:10px 0;">${estado.ultimoRes} kcal</h1>
                         </div>
-                        <button class="btn-principal" onclick="navegar('home')">VOLTAR AO DASHBOARD</button>
+                        <div style="background:#e8f5e9; padding:20px; border-radius:15px; text-align:left; border-left:5px solid var(--primary)">
+                            <b>💡 Dica Diária:</b><br>
+                            <p>Procure beber 200ml de água 15 minutos antes de comer para ajudar na saciedade.</p>
+                        </div>
+                        <button class="btn-acao" onclick="navegar('home')">FINALIZAR</button>
                     </div>`;
             }
 
+            // CATÁLOGO
             if (estado.tela === 'catalogo') {
-                const lista = estado.objetivo === 'ganho' ? SUPLEMENTOS.ganho : SUPLEMENTOS.perda;
+                const lista = estado.objetivo === 'ganho' ? PRODUTOS.ganho : PRODUTOS.perda;
                 root.innerHTML = `
-                    <div style="padding:20px;">
-                        <div onclick="navegar('home')" style="cursor:pointer; color:var(--blue-action); font-weight:bold;">← Voltar</div>
-                        <div class="selector-objetivo" style="margin-top:20px;">
-                            <div class="opt-obj ${estado.objetivo==='perda'?'active':''}" onclick="estado.objetivo='perda'; render()">Emagrecer</div>
-                            <div class="opt-obj ${estado.objetivo==='ganho'?'active':''}" onclick="estado.objetivo='ganho'; render()">Ganhar Massa</div>
+                    <div style="padding:20px">
+                        <div onclick="navegar('home')" style="font-weight:bold; color:var(--blue)">← Voltar</div>
+                        <div style="display:flex; gap:10px; margin:20px 0;">
+                            <button class="btn-sec" style="${estado.objetivo==='perda'?'border-color:var(--primary); color:var(--primary)':''}" onclick="estado.objetivo='perda'; render()">Emagrecer</button>
+                            <button class="btn-sec" style="${estado.objetivo==='ganho'?'border-color:var(--primary); color:var(--primary)':''}" onclick="estado.objetivo='ganho'; render()">Ganhar Massa</button>
                         </div>
                         <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
                             ${lista.map(p => `
-                                <div class="card" style="margin:0; text-align:center; padding:10px;">
-                                    <img src="${p.foto}" style="width:100%; height:80px; object-fit:contain;">
-                                    <p style="font-size:12px; font-weight:bold;">${p.nome}</p>
-                                    <button style="background:var(--primary); color:#fff; border:none; width:100%; padding:8px; border-radius:8px; font-size:11px;">Comprar</button>
+                                <div class="card" style="margin:0; padding:10px; text-align:center;">
+                                    <img src="${p.img}" style="width:100%; height:90px; object-fit:contain;">
+                                    <p style="font-size:12px; height:30px; overflow:hidden;">${p.nome}</p>
+                                    <button style="background:var(--primary); color:#fff; border:none; width:100%; padding:8px; border-radius:10px; font-weight:bold;">Ver Preço</button>
                                 </div>
                             `).join('')}
                         </div>
@@ -214,21 +258,15 @@
             }
         }
 
-        function entrar() {
-            estado.nomeUsuario = document.getElementById('nome-f').value || 'Usuário';
-            let p = document.getElementById('peso-f').value || 70;
-            let a = document.getElementById('altura-f').value || 170;
-            estado.imc = (p / ((a/100)*(a/100))).toFixed(1);
-            estado.logado = true; estado.tela = 'home'; salvar(); render();
-        }
-
-        function lerFoto(input) {
-            const f = input.files[0];
-            if(f) {
-                const r = new FileReader();
-                r.onload = e => { estado.fotoSelecionada = e.target.result; render(); };
-                r.readAsDataURL(f);
+        function entrar(isCad) {
+            if(isCad) {
+                estado.nome = document.getElementById('f-nome').value || 'Usuário';
+                estado.peso = document.getElementById('f-peso').value || 70;
             }
+            estado.logado = true;
+            estado.tela = 'home';
+            salvar();
+            render();
         }
 
         render();
