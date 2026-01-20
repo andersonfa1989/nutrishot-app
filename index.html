@@ -3,61 +3,95 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <title>NutriShot Pro</title>
-    
+    <title>NutriShot Elements</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3677443152648780" crossorigin="anonymous"></script>
-
     <style>
         :root { 
-            --primary: #2ab573; --blue-action: #2490eb; --bg: #f4f7f6; --water: #3498db;
-            --purple-grad: linear-gradient(135deg, #667eea, #764ba2);
-            --dark: #2c3e50;
+            --primary: #2ab573; 
+            --blue-action: #2490eb; 
+            --bg: #f9fafb; 
+            --water: #3498db;
+        }
+        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; }
+        
+        .img-logo-principal { width: 170px; margin-bottom: 5px; } 
+        .texto-logo {
+            font-size: 24px; 
+            font-weight: 800;
+            background: linear-gradient(to right, #2490eb, #2ab573, #f39c12);
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            margin: 0 0 20px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .input-nutri { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; }
+        .input-metade { width: 40%; display: inline-block; }
+        
+        .btn-azul { 
+            width: calc(100% - 40px); 
+            background: var(--blue-action); 
+            color: white; border: none; padding: 18px; border-radius: 30px; 
+            margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(36, 144, 235, 0.3);
+        }
+
+        .footer-link { margin-top: 20px; font-size: 14px; cursor: pointer; color: #000; font-weight: 500; }
+        .footer-link span { color: var(--blue-action); font-weight: 700; }
+
+        .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .card-fogo { 
+            background: linear-gradient(135deg, #667eea, #764ba2); 
+            color: #fff; border: none;
+            display: flex; justify-content: space-between; align-items: center;
         }
         
-        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; overflow-x: hidden; padding-bottom: 50px; }
+        .imc-info { text-align: right; background: rgba(255,255,255,0.15); padding: 8px 12px; border-radius: 12px; min-width: 80px; }
+        .imc-label { font-size: 10px; opacity: 0.9; display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
+        .imc-status { font-size: 10px; font-weight: bold; text-transform: uppercase; margin-top: 2px; display: block; }
 
-        /* --- HEADER --- */
-        .header-app { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: #fff; border-bottom: 1px solid #eee; }
-        .card-main { background: var(--purple-grad); color: white; margin: 15px; padding: 20px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.25); }
-        .card-white { background: #fff; border-radius: 15px; padding: 18px; margin: 0 15px 15px 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .grid-7 { display: flex; justify-content: space-between; align-items: flex-end; height: 50px; margin-top: 15px; }
+        .col-dia { display: flex; flex-direction: column; align-items: center; flex: 1; }
+        .barra-v { width: 30px; height: 4px; background: #eee; border-radius: 2px; }
+        .barra-v.active { background: #6a11cb; width: 40px; }
+        .dia-txt { font-size: 10px; color: #aaa; margin-top: 5px; }
+
+        .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--primary); transition: width 0.5s ease; }
+        .progress-bar.water { background: var(--water); }
+
+        .btn-water { background: var(--water); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+
+        .selector-objetivo { display: flex; gap: 10px; margin: 0 20px 15px 20px; }
+        .opt-obj { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #eee; background: #fff; text-align: center; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .opt-obj.active { border-color: var(--primary); background: #f0fff7; color: var(--primary); }
+
+        .dica-container { min-height: 85vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; background: radial-gradient(circle at top right, #f0fff7, #ffffff); text-align: center; }
+        .dica-texto-grande { font-size: 30px; font-weight: 800; line-height: 1.2; color: #222; margin: 30px 0; }
         
-        /* --- PROGRESS --- */
-        .progress-container { width: 100%; height: 8px; background: #eee; border-radius: 10px; margin: 10px 0; overflow: hidden; }
-        .progress-bar { height: 100%; transition: 0.8s ease-in-out; }
+        .btn-principal { width: calc(100% - 40px); background: linear-gradient(to right, #667eea, #764ba2); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .btn-loja { background: #2ab573; color: white; border: none; padding: 15px; border-radius: 12px; width: calc(100% - 40px); margin: 0 20px; font-weight: bold; cursor: pointer; font-size: 14px; }
+        .btn-outline { background: transparent; color: #666; border: 1px solid #ddd; padding: 12px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 500; }
         
-        .grid-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 0 15px 15px 15px; }
-        .stat-item { background: #fff; padding: 15px; border-radius: 15px; text-align: center; border: 1px solid #f0f0f0; }
+        .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; }
+        #img-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; border: 1px solid #ddd; }
+        
+        /* Ajuste no Banner de Anúncio */
+        .banner-inline { width: 100%; text-align: center; margin: 20px 0; min-height: 60px; }
 
-        /* --- BOTOES --- */
-        .btn-action { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; font-size: 14px; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-outline { background: #fff; border: 1px solid #ddd; color: #444; }
-        .btn-outline.active { border-color: var(--primary); color: var(--primary); background: #f0fff7; }
+        .refeicao-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+        .refeicao-item:last-child { border-bottom: none; }
 
-        /* --- LOJA --- */
-        .grid-loja { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
-        .card-produto { background: #fff; border-radius: 12px; padding: 15px; text-align: center; border: 1px solid #eee; display: flex; flex-direction: column; justify-content: space-between; }
-        .card-produto b { font-size: 13px; margin: 10px 0; display: block; height: 35px; overflow: hidden; }
-        .card-produto span { color: var(--primary); font-weight: bold; font-size: 12px; margin-bottom: 10px; display: block; }
-
-        /* --- ADMOB --- */
-        .ad-banner { background: #f9f9f9; margin: 15px; padding: 5px; border-radius: 10px; text-align: center; min-height: 55px; display: flex; align-items: center; justify-content: center; border: 1px dashed #ddd; }
-
-        /* --- IA OVERLAY --- */
-        .loading-ia { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 20000; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
-        .ia-bar-bg { width: 60%; height: 4px; background: #333; border-radius: 10px; margin: 20px 0; overflow: hidden; }
-        .ia-bar-fill { width: 0%; height: 100%; background: var(--primary); }
-
-        .fab { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; z-index: 999; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .hidden { display: none; }
+        .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
+        .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; overflow: hidden; }
+        #bar-progress { width: 0%; height: 100%; background: #2ab573; transition: width 0.1s linear; }
     </style>
 </head>
 <body>
 
-    <div id="loading-ia" class="loading-ia">
-        <div id="ia-text" style="font-weight: bold; font-size: 18px;">Analisando com IA...</div>
-        <div class="ia-bar-bg"><div id="ia-bar-fill" class="ia-bar-fill"></div></div>
-        <div style="font-size: 11px; color: #888;">PROCESSANDO NUTRISHOT PRO</div>
+    <div id="ads-overlay" class="ads-overlay">
+        <div id="ad-text" style="font-size: 18px; font-weight: bold;">IA NutriShot em ação...</div>
+        <div class="bar-container"><div id="bar-progress"></div></div>
     </div>
 
     <div id="app"></div>
@@ -65,146 +99,136 @@
     <script>
         const AD_CLIENT = "ca-pub-3677443152648780";
         const AD_SLOT = "6944634280";
-        const DATA_HOJE = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long' }).format(new Date());
-
-        // --- CATALOGO DE PRODUTOS ---
-        const CATALOGO = {
+        
+        const SUPLEMENTOS = {
             ganho: [
-                { n: "Creatina Growth 100g", p: "Melhor Custo Benefício", l: "https://amzn.to/4b47g9o", i: "⚡" },
-                { n: "Whey Chocolate", p: "Proteína Isolada", l: "https://amzn.to/3LjWMIB", i: "🥤" },
-                { n: "Whey Morango", p: "Sabor Incrível", l: "https://amzn.to/4sPsdvg", i: "🍓" },
-                { n: "Hipercalórico Chocolate", p: "Ganho de Peso Rápido", l: "https://amzn.to/4qpZKKC", i: "🍫" }
+                { nome:"Creatina Growth", foto:"https://i.ibb.co/Lz0D7Yd/icone-512.png", link:"https://amzn.to/4b47g9o" },
+                { nome:"Whey Chocolate", foto:"https://i.ibb.co/Lz0D7Yd/icone-512.png", link:"https://amzn.to/3LjWMIB" }
             ],
             perda: [
-                { n: "Psyllium Cápsulas", p: "Controle da Saciedade", l: "https://amzn.to/4sBfMmq", i: "🌿" },
-                { n: "Ultra Burn Termogênico", p: "Queima de Gordura", l: "https://amzn.to/4b5phUQ", i: "🔥" },
-                { n: "L-Carnitina 2000mg", p: "Energia e Definição", l: "https://amzn.to/4bBHcCw", i: "🔋" }
+                { nome:"Psyllium Cápsulas", foto:"https://i.ibb.co/Lz0D7Yd/icone-512.png", link:"https://amzn.to/4sBfMmq" },
+                { nome:"Ultra Burn", foto:"https://i.ibb.co/Lz0D7Yd/icone-512.png", link:"https://amzn.to/4b5phUQ" }
             ]
         };
 
-        let estado = JSON.parse(localStorage.getItem('nutrishot_vFinal')) || {
-            tela: 'home', nome: 'Isaac',
-            cal: 1420, agua: 1250, objetivo: 'perda',
-            macros: { p: 72, c: 130, g: 42 },
-            historico: [{ data: DATA_HOJE, itens: [{t: 'Refeição Anterior', c: 450}] }]
+        let estado = JSON.parse(localStorage.getItem('nutrishot_v5')) || {
+            logado: false, tela: 'cadastro', nomeUsuario: 'Isaac', objetivo: 'perda',
+            peso: 70, altura: 170, imc: 24.2, classification: 'Normal',
+            calorias: 1450, prot: 65, carb: 120, gord: 40, aguaAtual: 1250, historico: [],
+            sequencia: 1, ultimoAcesso: new Date().toDateString(),
+            tempRefeicao: 'Almoço', fotoSelecionada: null, ultimoResultado: null
         };
 
-        function salvar() { localStorage.setItem('nutrishot_vFinal', JSON.stringify(estado)); render(); }
-        function navegar(t) { estado.tela = t; window.scrollTo(0,0); salvar(); }
+        function salvar() { localStorage.setItem('nutrishot_v5', JSON.stringify(estado)); }
+        function navegar(tela) { estado.tela = tela; salvar(); render(); window.scrollTo(0,0); }
 
-        function dispararIA(tipo) {
-            const overlay = document.getElementById('loading-ia');
-            const bar = document.getElementById('ia-bar-fill');
-            overlay.style.display = 'flex';
-            let p = 0;
-            const timer = setInterval(() => {
-                p += 5; bar.style.width = p + '%';
-                if(p >= 100) { 
-                    clearInterval(timer); overlay.style.display = 'none'; bar.style.width = '0%';
-                    estado.cal += 520;
-                    estado.macros.p += 30;
-                    estado.historico[0].itens.unshift({t: tipo, c: 520});
-                    navegar('home');
-                }
-            }, 40);
+        function infoIMC(peso, altura) {
+            const altM = altura / 100;
+            const imc = (peso / (altM * altM)).toFixed(1);
+            let classe = imc < 18.5 ? "Magreza" : imc < 25 ? "Normal" : imc < 30 ? "Sobrepeso" : "Obesidade";
+            return { valor: imc, texto: classe };
+        }
+
+        function pushAd() {
+            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
         }
 
         function render() {
             const root = document.getElementById('app');
 
+            if (!estado.logado) {
+                const isCadastro = estado.tela === 'cadastro';
+                root.innerHTML = `
+                    <div style="padding: 50px 20px; text-align: center;">
+                        <img src="https://i.ibb.co/Lz0D7Yd/icone-512.png" class="img-logo-principal">
+                        <h1 class="texto-logo">NutriShot Elements</h1>
+                        ${isCadastro ? `
+                            <input type="text" id="nome-f" class="input-nutri" placeholder="Nome">
+                            <div style="display:flex; justify-content:center; gap:10px;">
+                                <input type="number" id="peso-f" class="input-nutri input-metade" placeholder="Peso (kg)">
+                                <input type="number" id="altura-f" class="input-nutri input-metade" placeholder="Altura (cm)">
+                            </div>
+                        ` : ''}
+                        <input type="email" id="email-f" class="input-nutri" placeholder="E-mail">
+                        <input type="password" id="pass-f" class="input-nutri" placeholder="Senha">
+                        <button class="btn-azul" onclick="estado.logado=true; navegar('home')">
+                            ${isCadastro ? 'CRIAR MINHA CONTA' : 'ENTRAR NO APP'}
+                        </button>
+                    </div>
+                `; return;
+            }
+
             if (estado.tela === 'home') {
+                const metaAgua = Math.round(estado.peso * 35);
                 root.innerHTML = `
-                    <div class="header-app">
-                        <div style="font-size:18px"><b>NutriShot Pro</b></div>
-                        <div style="text-align:right"><small style="color:#888">${DATA_HOJE}</small><br><b>${estado.nome}</b></div>
+                    <div style="padding: 20px; display: flex; justify-content: space-between; align-items:center;">
+                        <b style="font-size:18px;">Olá, ${estado.nomeUsuario}</b>
+                        <span onclick="estado.logado=false; render()" style="background:#eee; padding:5px 12px; border-radius:10px; font-size:12px;">Sair</span>
                     </div>
 
-                    <div class="card-main">
-                        <div>Foco Ativo<br><b style="font-size:24px">1 Dia 🔥</b></div>
-                        <div style="background:rgba(255,255,255,0.2); padding:10px; border-radius:10px; text-align:center">
-                            <small>OBJETIVO</small><br><b>${estado.objetivo == 'perda' ? 'EMAGRECER' : 'GANHAR'}</b>
+                    <div class="card card-fogo">
+                        <div><small>Sequência</small><div style="font-size: 26px; font-weight: bold;">${estado.sequencia} Dia 🔥</div></div>
+                        <div class="imc-info">
+                            <div style="font-size: 22px; font-weight: bold;">${estado.imc}</div>
+                            <span class="imc-status">${estado.classification}</span>
                         </div>
                     </div>
 
-                    <div class="ad-banner">
+                    <div class="banner-inline">
                         <ins class="adsbygoogle" style="display:inline-block;width:320px;height:50px" data-ad-client="${AD_CLIENT}" data-ad-slot="${AD_SLOT}"></ins>
-                        <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
                     </div>
 
-                    <div class="card-white">
-                        <div style="display:flex; justify-content:space-between"><b>Hidratação Diária</b><small>${estado.agua}ml/2500ml</small></div>
-                        <div class="progress-container"><div class="progress-bar" style="background:var(--water); width:${(estado.agua/2500)*100}%"></div></div>
-                        <button class="btn-action" style="background:var(--water); color:#fff" onclick="estado.agua+=250; salvar()">+ COPO DE ÁGUA (250ML)</button>
+                    <div class="card">
+                        <b>Hidratação Diária 💧</b><br>
+                        <small>${estado.aguaAtual}ml / ${metaAgua}ml</small>
+                        <div class="progress-container"><div class="progress-bar water" style="width: ${(estado.aguaAtual/metaAgua)*100}%"></div></div>
+                        <button class="btn-water" onclick="estado.aguaAtual+=250; render()">+ BEBER 250ML</button>
                     </div>
 
-                    <div class="grid-stats">
-                        <div class="stat-item"><small>PROT</small><br><b>${estado.macros.p}g</b></div>
-                        <div class="stat-item"><small>CARB</small><br><b>${estado.macros.c}g</b></div>
-                        <div class="stat-item"><small>GORD</small><br><b>${estado.macros.g}g</b></div>
+                    <div class="selector-objetivo">
+                        <div class="opt-obj ${estado.objetivo === 'perda' ? 'active' : ''}" onclick="estado.objetivo='perda'; render()">Emagrecer</div>
+                        <div class="opt-obj ${estado.objetivo === 'ganho' ? 'active' : ''}" onclick="estado.objetivo='ganho'; render()">Ganho Massa</div>
                     </div>
 
-                    <div class="card-white" style="border: 1px solid var(--primary)">
-                        <b style="color:var(--primary)">🛒 Loja Exclusiva</b><br>
-                        <p style="font-size:12px">Encontre os melhores suplementos para ${estado.objetivo == 'perda' ? 'queimar gordura' : 'ganhar massa'}.</p>
-                        <button class="btn-action btn-primary" onclick="navegar('loja')">VER PRODUTOS</button>
-                    </div>
+                    <button class="btn-loja" onclick="navegar('catalogo')">🛒 VER SUPLEMENTOS</button>
 
-                    <button class="fab" onclick="navegar('add')">+</button>
+                    <button class="fab" onclick="navegar('add_refeicao')">+</button>
                 `;
+                pushAd();
             }
 
-            if (estado.tela === 'loja') {
-                const itens = estado.objetivo === 'perda' ? CATALOGO.perda : CATALOGO.ganho;
+            if (estado.tela === 'catalogo') {
+                const lista = estado.objetivo === 'ganho' ? SUPLEMENTOS.ganho : SUPLEMENTOS.perda;
                 root.innerHTML = `
-                    <div style="padding:20px">
-                        <div onclick="navegar('home')" style="color:var(--blue-action); font-weight:bold; cursor:pointer">← Voltar para Início</div>
-                        <h2 style="margin:15px 0">Suplementos para Você</h2>
-                        
-                        <div style="display:flex; gap:10px; margin-bottom:20px">
-                            <button class="btn-outline ${estado.objetivo==='perda'?'active':''}" style="flex:1" onclick="estado.objetivo='perda'; salvar()">Emagrecer</button>
-                            <button class="btn-outline ${estado.objetivo==='ganho'?'active':''}" style="flex:1" onclick="estado.objetivo='ganho'; salvar()">Ganhar Massa</button>
-                        </div>
-
-                        <div class="grid-loja">
-                            ${itens.map(prod => `
-                                <div class="card-produto">
-                                    <div style="font-size:35px">${prod.i}</div>
-                                    <b>${prod.n}</b>
-                                    <span>${prod.p}</span>
-                                    <a href="${prod.l}" target="_blank" style="text-decoration:none">
-                                        <button class="btn-action btn-primary" style="padding:8px; font-size:11px">COMPRAR</button>
-                                    </a>
+                    <div style="padding: 20px;">
+                        <div onclick="navegar('home')" style="margin-bottom:15px; cursor:pointer; color:var(--blue-action); font-weight:bold;">← Voltar</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            ${lista.map(p => `
+                                <div class="card" style="margin:0; text-align:center;">
+                                    <img src="${p.foto}" style="width:60px;">
+                                    <b style="font-size:12px; display:block; margin:10px 0;">${p.nome}</b>
+                                    <a href="${p.link}" target="_blank"><button class="btn-water" style="font-size:10px; padding:5px;">VER PREÇO</button></a>
                                 </div>
-                            `).join('')}
+                            `).join("")}
                         </div>
                     </div>
                 `;
             }
 
-            if (estado.tela === 'add') {
+            if (estado.tela === 'add_refeicao') {
                 root.innerHTML = `
-                    <div style="padding:20px">
-                        <div onclick="navegar('home')" style="color:var(--blue-action); font-weight:bold; cursor:pointer">← Cancelar</div>
-                        <h2 style="text-align:center; margin:40px 0">O que você comeu?</h2>
-                        
-                        <div style="background:var(--purple-grad); color:white; padding:40px; border-radius:20px; text-align:center; cursor:pointer" onclick="dispararIA('Foto')">
-                            <div style="font-size:50px">📸</div>
-                            <b>TIRAR FOTO DO PRATO</b>
-                        </div>
-
-                        <div style="background:#fff; border:1px solid #ddd; margin-top:20px; padding:20px; border-radius:15px; text-align:center; color:#888" onclick="dispararIA('Galeria')">
-                            📁 Selecionar da Galeria
-                        </div>
-
-                        <div class="ad-banner" style="margin-top:50px">
+                    <div style="padding:20px; text-align:center;">
+                        <div onclick="navegar('home')" style="text-align:left; color:var(--blue-action); font-weight:bold;">← Voltar</div>
+                        <h2 style="margin-top:40px;">Analisar Refeição</h2>
+                        <button class="btn-principal" onclick="navegar('home')">📸 TIRAR FOTO</button>
+                        <div class="banner-inline" style="margin-top:50px;">
                             <ins class="adsbygoogle" style="display:inline-block;width:320px;height:50px" data-ad-client="${AD_CLIENT}" data-ad-slot="${AD_SLOT}"></ins>
-                            <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
                         </div>
                     </div>
                 `;
+                pushAd();
             }
         }
-
         render();
     </script>
 </body>
