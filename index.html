@@ -3,19 +3,20 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <title>NutriShot Pro</title>
+    <title>NutriShot Elements</title>
     <style>
         :root { 
             --primary: #2ab573; 
             --blue-action: #2490eb; 
             --bg: #f9fafb; 
             --water: #3498db;
+            --purple: #8e44ad;
         }
         body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; }
         
-        /* Menu Lateral */
+        /* Menu Lateral Estilizado */
         .sidebar {
-            position: fixed; top: 0; left: -280px; width: 250px; height: 100%;
+            position: fixed; top: 0; left: -280px; width: 260px; height: 100%;
             background: #fff; z-index: 10000; transition: 0.3s;
             box-shadow: 5px 0 15px rgba(0,0,0,0.1); padding: 20px;
         }
@@ -24,45 +25,54 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); z-index: 9999; display: none;
         }
-        .sidebar-item { padding: 15px; border-bottom: 1px solid #f0f0f0; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; }
-        .menu-icon { font-size: 24px; cursor: pointer; padding: 5px; }
+        .sidebar-item {
+            padding: 18px 10px; border-bottom: 1px solid #f8f9fa; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; gap: 12px; font-size: 16px;
+        }
+        .sidebar-item:active { background: #f0f0f0; }
 
-        /* Estilos de Cards e Inputs */
+        /* Dashboard e Cards */
         .texto-logo { font-size: 24px; font-weight: 800; background: linear-gradient(to right, #2490eb, #2ab573, #f39c12); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
-        .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-        .card-fogo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; display: flex; justify-content: space-between; align-items: center; }
-        .btn-azul { width: calc(100% - 40px); background: var(--blue-action); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .card { background: #fff; border-radius: 20px; padding: 20px; margin: 10px 20px; border: 1px solid #eee; }
         
-        /* Seletor de Objetivo no Catálogo */
-        .selector-objetivo { display: flex; gap: 10px; margin: 10px 20px; }
-        .opt-obj { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #eee; background: #fff; text-align: center; font-weight: bold; cursor: pointer; }
-        .opt-obj.active { border-color: var(--primary); background: #f0fff7; color: var(--primary); }
+        /* Barra de Progresso Semanal (Igual ao print) */
+        .semana-container { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 15px; padding: 0 10px; }
+        .dia-col { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
+        .dia-barra { width: 35px; height: 6px; background: #eee; border-radius: 4px; }
+        .dia-barra.active { background: var(--purple); }
+        .dia-label { font-size: 11px; color: #aaa; font-weight: bold; }
 
-        /* Grid de Produtos */
-        .grid-produtos { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px; }
-        .produto-card { background: #fff; padding: 15px; border-radius: 15px; border: 1px solid #eee; text-align: center; }
-        .produto-img { width: 100%; height: 100px; object-fit: contain; margin-bottom: 10px; }
+        /* Botões de Objetivo */
+        .obj-box { display: flex; gap: 10px; margin: 10px 20px; }
+        .obj-btn { flex: 1; background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 15px; text-align: center; font-weight: bold; cursor: pointer; }
+        .obj-btn.active { border: 2px solid var(--primary); color: var(--primary); background: #f0fff7; }
 
-        .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--primary); transition: width 0.5s; }
-        .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 35px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; }
+        /* Grid de Catálogo */
+        .grid-suplementos { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px 20px; }
+        .item-sup { background: #fff; border-radius: 15px; padding: 15px; border: 1px solid #eee; text-align: center; }
+        .item-sup img { width: 100%; height: 120px; object-fit: contain; margin-bottom: 10px; }
+        .price { color: var(--primary); font-weight: bold; font-size: 16px; margin-top: 5px; }
+
+        .btn-azul { width: calc(100% - 40px); background: var(--blue-action); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; }
+        .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 35px; border: none; z-index: 99; }
+        
         .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
-        #bar-progress { width: 0%; height: 100%; background: #2ab573; transition: width 0.1s linear; }
+        #bar-progress { width: 0%; height: 100%; background: var(--primary); transition: width 0.1s linear; }
     </style>
 </head>
 <body>
 
     <div id="overlay" class="sidebar-overlay" onclick="toggleMenu()"></div>
     <div id="sidebar" class="sidebar">
-        <h3 class="texto-logo">NutriShot</h3>
+        <h2 style="color: #2490eb; margin-bottom: 30px;">Nutri<span style="color: #2ab573;">Shot</span></h2>
         <div class="sidebar-item" onclick="navegar('home'); toggleMenu()">🏠 Dashboard</div>
         <div class="sidebar-item" onclick="navegar('progresso_semanal'); toggleMenu()">📊 Progresso Semanal</div>
         <div class="sidebar-item" onclick="navegar('catalogo'); toggleMenu()">🛒 Suplementos</div>
-        <div class="sidebar-item" style="color:#e74c3c;" onclick="estado.logado=false; toggleMenu(); render()">🚪 Sair</div>
+        <div class="sidebar-item" style="color:#e74c3c; margin-top:40px;" onclick="sair()">🚪 Sair da Conta</div>
     </div>
 
     <div id="ads-overlay" class="ads-overlay">
-        <div id="ad-text" style="font-size: 18px; font-weight: bold;">IA NutriShot...</div>
+        <div id="ad-text" style="font-size: 18px; font-weight: bold;">Analisando com IA...</div>
         <div style="width:70%; height:8px; background:#333; border-radius:10px; margin-top:25px; overflow:hidden;">
             <div id="bar-progress"></div>
         </div>
@@ -73,40 +83,67 @@
     <script>
         let estado = JSON.parse(localStorage.getItem('nutrishot_v6')) || {
             logado: false, tela: 'cadastro', nomeUsuario: 'Usuário', objetivo: 'perda',
-            calorias: 0, prot: 0, aguaAtual: 0, 
+            calorias: 0, prot: 0, carb: 0, gord: 0, aguaAtual: 0, 
             historico: [], historicoSemanal: [],
             sequencia: 1, ultimoAcesso: new Date().toLocaleDateString()
         };
 
-        const PRODUTOS = {
+        const SUPLEMENTOS = {
             perda: [
-                { nome: "Termogênico", img: "termog.png", preco: "R$ 89,90" },
-                { nome: "Psyllium caps", img: "Psyllium-caps.png", preco: "R$ 45,00" },
-                { nome: "Psyllium pó", img: "Psyllium-po.png", preco: "R$ 39,00" }
+                { nome: "Termogênico Growth", img: "termog.png", preco: "R$ 87,00" },
+                { nome: "Psyllium Caps", img: "Psyllium-caps.png", preco: "R$ 42,00" },
+                { nome: "Psyllium Pó", img: "Psyllium-po.png", preco: "R$ 35,00" }
             ],
             ganho: [
-                { nome: "Whey Protein", img: "wey-creme.png", preco: "R$ 149,00" },
-                { nome: "Creatina 100g", img: "creatina-100g.png", preco: "R$ 79,00" },
-                { nome: "Hipercalórico", img: "Hipercalórico-choco.png", preco: "R$ 95,00" }
+                { nome: "Whey Chocolate", img: "wey-choco.png", preco: "R$ 99,00" },
+                { nome: "Whey Morango", img: "wey-moran.png", preco: "R$ 99,00" },
+                { nome: "Whey Creme", img: "wey-creme.png", preco: "R$ 99,00" },
+                { nome: "Creatina 100g", img: "creatina-100g.png", preco: "R$ 79,90" },
+                { nome: "Creatina 250g", img: "I-creat1000.png", preco: "R$ 120,00" },
+                { nome: "Hipercalórico Choco", img: "Hipercalórico-choco.png", preco: "R$ 85,00" },
+                { nome: "Hipercalórico Cookies", img: "Hipercalórico-cooki.png", preco: "R$ 85,00" }
             ]
         };
 
         function salvar() { localStorage.setItem('nutrishot_v6', JSON.stringify(estado)); }
-        function navegar(tela) { estado.tela = tela; salvar(); render(); }
+        function navegar(tela) { estado.tela = tela; salvar(); render(); window.scrollTo(0,0); }
         function toggleMenu() {
             const s = document.getElementById('sidebar');
             const o = document.getElementById('overlay');
-            s.classList.toggle('active');
-            o.style.display = s.classList.contains('active') ? 'block' : 'none';
+            const isActive = s.classList.toggle('active');
+            o.style.display = isActive ? 'block' : 'none';
+        }
+        function sair() { estado.logado = false; salvar(); render(); }
+
+        // Lógica de reset diário e histórico
+        function verificarViradaDeDia() {
+            const hoje = new Date().toLocaleDateString();
+            if (estado.ultimoAcesso !== hoje) {
+                if (estado.calorias > 0) {
+                    estado.historicoSemanal.unshift({
+                        data: estado.ultimoAcesso,
+                        cal: estado.calorias,
+                        prot: estado.prot,
+                        agua: estado.aguaAtual
+                    });
+                    if(estado.historicoSemanal.length > 7) estado.historicoSemanal.pop();
+                }
+                // Reset
+                estado.calorias = 0; estado.prot = 0; estado.carb = 0; estado.gord = 0;
+                estado.aguaAtual = 0; estado.historico = [];
+                estado.ultimoAcesso = hoje;
+                salvar();
+            }
         }
 
-        function handleGaleria(event) {
-            const file = event.target.files[0];
-            if (file) {
-                rodarAnuncio("Analisando imagem da galeria...", () => {
-                    confirmarAnalise();
-                });
-            }
+        function rodarAnaliseIA(origem) {
+            rodarAnuncio(`Processando foto da ${origem}...`, () => {
+                const cal = Math.floor(Math.random() * 200 + 300);
+                estado.calorias += cal;
+                estado.prot += Math.floor(cal * 0.08);
+                estado.historico.unshift({tipo: 'Refeição IA', cal: cal, hora: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})});
+                salvar(); navegar('home');
+            });
         }
 
         function rodarAnuncio(texto, callback) {
@@ -116,27 +153,20 @@
             overlay.style.display = 'flex';
             let p = 0;
             const tempo = setInterval(() => {
-                p += 5; bar.style.width = p + '%';
+                p += 4; bar.style.width = p + '%';
                 if(p >= 100) { clearInterval(tempo); overlay.style.display = 'none'; bar.style.width = '0%'; callback(); }
-            }, 60);
-        }
-
-        function confirmarAnalise() {
-            const cal = Math.floor(Math.random() * 200 + 350);
-            estado.calorias += cal;
-            estado.prot += Math.floor(cal * 0.05);
-            estado.historico.unshift({tipo: 'Refeição IA', cal: cal, hora: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})});
-            salvar();
-            navegar('home');
+            }, 50);
         }
 
         function render() {
             const root = document.getElementById('app');
+            verificarViradaDeDia();
 
             if (!estado.logado) {
-                root.innerHTML = `<div style="padding:50px 20px; text-align:center;">
+                root.innerHTML = `<div style="padding:80px 20px; text-align:center;">
+                    <img src="icone-512.png" style="width:120px" onerror="this.src='https://via.placeholder.com/120'">
                     <h1 class="texto-logo">NutriShot</h1>
-                    <button class="btn-azul" onclick="estado.logado=true; navegar('home')">ENTRAR</button>
+                    <button class="btn-azul" onclick="estado.logado=true; navegar('home')">ENTRAR NO APP</button>
                 </div>`;
                 return;
             }
@@ -144,40 +174,61 @@
             if (estado.tela === 'home') {
                 root.innerHTML = `
                     <div style="padding: 20px; display: flex; justify-content: space-between; align-items:center;">
-                        <span class="menu-icon" onclick="toggleMenu()">☰</span>
-                        <b style="font-size:18px;">Olá, ${estado.nomeUsuario}</b>
+                        <span class="menu-icon" style="font-size:24px; cursor:pointer;" onclick="toggleMenu()">☰</span>
+                        <div style="text-align:right"><small style="color:#888;">Olá,</small><br><b>${estado.nomeUsuario}</b></div>
                     </div>
-                    <div class="card card-fogo">
-                        <div><small>Sequência Ativa</small><div style="font-size: 26px; font-weight: bold;">${estado.sequencia} Dias 🔥</div></div>
-                    </div>
+
                     <div class="card">
-                        <small>Calorias do Dia</small>
-                        <div style="font-size: 26px; font-weight: bold;">${estado.calorias} kcal</div>
-                        <div class="progress-container"><div class="progress-bar" style="width: ${Math.min((estado.calorias/2500)*100, 100)}%"></div></div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <b style="font-size:14px;">Progresso Semanal</b>
+                            <span style="font-size:12px; color:var(--blue-action)" onclick="navegar('progresso_semanal')">Ver tudo →</span>
+                        </div>
+                        <div class="semana-container">
+                            ${['S','T','Q','Q','S','S','D'].map((d, i) => `
+                                <div class="dia-col">
+                                    <div class="dia-barra ${i === new Date().getDay()-1 ? 'active' : ''}"></div>
+                                    <div class="dia-label">${d}</div>
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
+
+                    <div class="obj-box">
+                        <div class="obj-btn ${estado.objetivo === 'perda' ? 'active' : ''}" onclick="estado.objetivo='perda'; salvar(); render()">Emagrecer</div>
+                        <div class="obj-btn ${estado.objetivo === 'ganho' ? 'active' : ''}" onclick="estado.objetivo='ganho'; salvar(); render()">Ganho Massa</div>
+                    </div>
+
+                    <div class="card">
+                        <small style="color:#888">Consumo de Calorias</small>
+                        <div style="font-size: 24px; font-weight: bold; margin: 5px 0;">${estado.calorias} <span style="font-size:14px; color:#ccc">/ 2577 kcal</span></div>
+                        <div style="width:100%; height:8px; background:#f0f0f0; border-radius:10px; overflow:hidden;">
+                            <div style="width:${Math.min((estado.calorias/2577)*100, 100)}%; height:100%; background:var(--primary);"></div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:10px; margin:0 20px;">
+                        <div class="card" style="flex:1; margin:0; text-align:center;"><small>Prot</small><br><b>${estado.prot}g</b></div>
+                        <div class="card" style="flex:1; margin:0; text-align:center;"><small>Carb</small><br><b>${estado.carb}g</b></div>
+                        <div class="card" style="flex:1; margin:0; text-align:center;"><small>Gord</small><br><b>${estado.gord}g</b></div>
+                    </div>
+
                     <button class="fab" onclick="navegar('add_refeicao')">+</button>
                 `;
             }
 
             if (estado.tela === 'catalogo') {
-                const lista = PRODUTOS[estado.objetivo === 'perda' ? 'perda' : 'ganho'];
+                const lista = SUPLEMENTOS[estado.objetivo === 'perda' ? 'perda' : 'ganho'];
                 root.innerHTML = `
                     <div style="padding: 20px;">
-                        <div onclick="navegar('home')" style="cursor:pointer; font-weight:bold; color:var(--blue-action);">← Voltar</div>
-                        <h2 style="margin: 20px 0;">Loja de Suplementos</h2>
+                        <div onclick="navegar('home')" style="cursor:pointer; font-weight:bold; color:var(--blue-action);">← Dashboard</div>
+                        <h2 style="margin: 20px 0;">Suplementos Recomendados</h2>
                     </div>
-                    
-                    <div class="selector-objetivo">
-                        <div class="opt-obj ${estado.objetivo === 'perda' ? 'active' : ''}" onclick="estado.objetivo='perda'; salvar(); render()">Emagrecer</div>
-                        <div class="opt-obj ${estado.objetivo === 'ganho' ? 'active' : ''}" onclick="estado.objetivo='ganho'; salvar(); render()">Ganhar Massa</div>
-                    </div>
-
-                    <div class="grid-produtos">
+                    <div class="grid-suplementos">
                         ${lista.map(p => `
-                            <div class="produto-card">
-                                <img src="${p.img}" class="produto-img" onerror="this.src='https://via.placeholder.com/100'">
-                                <div style="font-size:14px; font-weight:bold;">${p.nome}</div>
-                                <div style="color:var(--primary); font-weight:bold; margin-top:5px;">${p.preco}</div>
+                            <div class="item-sup">
+                                <img src="${p.img}" onerror="this.src='https://via.placeholder.com/100'">
+                                <div style="font-size:13px; font-weight:bold; height:32px; overflow:hidden;">${p.nome}</div>
+                                <div class="price">${p.preco}</div>
                             </div>
                         `).join('')}
                     </div>
@@ -188,26 +239,33 @@
                 root.innerHTML = `
                     <div style="padding: 20px;">
                         <div onclick="navegar('home')" style="cursor:pointer; font-weight:bold; color:var(--blue-action);">← Voltar</div>
-                        <h2 style="margin: 20px 0;">Progresso Semanal</h2>
-                        ${estado.historicoSemanal.length === 0 ? '<p>Sem dados.</p>' : 
-                        estado.historicoSemanal.map(h => `<div class="card">${h.data}: ${h.cal} kcal</div>`).join('')}
+                        <h2 style="margin: 20px 0;">Histórico Semanal</h2>
+                        ${estado.historicoSemanal.length === 0 ? '<p style="color:#999; text-align:center;">Nenhum dado salvo ainda.</p>' : 
+                        estado.historicoSemanal.map(h => `
+                            <div class="card" style="margin:10px 0;">
+                                <div style="font-size:12px; color:#888;"><b>Data: ${h.data}</b></div>
+                                <div style="display:flex; justify-content:space-between; margin-top:10px;">
+                                    <span>🔥 ${h.cal} kcal</span>
+                                    <span>💪 ${h.prot}g prot</span>
+                                    <span>💧 ${h.agua}ml</span>
+                                </div>
+                            </div>
+                        `).join('')}
                     </div>`;
             }
 
             if (estado.tela === 'add_refeicao') {
                 root.innerHTML = `
                     <div style="padding: 20px; text-align:center;">
-                        <div onclick="navegar('home')" style="text-align:left; cursor:pointer; color:var(--blue-action);">← Voltar</div>
-                        <h2 style="margin-top:40px;">Como deseja adicionar?</h2>
-                        
-                        <div class="card" onclick="document.getElementById('fileInput').click()" style="cursor:pointer;">
-                            <div style="font-size:40px;">🖼️</div>
+                        <div onclick="navegar('home')" style="text-align:left; cursor:pointer; color:var(--blue-action); font-weight:bold;">← Voltar</div>
+                        <h2 style="margin-top:50px;">Adicionar Refeição</h2>
+                        <div class="card" onclick="document.getElementById('inputGaleria').click()" style="cursor:pointer; padding:30px;">
+                            <div style="font-size:40px; margin-bottom:10px;">🖼️</div>
                             <b>Escolher da Galeria</b>
-                            <input type="file" id="fileInput" hidden accept="image/*" onchange="handleGaleria(event)">
+                            <input type="file" id="inputGaleria" hidden accept="image/*" onchange="rodarAnaliseIA('Galeria')">
                         </div>
-
-                        <div class="card" onclick="confirmarAnalise()" style="cursor:pointer;">
-                            <div style="font-size:40px;">📸</div>
+                        <div class="card" onclick="rodarAnaliseIA('Câmera')" style="cursor:pointer; padding:30px;">
+                            <div style="font-size:40px; margin-bottom:10px;">📸</div>
                             <b>Tirar Foto Agora</b>
                         </div>
                     </div>`;
