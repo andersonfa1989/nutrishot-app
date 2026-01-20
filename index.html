@@ -3,229 +3,258 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <title>NutriShot Pro</title>
+    <title>NutriShot Elements</title>
     <style>
-        :root { --primary: #2ab573; --blue: #2490eb; --bg: #f8f9fa; --dark: #212529; }
-        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: #333; padding-bottom: 100px; }
+        :root { 
+            --primary: #2ab573; 
+            --blue-action: #2490eb; 
+            --bg: #f9fafb; 
+            --water: #3498db;
+            --dark: #1a1a1a;
+        }
+        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 80px; }
         
-        /* Menu Lateral */
-        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; z-index: 10000; transition: 0.3s; padding: 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
+        /* MENU LATERAL */
+        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; z-index: 10000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.1); padding: 20px; box-sizing: border-box; }
         .sidebar.active { left: 0; }
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: none; }
+        .menu-item { padding: 15px; border-bottom: 1px solid #f0f0f0; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; }
 
-        /* Login e Cadastro */
-        .auth-container { padding: 40px 25px; text-align: center; background: #fff; min-height: 100vh; }
-        .logo-text { font-size: 32px; font-weight: 800; color: var(--primary); margin-bottom: 30px; letter-spacing: -1px; }
-        .input-nutri { width: 100%; padding: 16px; margin: 8px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; box-sizing: border-box; }
+        /* ANÚNCIO FIXO NO RODAPÉ */
+        .footer-ad-fixed { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: #fff; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: center; z-index: 998; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+        .ad-content { width: 90%; height: 40px; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999; text-transform: uppercase; border: 1px dashed #ccc; }
 
-        /* Dashboard */
-        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: #fff; border-bottom: 1px solid #eee; }
-        .card { background: #fff; border-radius: 18px; padding: 20px; margin: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .card-summary { background: var(--dark); color: #fff; }
-        
-        /* Progress Bar */
-        .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin: 15px 0; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--primary); transition: 0.5s; width: 0%; }
-
-        /* Macronutrientes */
-        .macro-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 0 15px; }
-        .macro-box { background: #fff; padding: 12px; border-radius: 12px; text-align: center; border: 1px solid #eee; }
-
-        /* FAB - Botão Flutuante */
-        .fab { position: fixed; bottom: 90px; right: 20px; width: 65px; height: 65px; background: var(--primary); color: white; border-radius: 50%; border: none; font-size: 30px; box-shadow: 0 4px 15px rgba(42, 181, 115, 0.4); z-index: 999; cursor: pointer; }
-
-        /* Anúncio Fixo no Rodapé */
-        .footer-ad { position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: #fff; border-top: 1px solid #ddd; display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 5px; }
-        .ad-banner { width: 95%; height: 50px; background: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* Tela de IA / Anúncio de Carregamento */
-        .ia-loading { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
-        
-        .btn-main { width: 100%; background: var(--blue); color: white; border: none; padding: 18px; border-radius: 15px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        /* ESTILOS ORIGINAIS MANTIDOS */
+        .img-logo-principal { width: 170px; margin-bottom: 5px; } 
+        .texto-logo {
+            font-size: 24px; font-weight: 800;
+            background: linear-gradient(to right, #2490eb, #2ab573, #f39c12);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin: 0 0 20px 0; letter-spacing: -0.5px;
+        }
+        .input-nutri { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; box-sizing: border-box; }
+        .input-metade { width: 41%; display: inline-block; }
+        .btn-azul { width: calc(100% - 40px); background: var(--blue-action); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(36, 144, 235, 0.3); }
+        .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .card-fogo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; display: flex; justify-content: space-between; align-items: center; }
+        .imc-info { text-align: right; background: rgba(255,255,255,0.15); padding: 8px 12px; border-radius: 12px; min-width: 80px; }
+        .grid-7 { display: flex; justify-content: space-between; align-items: flex-end; height: 50px; margin-top: 15px; }
+        .col-dia { display: flex; flex-direction: column; align-items: center; flex: 1; }
+        .barra-v { width: 30px; height: 4px; background: #eee; border-radius: 2px; }
+        .barra-v.active { background: #6a11cb; width: 40px; }
+        .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--primary); transition: width 0.5s ease; }
+        .progress-bar.water { background: var(--water); }
+        .fab { position: fixed; bottom: 80px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; }
+        .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
+        #bar-progress { width: 0%; height: 8px; background: #2ab573; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleMenu()"></div>
     <div id="sidebar" class="sidebar">
-        <h2 class="logo-text">NutriShot</h2>
-        <p onclick="navegar('home')">🏠 Dashboard</p>
-        <p onclick="navegar('catalogo')">🛒 Suplementos</p>
-        <hr>
-        <p style="color:red" onclick="sair()">🚪 Sair</p>
+        <div class="texto-logo" style="font-size: 20px;">NutriShot</div>
+        <div class="menu-item" onclick="navegar('home')">🏠 Dashboard</div>
+        <div class="menu-item" onclick="navegar('catalogo')">🛒 Suplementos</div>
+        <div class="menu-item" onclick="navegar('ajustes')">⚙️ Ajustes</div>
+        <div class="menu-item" style="color:red; margin-top: 20px;" onclick="logout()">🚪 Sair</div>
     </div>
 
-    <div id="ia-loading" class="ia-loading">
-        <p id="ia-text">IA ANALISANDO CALORIAS...</p>
-        <div class="progress-container" style="width: 70%;"><div id="ia-bar" class="progress-fill"></div></div>
+    <div id="footer-ad" class="footer-ad-fixed" style="display: none;">
+        <div class="ad-content">📢 Oferta: Creatina Growth com 10% OFF</div>
+    </div>
+
+    <div id="ads-overlay" class="ads-overlay">
+        <div id="ad-text" style="font-size: 18px; font-weight: bold;">Analisando sua Refeição...</div>
+        <div style="width: 70%; background: #333; height: 8px; border-radius: 10px; margin-top: 20px;">
+            <div id="bar-progress"></div>
+        </div>
     </div>
 
     <div id="app"></div>
 
-    <div class="footer-ad" id="footer-ad">
-        <div class="ad-banner">ANÚNCIO: Whey Protein em oferta na Growth!</div>
-    </div>
-
     <script>
-        let state = JSON.parse(localStorage.getItem('nutri_v12')) || {
-            isLogged: false, page: 'login', user: 'Usuário', weight: 70, height: 170,
-            kcal: 0, prot: 0, carb: 0, fat: 0, photo: null, history: []
+        let estado = JSON.parse(localStorage.getItem('nutrishot_v6')) || {
+            logado: false, tela: 'cadastro', nomeUsuario: '', objetivo: 'perda',
+            peso: 70, altura: 170, imc: 24.2, classification: 'Normal',
+            calorias: 0, prot: 0, carb: 0, gord: 0, aguaAtual: 0, historico: [],
+            sequencia: 1, ultimoAcesso: new Date().toDateString(),
+            tempRefeicao: 'Almoço', fotoSelecionada: null, ultimoResultado: null
         };
 
-        function save() { localStorage.setItem('nutri_v12', JSON.stringify(state)); }
-        function navegar(p) { state.page = p; render(); toggleSidebar(false); window.scrollTo(0,0); }
-        function toggleSidebar(force) {
-            const s = document.getElementById('sidebar');
-            const o = document.getElementById('overlay');
-            if(force === false) { s.classList.remove('active'); o.style.display='none'; return; }
-            s.classList.toggle('active');
-            o.style.display = s.classList.contains('active') ? 'block' : 'none';
+        function salvar() { localStorage.setItem('nutrishot_v6', JSON.stringify(estado)); }
+        
+        function toggleMenu() {
+            const side = document.getElementById('sidebar');
+            const over = document.getElementById('sidebar-overlay');
+            const isActive = side.classList.contains('active');
+            if(isActive) { side.classList.remove('active'); over.style.display = 'none'; }
+            else { side.classList.add('active'); over.style.display = 'block'; }
         }
 
-        function handleFile(e) {
-            const file = e.target.files[0];
+        function navegar(tela) { 
+            estado.tela = tela; 
+            if(document.getElementById('sidebar').classList.contains('active')) toggleMenu();
+            salvar(); render(); window.scrollTo(0,0); 
+        }
+
+        function logout() { estado.logado = false; estado.tela = 'login'; salvar(); render(); }
+
+        function validarEEntrar() {
+            const email = document.getElementById('email-f').value;
+            if(!email) { alert("Informe o e-mail"); return; }
+            if(document.getElementById('nome-f')) {
+                estado.nomeUsuario = document.getElementById('nome-f').value || 'Usuário';
+                estado.peso = parseFloat(document.getElementById('peso-f').value) || 70;
+                estado.altura = parseFloat(document.getElementById('altura-f').value) || 170;
+            }
+            estado.logado = true;
+            estado.tela = 'home';
+            salvar(); render();
+        }
+
+        function prepararFoto(event) {
+            const file = event.target.files[0];
             if(file) {
                 const reader = new FileReader();
-                reader.onload = (event) => { state.photo = event.target.result; render(); };
+                reader.onload = function(e) { estado.fotoSelecionada = e.target.result; render(); }
                 reader.readAsDataURL(file);
             }
         }
 
-        function runIA() {
-            const load = document.getElementById('ia-loading');
-            const bar = document.getElementById('ia-bar');
-            load.style.display = 'flex';
+        function confirmarAnalise() {
+            const overlay = document.getElementById('ads-overlay');
+            const bar = document.getElementById('bar-progress');
+            overlay.style.display = 'flex';
             let p = 0;
-            const interval = setInterval(() => {
-                p += 5; bar.style.width = p + '%';
-                if(p >= 100) {
-                    clearInterval(interval);
-                    load.style.display = 'none';
-                    bar.style.width = '0%';
-                    // Resultado Simulado
-                    const c = Math.floor(Math.random() * 200 + 350);
-                    state.kcal += c;
-                    state.prot += 25; state.carb += 40; state.fat += 12;
-                    state.history.unshift({ kcal: c, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
-                    state.photo = null;
-                    state.lastKcal = c;
-                    save();
-                    navegar('dica');
+            const tempo = setInterval(() => {
+                p += 4; bar.style.width = p + '%';
+                if(p >= 100) { 
+                    clearInterval(tempo); 
+                    overlay.style.display = 'none'; 
+                    bar.style.width = '0%'; 
+                    // Simulação
+                    const cal = Math.floor(Math.random() * 250 + 300);
+                    estado.calorias += cal;
+                    estado.ultimoResultado = { tipo: estado.tempRefeicao, cal: cal };
+                    estado.historico.unshift({tipo: estado.tempRefeicao, cal: cal});
+                    estado.fotoSelecionada = null;
+                    navegar('resultado_analise');
                 }
-            }, 100);
+            }, 60);
         }
 
         function render() {
-            const app = document.getElementById('app');
-            const footer = document.getElementById('footer-ad');
-            
-            // Controle de exibição do anúncio no rodapé
-            footer.style.display = state.isLogged ? 'flex' : 'none';
+            const root = document.getElementById('app');
+            const adRodape = document.getElementById('footer-ad');
+            adRodape.style.display = estado.logado ? 'flex' : 'none';
 
-            if (!state.isLogged) {
-                const isReg = state.page === 'cadastro';
-                app.innerHTML = `
-                    <div class="auth-container">
-                        <h1 class="logo-text">NutriShot</h1>
-                        <p>${isReg ? 'Crie sua conta grátis' : 'Bem-vindo de volta'}</p>
-                        ${isReg ? '<input type="text" id="reg-name" class="input-nutri" placeholder="Nome Completo">' : ''}
-                        <input type="email" class="input-nutri" placeholder="E-mail">
+            if (!estado.logado) {
+                const isCad = estado.tela === 'cadastro';
+                root.innerHTML = `
+                    <div style="padding: 50px 20px; text-align: center;">
+                        <img src="https://i.ibb.co/Lz0D7Yd/icone-512.png" class="img-logo-principal">
+                        <h1 class="texto-logo">NutriShot Elements</h1>
+                        ${isCad ? `
+                            <input type="text" id="nome-f" class="input-nutri" placeholder="Nome">
+                            <div style="display:flex; justify-content:center; gap:10px;">
+                                <input type="number" id="peso-f" class="input-nutri input-metade" placeholder="Peso (kg)">
+                                <input type="number" id="altura-f" class="input-nutri input-metade" placeholder="Altura (cm)">
+                            </div>
+                        ` : ''}
+                        <input type="email" id="email-f" class="input-nutri" placeholder="E-mail">
                         <input type="password" class="input-nutri" placeholder="Senha">
-                        <button class="btn-main" style="margin-top:20px" onclick="login(${isReg})">${isReg ? 'CADASTRAR' : 'ENTRAR'}</button>
-                        <p style="margin-top:20px" onclick="navegar('${isReg ? 'login' : 'cadastro'}')">
-                            ${isReg ? 'Já tem conta? <b>Login</b>' : 'Não tem conta? <b>Cadastre-se</b>'}
+                        <button class="btn-azul" onclick="validarEEntrar()">${isCad ? 'CRIAR CONTA' : 'ENTRAR'}</button>
+                        <p style="margin-top:20px; cursor:pointer;" onclick="navegar('${isCad?'login':'cadastro'}')">
+                            ${isCad ? 'Já tem conta? <b>Entrar</b>' : 'Novo aqui? <b>Cadastrar</b>'}
                         </p>
                     </div>`;
                 return;
             }
 
-            if (state.page === 'home') {
-                app.innerHTML = `
-                    <div class="header">
-                        <span style="font-size:24px" onclick="toggleSidebar()">☰</span>
-                        <b>NutriShot Elements</b>
+            if (estado.tela === 'home') {
+                root.innerHTML = `
+                    <div style="padding: 20px; display: flex; justify-content: space-between; align-items:center;">
+                        <span style="font-size:24px;" onclick="toggleMenu()">☰</span>
+                        <b style="font-size:18px;">Olá, ${estado.nomeUsuario}</b>
                         <div style="width:24px"></div>
                     </div>
 
-                    <div class="card card-summary">
-                        <small>Meta Diária</small>
-                        <h2 style="margin:5px 0">${state.kcal} / 2500 kcal</h2>
-                        <div class="progress-container"><div class="progress-fill" style="width: ${(state.kcal/2500)*100}%"></div></div>
-                    </div>
-
-                    <div class="macro-row">
-                        <div class="macro-box"><small>Prot</small><br><b>${state.prot}g</b></div>
-                        <div class="macro-box"><small>Carb</small><br><b>${state.carb}g</b></div>
-                        <div class="macro-box"><small>Gord</small><br><b>${state.fat}g</b></div>
+                    <div class="card card-fogo">
+                        <div><small>Sequência</small><div style="font-size: 24px; font-weight: bold;">${estado.sequencia} Dias 🔥</div></div>
+                        <div class="imc-info">
+                            <div style="font-size: 10px; opacity:0.8;">IMC ATUAL</div>
+                            <div style="font-size: 20px; font-weight: bold;">${estado.imc}</div>
+                        </div>
                     </div>
 
                     <div class="card">
-                        <b>Refeições de Hoje</b>
-                        <div style="margin-top:15px">
-                            ${state.history.length === 0 ? '<p style="color:#999; font-size:14px">Nenhuma refeição registrada.</p>' : 
-                            state.history.map(h => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f5f5f5"><span>Refeição (${h.time})</span><b>${h.kcal} kcal</b></div>`).join('')}
-                        </div>
+                        <small>Calorias Diárias</small>
+                        <div style="font-size: 26px; font-weight: bold;">${estado.calorias} <span style="font-size:14px; color:#ccc">/ 2500</span></div>
+                        <div class="progress-container"><div class="progress-bar" style="width: ${(estado.calorias/2500)*100}%"></div></div>
                     </div>
 
-                    <button class="fab" onclick="navegar('analisar')">+</button>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin:0 20px;">
+                        <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Prot</small><br><b>${estado.prot}g</b></div>
+                        <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Carb</small><br><b>${estado.carb}g</b></div>
+                        <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Gord</small><br><b>${estado.gord}g</b></div>
+                    </div>
+
+                    <button class="btn-azul" style="background:var(--primary); margin-top:20px;" onclick="navegar('catalogo')">🛒 VER SUPLEMENTOS</button>
+
+                    <div class="card">
+                        <b>Refeições de Hoje</b>
+                        ${estado.historico.length === 0 ? '<p style="color:#999; font-size:12px;">Nenhuma registrada.</p>' : 
+                        estado.historico.map(h => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f9f9f9;"><span>${h.tipo}</span><b>${h.cal} kcal</b></div>`).join('')}
+                    </div>
+
+                    <button class="fab" onclick="navegar('add_refeicao')">+</button>
                 `;
             }
 
-            if (state.page === 'analisar') {
-                app.innerHTML = `
-                    <div style="padding:20px">
-                        <div onclick="navegar('home')" style="margin-bottom:20px; font-weight:bold; color:var(--blue)">← VOLTAR</div>
-                        <h2 style="text-align:center">Analisar com IA</h2>
-                        <div class="card" style="text-align:center">
-                            ${!state.photo ? `
-                                <div style="padding:40px 0">
-                                    <button class="btn-main" onclick="document.getElementById('cam').click()">📸 TIRAR FOTO</button>
-                                    <button class="btn-main" style="background:#6c757d; margin-top:10px" onclick="document.getElementById('gal').click()">📁 GALERIA</button>
-                                </div>
-                                <input type="file" id="cam" capture="environment" accept="image/*" style="display:none" onchange="handleFile(event)">
-                                <input type="file" id="gal" accept="image/*" style="display:none" onchange="handleFile(event)">
+            if (estado.tela === 'add_refeicao') {
+                root.innerHTML = `
+                    <div style="padding: 20px;">
+                        <div onclick="navegar('home')" style="font-weight:bold; color:var(--blue-action); margin-bottom:20px;">← Voltar</div>
+                        <h2 style="text-align:center;">Nova Análise</h2>
+                        <div class="card" style="text-align:center;">
+                            ${!estado.fotoSelecionada ? `
+                                <button class="btn-azul" style="width:100%; margin:10px 0" onclick="document.getElementById('cam').click()">📸 Tirar Foto</button>
+                                <input type="file" id="cam" capture="environment" accept="image/*" style="display:none" onchange="prepararFoto(event)">
                             ` : `
-                                <img src="${state.photo}" style="width:100%; border-radius:12px; margin-bottom:20px">
-                                <button class="btn-main" style="background:var(--primary)" onclick="runIA()">🚀 ANALISAR AGORA</button>
-                                <button class="btn-main" style="background:#eee; color:#333; margin-top:10px" onclick="state.photo=null; render()">TROCAR FOTO</button>
+                                <img src="${estado.fotoSelecionada}" style="width:100%; border-radius:12px; margin-bottom:15px;">
+                                <button class="btn-azul" style="width:100%; margin:0; background:var(--primary)" onclick="confirmarAnalise()">🚀 ANALISAR AGORA</button>
                             `}
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }
 
-            if (state.page === 'dica') {
-                app.innerHTML = `
-                    <div style="padding:40px 25px; text-align:center">
-                        <div style="font-size:60px">🥗</div>
-                        <h2 style="color:var(--primary)">Análise Concluída!</h2>
+            if (estado.tela === 'resultado_analise') {
+                root.innerHTML = `
+                    <div style="padding: 40px 20px; text-align:center;">
+                        <div style="font-size:50px">🥗</div>
+                        <h2 style="color:var(--blue-action)">Análise Concluída!</h2>
                         <div class="card">
-                            <p>Sua refeição possui aproximadamente:</p>
-                            <h1 style="font-size:48px; color:var(--blue)">${state.lastKcal} kcal</h1>
+                            <p>Sua refeição tem aproximadamente:</p>
+                            <h1 style="font-size:48px; margin:10px 0;">${estado.ultimoResultado.cal} kcal</h1>
                         </div>
-                        <div style="background:#e7f3ff; padding:20px; border-radius:15px; text-align:left; border-left:5px solid var(--blue)">
-                            <b>💡 DICA DA NUTRI:</b>
-                            <p style="margin:5px 0; font-size:14px">Sabia que mastigar cada garfada pelo menos 15 vezes ajuda seu corpo a queimar calorias de forma mais eficiente?</p>
+                        <div class="card" style="background:#eef9f3; border:1px solid var(--primary); text-align:left;">
+                            <b style="color:var(--primary)">💡 DICA DO DIA:</b>
+                            <p style="margin:5px 0; font-size:14px;">Tente comer uma salada verde antes desta refeição para melhorar sua digestão e saciedade.</p>
                         </div>
-                        <button class="btn-main" style="margin-top:30px" onclick="navegar('home')">VOLTAR AO DASHBOARD</button>
-                    </div>
-                `;
+                        <button class="btn-azul" onclick="navegar('home')">VOLTAR AO INÍCIO</button>
+                    </div>`;
             }
-        }
 
-        function login(isReg) {
-            if(isReg) state.user = document.getElementById('reg-name').value || 'Usuário';
-            state.isLogged = true;
-            state.page = 'home';
-            save();
-            render();
-        }
-
-        function sair() {
-            state.isLogged = false;
-            state.page = 'login';
-            save();
-            render();
+            if (estado.tela === 'catalogo') {
+                root.innerHTML = `<div style="padding:20px;">
+                    <div onclick="navegar('home')" style="font-weight:bold; color:var(--blue-action); margin-bottom:20px;">← Voltar</div>
+                    <h3>Suplementos Recomendados</h3>
+                    <p style="color:#999">Baseado no seu objetivo de ${estado.objetivo}.</p>
+                    <div class="card" style="text-align:center">Exibindo catálogo aqui...</div>
+                </div>`;
+            }
         }
 
         render();
