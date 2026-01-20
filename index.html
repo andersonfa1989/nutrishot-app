@@ -3,193 +3,244 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <title>NutriShot Elements - Pro</title>
+    <title>NutriShot Elements - Full</title>
     
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6941311170472131" crossorigin="anonymous"></script>
 
     <style>
         :root { 
             --primary: #2ab573; 
-            --blue: #2490eb; 
-            --bg: #f4f7f6; 
-            --white: #ffffff;
-            --text: #2c3e50;
-            --gray: #95a5a6;
+            --blue-action: #2490eb; 
+            --bg: #f9fafb; 
+            --water: #3498db;
         }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 70px; }
-
+        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 80px; overflow-x: hidden; }
+        
         /* Sidebar */
-        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 10000; transition: 0.3s; box-shadow: 2px 0 15px rgba(0,0,0,0.1); }
+        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 10000; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 2px 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
         .sidebar.active { left: 0; }
-        .sidebar-header { padding: 40px 20px; background: linear-gradient(135deg, var(--blue), var(--primary)); color: white; }
-        .menu-item { padding: 15px 25px; cursor: pointer; border-bottom: 1px solid #f5f5f5; font-weight: 600; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 9999; backdrop-filter: blur(2px); }
-        .overlay.active { display: block; }
+        .sidebar-header { padding: 40px 20px 20px 20px; background: linear-gradient(135deg, var(--blue-action), var(--primary)); color: white; }
+        .menu-item { padding: 15px 25px; display: flex; align-items: center; gap: 15px; cursor: pointer; font-weight: 500; transition: 0.2s; color: #444; border-bottom: 1px solid #f9f9f9; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 9999; backdrop-filter: blur(2px); }
+        .sidebar-overlay.active { display: block; }
 
-        /* UI */
-        .container { padding: 20px; max-width: 500px; margin: 0 auto; }
-        .card { background: var(--white); border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); border: 1px solid #eee; }
-        .logo-text { font-weight: 800; font-size: 24px; background: linear-gradient(135deg, var(--blue), var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; margin: 20px 0; }
+        /* UI Elements */
+        .texto-logo { font-size: 24px; font-weight: 800; background: linear-gradient(to right, #2490eb, #2ab573, #f39c12); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; text-align: center; }
+        .input-nutri { width: 90%; padding: 15px; margin: 10px auto; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; display: block; }
+        .btn-azul { width: calc(100% - 40px); background: var(--blue-action); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .card-fogo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; display: flex; justify-content: space-between; align-items: center; }
         
-        .btn-main { width: 100%; padding: 18px; border-radius: 30px; border: none; background: linear-gradient(135deg, var(--blue), var(--primary)); color: white; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
-        .input-field { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 10px; font-size: 16px; outline: none; }
-
-        /* Stats */
-        .grid-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .stat-box { background: white; padding: 15px; border-radius: 20px; text-align: center; border: 1px solid #eee; }
-        .stat-val { display: block; font-size: 20px; font-weight: bold; color: var(--blue); }
+        .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--primary); transition: width 0.5s ease; }
+        .progress-bar.water { background: var(--water); }
         
-        .bar-container { width: 100%; height: 8px; background: #eee; border-radius: 10px; margin-top: 8px; overflow: hidden; }
-        .bar-fill { height: 100%; background: var(--primary); transition: 0.5s; }
-
-        /* IA Loader */
-        .ia-loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 20000; display: none; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; }
-        .spinner { width: 50px; height: 50px; border: 5px solid #333; border-top: 5px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* Ads */
-        .ad-fixed { position: fixed; bottom: 0; width: 100%; height: 60px; background: #fff; border-top: 1px solid #ddd; display: flex; justify-content: center; align-items: center; z-index: 900; }
+        .fab { position: fixed; bottom: 80px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; cursor: pointer; }
+        
+        /* Ads Overlay */
+        .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
+        .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; overflow: hidden; }
+        #bar-progress { width: 0%; height: 100%; background: #2ab573; }
+        
+        .refeicao-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .opt-obj { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #eee; text-align: center; cursor: pointer; }
+        .opt-obj.active { border-color: var(--primary); background: #f0fff7; color: var(--primary); }
     </style>
 </head>
 <body>
 
-    <div id="ia-screen" class="ia-loading">
-        <div class="spinner"></div>
-        <h3 id="ia-msg" style="margin-top:20px">Analisando Dados...</h3>
-    </div>
-
-    <div id="sidebar-bg" class="overlay" onclick="toggleMenu()"></div>
-    <div id="sidebar-menu" class="sidebar">
-        <div class="sidebar-header">
-            <b style="font-size:20px">NutriShot Pro</b><br>
-            <small id="user-side-name">Usuário</small>
-        </div>
-        <div class="menu-item" onclick="navegar('home')">🏠 Dashboard</div>
-        <div class="menu-item" onclick="gerarPlanoIA()">🥗 Plano Alimentar IA</div>
-        <div class="menu-item" onclick="resetar()">🚪 Sair</div>
+    <div id="ads-overlay" class="ads-overlay">
+        <div id="ad-text" style="font-size: 18px; font-weight: bold;">IA NutriShot em ação...</div>
+        <div class="bar-container"><div id="bar-progress"></div></div>
     </div>
 
     <div id="app"></div>
 
-    <div class="ad-fixed">
-        <ins class="adsbygoogle" style="display:inline-block;width:320px;height:50px" data-ad-client="ca-pub-6941311170472131" data-ad-slot="2257554053"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
-
     <script>
-        // Banco de Dados Unificado
-        let db = JSON.parse(localStorage.getItem('nutrishot_final')) || {
-            logado: false,
-            user: { nome: "", peso: 0, altura: 0, objetivo: "perda" },
-            macros: { kcal: 2000, p: 0, c: 0, g: 0 },
-            agua: 0,
-            tela: 'cadastro'
+        const SUPLEMENTOS = {
+            ganho: [
+                { nome:"Creatina Growth 100g", foto:"https://via.placeholder.com/150?text=Creatina", link:"#" },
+                { nome:"Whey Chocolate", foto:"https://via.placeholder.com/150?text=Whey", link:"#" }
+            ],
+            perda: [
+                { nome:"Psyllium Pó", foto:"https://via.placeholder.com/150?text=Psyllium", link:"#" },
+                { nome:"Termogênico Ultra", foto:"https://via.placeholder.com/150?text=Burn", link:"#" }
+            ]
         };
 
-        function salvar() { localStorage.setItem('nutrishot_final', JSON.stringify(db)); render(); }
-        function navegar(t) { db.tela = t; if(t==='home') toggleMenu(false); salvar(); }
-        function toggleMenu(force) { 
-            const s = document.getElementById('sidebar-menu');
-            const b = document.getElementById('sidebar-bg');
-            if(force === false) { s.classList.remove('active'); b.classList.remove('active'); }
-            else { s.classList.toggle('active'); b.classList.toggle('active'); }
+        // Estado inicial com correção de persistência
+        let estado = JSON.parse(localStorage.getItem('nutrishot_v5')) || {
+            logado: false, tela: 'cadastro', nomeUsuario: '', objetivo: 'perda',
+            peso: 0, altura: 0, imc: 0, classification: '-',
+            calorias: 0, prot: 0, carb: 0, gord: 0, aguaAtual: 0, historico: [],
+            sequencia: 1, ultimoAcesso: new Date().toDateString(),
+            tempRefeicao: 'Almoço', fotoSelecionada: null, ultimoResultado: null
+        };
+
+        function salvar() { localStorage.setItem('nutrishot_v5', JSON.stringify(estado)); }
+        function navegar(tela) { estado.tela = tela; salvar(); render(); window.scrollTo(0,0); }
+        function toggleMenu() {
+            const s = document.getElementById('sidebar');
+            const o = document.getElementById('sidebar-overlay');
+            if(s) { s.classList.toggle('active'); o.classList.toggle('active'); }
         }
 
-        function calcularNutricao() {
-            const p = db.user.peso;
-            if(db.user.objetivo === 'perda') {
-                db.macros.kcal = Math.round(p * 25);
-                db.macros.p = p * 2; db.macros.g = p * 0.7;
-            } else {
-                db.macros.kcal = Math.round(p * 35);
-                db.macros.p = p * 2.2; db.macros.g = p * 1;
+        function validarEEntrar() {
+            const nome = document.getElementById('nome-f')?.value;
+            const peso = document.getElementById('peso-f')?.value;
+            const altura = document.getElementById('altura-f')?.value;
+            
+            if(!nome || !peso || !altura) return alert("Preencha todos os campos!");
+
+            estado.nomeUsuario = nome;
+            estado.peso = parseFloat(peso);
+            estado.altura = parseFloat(altura);
+            estado.imc = (estado.peso / ((estado.altura/100)**2)).toFixed(1);
+            estado.logado = true;
+            estado.tela = 'home';
+            salvar();
+            render();
+        }
+
+        function beberAgua() { estado.aguaAtual += 250; salvar(); render(); }
+
+        function rodarAnuncio(texto, callback) {
+            const overlay = document.getElementById('ads-overlay');
+            const bar = document.getElementById('bar-progress');
+            document.getElementById('ad-text').innerText = texto;
+            overlay.style.display = 'flex';
+            let p = 0;
+            const interval = setInterval(() => {
+                p += 5; bar.style.width = p + '%';
+                if(p >= 100) { clearInterval(interval); overlay.style.display = 'none'; callback(); }
+            }, 50);
+        }
+
+        function prepararFoto(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => { estado.fotoSelecionada = e.target.result; render(); };
+                reader.readAsDataURL(file);
             }
-            db.macros.c = Math.round((db.macros.kcal - (db.macros.p * 4) - (db.macros.g * 9)) / 4);
         }
 
-        function gerarPlanoIA() {
-            const loader = document.getElementById('ia-screen');
-            loader.style.display = 'flex';
-            setTimeout(() => {
-                loader.style.display = 'none';
-                navegar('home');
-                alert("Plano IA Atualizado com sucesso!");
-            }, 2000);
+        function confirmarAnalise() {
+            rodarAnuncio("IA analisando nutrientes...", () => {
+                const cal = Math.floor(Math.random() * 300 + 200);
+                estado.calorias += cal;
+                estado.historico.unshift({tipo: estado.tempRefeicao, cal: cal});
+                estado.ultimoResultado = { tipo: estado.tempRefeicao, cal: cal };
+                estado.fotoSelecionada = null;
+                navegar('resultado_analise');
+            });
         }
-
-        function resetar() { localStorage.clear(); location.reload(); }
 
         function render() {
             const root = document.getElementById('app');
             
-            if (!db.logado) {
+            if (!estado.logado) {
                 root.innerHTML = `
-                <div class="container">
-                    <div class="logo-text">NutriShot Elements</div>
-                    <div class="card">
-                        <input type="text" id="in-nome" class="input-field" placeholder="Seu Nome">
-                        <input type="number" id="in-peso" class="input-field" placeholder="Peso (kg)">
-                        <input type="number" id="in-altura" class="input-field" placeholder="Altura (cm)">
-                        <select id="in-obj" class="input-field">
-                            <option value="perda">Perda de Peso</option>
-                            <option value="ganho">Ganho de Massa</option>
-                        </select>
-                        <button class="btn-main" onclick="entrar()">CRIAR MINHA CONTA</button>
-                    </div>
-                </div>`;
+                    <div style="padding: 50px 20px; text-align: center;">
+                        <h1 class="texto-logo">NutriShot Elements</h1>
+                        <input type="text" id="nome-f" class="input-nutri" placeholder="Seu Nome">
+                        <input type="number" id="peso-f" class="input-nutri" placeholder="Peso (kg)">
+                        <input type="number" id="altura-f" class="input-nutri" placeholder="Altura (cm)">
+                        <button class="btn-azul" onclick="validarEEntrar()">COMEÇAR AGORA</button>
+                    </div>`;
                 return;
             }
 
-            document.getElementById('user-side-name').innerText = db.user.nome;
-
-            if (db.tela === 'home') {
+            if (estado.tela === 'home') {
+                const metaKcal = 2500;
+                const perc = (estado.calorias / metaKcal) * 100;
+                
                 root.innerHTML = `
-                <div style="padding:20px; display:flex; justify-content:space-between; align-items:center;">
-                    <div onclick="toggleMenu()" style="font-size:24px; cursor:pointer">☰</div>
-                    <div class="logo-text" style="margin:0">NutriShot</div>
-                    <div style="width:24px"></div>
-                </div>
-                <div class="container">
-                    <div class="card" style="background:linear-gradient(135deg, #2c3e50, #000); color:white; border:none">
-                        <small style="opacity:0.7">Meta Diária</small>
-                        <div style="font-size:32px; font-weight:bold">${db.macros.kcal} kcal</div>
-                        <div style="display:flex; gap:15px; margin-top:10px; font-size:12px">
-                            <span>P: ${db.macros.p}g</span> <span>C: ${db.macros.c}g</span> <span>G: ${db.macros.g}g</span>
+                    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleMenu()"></div>
+                    <div id="sidebar" class="sidebar">
+                        <div class="sidebar-header">
+                            <b>NutriShot Pro</b><br><small>${estado.nomeUsuario}</small>
                         </div>
+                        <div class="menu-item" onclick="navegar('home'); toggleMenu()">🏠 Dashboard</div>
+                        <div class="menu-item" onclick="navegar('catalogo'); toggleMenu()">🛒 Loja</div>
+                        <div class="menu-item" onclick="localStorage.clear(); location.reload()" style="color:red">🚪 Sair</div>
                     </div>
 
-                    <div class="grid-stats">
-                        <div class="stat-box">
-                            <small>Água</small>
-                            <b class="stat-val">${db.agua}ml</b>
-                            <div class="bar-container"><div class="bar-fill" style="width:${(db.agua/3000)*100}%; background:var(--blue)"></div></div>
-                            <button onclick="db.agua+=250; salvar()" style="border:none; background:none; color:var(--blue); margin-top:10px; font-weight:bold">+ 250ml</button>
-                        </div>
-                        <div class="stat-box">
-                            <small>IMC</small>
-                            <b class="stat-val">${(db.user.peso / ((db.user.altura/100)**2)).toFixed(1)}</b>
-                            <div style="font-size:10px; color:var(--gray); margin-top:10px">Status: Normal</div>
-                        </div>
+                    <div style="padding:20px; display:flex; justify-content:space-between; align-items:center;">
+                        <div onclick="toggleMenu()" style="font-size:24px; cursor:pointer">☰</div>
+                        <div class="texto-logo" style="margin:0">NutriShot</div>
+                        <div onclick="navegar('catalogo')" style="cursor:pointer">🛒</div>
                     </div>
 
-                    <button class="btn-main" onclick="gerarPlanoIA()" style="margin-top:20px">✨ GERAR REFEIÇÕES IA</button>
-                </div>`;
+                    <div class="card card-fogo">
+                        <div><small>Sequência</small><br><b>${estado.sequencia} Dias 🔥</b></div>
+                        <div style="text-align:right"><small>IMC</small><br><b>${estado.imc}</b></div>
+                    </div>
+
+                    <div class="card">
+                        <b>Hidratação 💧</b><br>
+                        <small>${estado.aguaAtual}ml registrados</small>
+                        <div class="progress-container"><div class="progress-bar water" style="width:${(estado.aguaAtual/3000)*100}%"></div></div>
+                        <button onclick="beberAgua()" style="width:100%; margin-top:10px; padding:10px; border-radius:10px; border:none; background:#3498db; color:white; font-weight:bold">+ 250ml</button>
+                    </div>
+
+                    <div class="card">
+                        <b>Calorias: ${estado.calorias} / ${metaKcal}</b>
+                        <div class="progress-container"><div class="progress-bar" style="width:${perc}%"></div></div>
+                    </div>
+
+                    <div class="card">
+                        <b>Refeições de Hoje</b>
+                        ${estado.historico.map(h => `<div class="refeicao-item"><span>${h.tipo}</span><b>${h.cal} kcal</b></div>`).join('')}
+                    </div>
+
+                    <button class="fab" onclick="navegar('add_refeicao')">+</button>
+                `;
             }
-        }
 
-        function entrar() {
-            const n = document.getElementById('in-nome').value;
-            const p = document.getElementById('in-peso').value;
-            const a = document.getElementById('in-altura').value;
-            if(!n || !p || !a) return alert("Preencha tudo!");
-            
-            db.user = { nome: n, peso: parseFloat(p), altura: parseFloat(a), objetivo: document.getElementById('in-obj').value };
-            db.logado = true;
-            db.tela = 'home';
-            calcularNutricao();
-            salvar();
+            if (estado.tela === 'catalogo') {
+                const lista = estado.objetivo === 'ganho' ? SUPLEMENTOS.ganho : SUPLEMENTOS.perda;
+                root.innerHTML = `
+                    <div style="padding:20px">
+                        <div onclick="navegar('home')" style="cursor:pointer; color:var(--blue-action)">← Voltar</div>
+                        <h2>Suplementos Recomendados</h2>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+                            ${lista.map(s => `<div class="card" style="margin:0; text-align:center">
+                                <img src="${s.foto}" style="width:100px">
+                                <p style="font-size:12px"><b>${s.nome}</b></p>
+                                <button style="background:var(--primary); color:white; border:none; padding:5px; width:100%; border-radius:5px">Ver Preço</button>
+                            </div>`).join('')}
+                        </div>
+                    </div>`;
+            }
+
+            if (estado.tela === 'add_refeicao') {
+                root.innerHTML = `
+                    <div style="padding:20px">
+                        <div onclick="navegar('home')" style="cursor:pointer; color:var(--blue-action)">← Voltar</div>
+                        <h2 style="text-align:center">Nova Refeição</h2>
+                        <div class="card" style="text-align:center">
+                            ${!estado.fotoSelecionada ? `
+                                <button class="btn-azul" onclick="document.getElementById('f').click()">📸 Tirar Foto ou Galeria</button>
+                                <input type="file" id="f" style="display:none" onchange="prepararFoto(event)">
+                            ` : `
+                                <img src="${estado.fotoSelecionada}" style="width:100%; border-radius:10px">
+                                <button class="btn-azul" onclick="confirmarAnalise()">🚀 ANALISAR COM IA</button>
+                                <button onclick="estado.fotoSelecionada=null; render()" style="background:none; border:none; color:red">Cancelar</button>
+                            `}
+                        </div>
+                    </div>`;
+            }
+
+            if (estado.tela === 'resultado_analise') {
+                root.innerHTML = `
+                    <div style="padding:40px; text-align:center">
+                        <div style="font-size:60px">✅</div>
+                        <h2>Análise Pronta!</h2>
+                        <p>Seu <b>${estado.ultimoResultado.tipo}</b> foi contabilizado com <b>${estado.ultimoResultado.cal} calorias</b>.</p>
+                        <button class="btn-azul" onclick="navegar('home')">VOLTAR AO PAINEL</button>
+                    </div>`;
+            }
         }
 
         render();
