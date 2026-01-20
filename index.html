@@ -14,9 +14,9 @@
             --bg: #f9fafb; 
             --water: #3498db;
         }
-        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; overflow-x: hidden; }
+        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 100px; overflow-x: hidden; }
         
-        /* Estilos do Menu Lateral (Sidebar) */
+        /* Sidebar */
         .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 10000; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 2px 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
         .sidebar.active { left: 0; }
         .sidebar-header { padding: 40px 20px 20px 20px; background: linear-gradient(135deg, var(--blue-action), var(--primary)); color: white; }
@@ -26,7 +26,7 @@
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 9999; backdrop-filter: blur(2px); }
         .sidebar-overlay.active { display: block; }
 
-        /* Elementos da Interface */
+        /* Interface */
         .img-logo-principal { width: 170px; margin-bottom: 5px; } 
         .texto-logo { font-size: 24px; font-weight: 800; background: linear-gradient(to right, #2490eb, #2ab573, #f39c12); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0 0 20px 0; letter-spacing: -0.5px; }
         .input-nutri { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; }
@@ -59,8 +59,8 @@
         .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; }
         #img-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; border: 1px solid #ddd; }
         
-        /* Container do Banner AdMob */
-        .ad-banner-container { margin: 20px; text-align: center; background: #eee; border-radius: 15px; overflow: hidden; min-height: 50px; }
+        /* Container do Banner (Movível) */
+        .ad-banner-container { margin: 30px 20px; text-align: center; min-height: 60px; }
 
         .refeicao-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
         .refeicao-item:last-child { border-bottom: none; }
@@ -237,7 +237,6 @@
                             <div class="menu-item" onclick="menuNav('home')">🏠 Dashboard</div>
                             <div class="menu-item" onclick="menuNav('catalogo')">🛒 Loja de Suplementos</div>
                             <div class="menu-item" onclick="editarMedidas(); toggleMenu()">⚖️ Atualizar Medidas</div>
-                            <div class="menu-item" onclick="rodarAnuncio('Gerando Plano...', () => alert('Seu plano semanal foi enviado ao e-mail!')); toggleMenu()">📅 Plano Alimentar</div>
                             <div class="menu-item" onclick="rodarAnuncio('Saindo...', () => {estado.logado=false; render()})" style="color:#e74c3c; border-top:1px solid #eee; margin-top:20px;">🚪 Sair da Conta</div>
                         </div>
                     </div>
@@ -264,16 +263,6 @@
                         <small>${estado.aguaAtual}ml / ${metaAgua}ml</small>
                         <div class="progress-container"><div class="progress-bar water" style="width: ${percAgua}%"></div></div>
                         <button class="btn-water" onclick="beberAgua()">+ BEBER 250ML</button>
-                    </div>
-
-                    <div class="ad-banner-container">
-                        <ins class="adsbygoogle"
-                             style="display:block"
-                             data-ad-client="ca-pub-6941311170472131"
-                             data-ad-slot="2257554053"
-                             data-ad-format="auto"
-                             data-full-width-responsive="true"></ins>
-                        <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
                     </div>
 
                     <div class="card">
@@ -311,6 +300,16 @@
                         <b style="display:block; margin-bottom:10px;">Refeições de Hoje</b>
                         ${estado.historico.length === 0 ? `<div style="text-align:center; color:#999; padding:10px;"><small>Nenhuma refeição registrada hoje.</small></div>` : 
                         estado.historico.map(h => `<div class="refeicao-item"><span><b>${h.tipo}</b></span><span style="color:var(--primary); font-weight:bold;">${h.cal} kcal</span></div>`).join('')}
+                    </div>
+
+                    <div class="ad-banner-container">
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-6941311170472131"
+                             data-ad-slot="2257554053"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
+                        <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
                     </div>
 
                     <button class="fab" onclick="navegar('add_refeicao')">+</button>
