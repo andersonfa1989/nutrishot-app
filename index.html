@@ -1,352 +1,167 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NutriShot</title>
+<title>Minha Loja Fitness</title>
+
+<script src="cordova.js"></script>
 
 <style>
-:root {
-  --primary:#2ab573;
-}
 body {
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:#f6f7fb;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #fff;
 }
-.card {
-  background:#fff;
-  padding:20px;
-  border-radius:15px;
-  margin-bottom:15px;
+
+header {
+  padding: 15px;
+  background: #020617;
+  text-align: center;
+  font-weight: bold;
 }
-button {
-  cursor:pointer;
+
+section {
+  padding: 15px;
 }
+
+.progress-bar {
+  background: #1e293b;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+
+.progress-bar span {
+  display: block;
+  height: 16px;
+  background: #22c55e;
+  width: 0%;
+  transition: width .3s;
+}
+
 footer {
-  position:fixed;
-  bottom:0;
-  width:100%;
-  height:60px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #020617;
+  text-align: center;
+  padding: 5px;
 }
 </style>
 </head>
 
 <body>
-<div id="app"></div>
 
-<footer id="banner-ad"></footer>
+<header>Dashboard Fitness</header>
+
+<section>
+<h3>📊 Progresso Semanal</h3>
+
+<div>Domingo<div class="progress-bar"><span id="d0"></span></div></div>
+<div>Segunda<div class="progress-bar"><span id="d1"></span></div></div>
+<div>Terça<div class="progress-bar"><span id="d2"></span></div></div>
+<div>Quarta<div class="progress-bar"><span id="d3"></span></div></div>
+<div>Quinta<div class="progress-bar"><span id="d4"></span></div></div>
+<div>Sexta<div class="progress-bar"><span id="d5"></span></div></div>
+<div>Sábado<div class="progress-bar"><span id="d6"></span></div></div>
+
+<button onclick="verLoja()">🛒 Ver Suplementos</button>
+<button onclick="mostrarIntersticial()">📢 Ver Anúncio</button>
+<button onclick="mostrarRecompensado()">🎁 Ganhar Recompensa</button>
+</section>
+
+<footer>
+  <div id="admob-banner"></div>
+</footer>
 
 <script>
-/* =========================
-   ESTADO GLOBAL
-========================= */
-let estado = JSON.parse(localStorage.getItem("estadoNutri")) || {
-    tela: "home",
-    calorias: 0,
-    prot: 0,
-    carb: 0,
-    gord: 0,
-    historico: [],
-    semana: [0,0,0,0,0,0,0],
-    ultimoDia: new Date().toDateString(),
-    tempRefeicao: "",
-    ultimoResultado: null
+let estado = JSON.parse(localStorage.getItem("estado")) || {
+  dataAtual: new Date().toDateString(),
+  kcalHoje: 0,
+  progressoSemanal: {0:0,1:0,2:0,3:0,4:0,5:0,6:0}
 };
 
-/* =========================
-   SALVAR
-========================= */
-function salvar() {
-    localStorage.setItem("estadoNutri", JSON.stringify(estado));
+const META_KCAL = 2000;
+
+document.addEventListener("deviceready", iniciarApp, false);
+function iniciarApp() {
+  verificarMudancaDeDia();
+  atualizarProgresso();
+  iniciarAdmob();
 }
 
-/* =========================
-   RESET DIÁRIO + SEMANAL
-========================= */
-function verificarNovoDia() {
-    const hoje = new Date().toDateString();
-
-    if (estado.ultimoDia !== hoje) {
-        const diaSemana = new Date().getDay();
-        estado.semana[diaSemana] = estado.calorias;
-
-        estado.calorias = 0;
-        estado.prot = 0;
-        estado.carb = 0;
-        estado.gord = 0;
-        estado.historico = [];
-        estado.ultimoDia = hoje;
-
-        salvar();
-    }
-}
-
-/* =========================
-   NAVEGAÇÃO
-========================= */
-function navegar(tela) {
-    estado.tela = tela;
+function verificarMudancaDeDia() {
+  const hoje = new Date().toDateString();
+  if (estado.dataAtual !== hoje) {
+    const diaSemana = new Date(estado.dataAtual).getDay();
+    estado.progressoSemanal[diaSemana] = estado.kcalHoje;
+    estado.kcalHoje = 0;
+    estado.dataAtual = hoje;
     salvar();
-    render();
+  }
 }
 
-/* =========================
-   PROGRESSO SEMANAL (kcal)
-========================= */
-function progressoSemanal() {
-    const total = estado.semana.reduce((a,b)=>a+b,0);
-    return Math.min((total / 14000) * 100, 100);
+function atualizarProgresso() {
+  for (let i = 0; i < 7; i++) {
+    const percentual = Math.min(
+      (estado.progressoSemanal[i] / META_KCAL) * 100,
+      100
+    );
+    document.getElementById("d" + i).style.width = percentual + "%";
+  }
 }
 
-/* =========================
-   RENDER PRINCIPAL
-========================= */
-function render() {
-    verificarNovoDia();
-    const app = document.getElementById("app");
-
-    /* ===== HOME ===== */
-    if (estado.tela === "home") {
-        app.innerHTML = `
-        <div style="padding:20px; padding-bottom:80px">
-            <h2>🔥 ${estado.calorias} kcal hoje</h2>
-
-            <div class="card">
-                <b>Progresso semanal</b>
-                <div style="height:15px; background:#eee; border-radius:10px; margin-top:10px">
-                    <div style="height:15px; width:${progressoSemanal()}%;
-                         background:linear-gradient(to right,#2ab573,#4facfe);
-                         border-radius:10px"></div>
-                </div>
-            </div>
-
-            <button onclick="mostrarIntersticial(); navegar('add_refeicao')"
-                style="padding:15px; width:100%; background:var(--primary);
-                color:#fff; border:none; border-radius:25px; font-weight:bold">
-                ➕ Adicionar Refeição
-            </button>
-
-            <button onclick="mostrarRecompensado()"
-                style="margin-top:15px; padding:15px; width:100%;
-                background:#667eea; color:#fff; border:none; border-radius:25px">
-                🎁 Dica Premium
-            </button>
-        </div>`;
-        return;
-    }
+function salvar() {
+  localStorage.setItem("estado", JSON.stringify(estado));
 }
-</script>
-<script>
-/* =========================
-   ADMOB CONFIG
-========================= */
-document.addEventListener("deviceready", () => {
 
-    if (!window.admob) {
-        console.warn("AdMob não disponível");
-        return;
-    }
+/* ADMOB */
+let admob = null;
 
-    admob.start();
+function iniciarAdmob() {
+  admob = window.admob;
 
-    admob.banner.show({
-        adId: "ca-app-pub-6941311170472131/2257554053",
-        position: "bottom"
-    });
+  admob.start();
 
-    admob.interstitial.load({
-        adId: "ca-app-pub-6941311170472131/2273031775"
-    });
+  admob.banner.show({
+    adUnitId: "ca-app-pub-6941311170472131/2257554053",
+    position: "bottom"
+  });
 
-    admob.rewarded.load({
-        adId: "ca-app-pub-6941311170472131/4221550021"
-    });
+  admob.interstitial.load({
+    adUnitId: "ca-app-pub-6941311170472131/2273031775"
+  });
 
-});
+  admob.rewarded.load({
+    adUnitId: "ca-app-pub-6941311170472131/4221550021"
+  });
+}
 
-/* =========================
-   ADS FUNÇÕES
-========================= */
 function mostrarIntersticial() {
-    if (window.admob) {
-        admob.interstitial.show();
-    }
+  admob.interstitial.show();
 }
 
 function mostrarRecompensado() {
-    if (window.admob) {
-        admob.rewarded.show();
-    }
+  admob.rewarded.show();
 }
+function verLoja() {
+  alert(
+`🛒 CATÁLOGO
 
-/* =========================
-   TELAS
-========================= */
-function render() {
-    verificarNovoDia();
-    const app = document.getElementById("app");
-
-    /* ===== HOME ===== */
-    if (estado.tela === "home") {
-        app.innerHTML = `
-        <div style="padding:20px; padding-bottom:80px">
-            <h2>🔥 ${estado.calorias} kcal hoje</h2>
-
-            <div class="card">
-                <b>Progresso semanal</b>
-                <div style="height:15px; background:#eee; border-radius:10px; margin-top:10px">
-                    <div style="height:15px; width:${progressoSemanal()}%;
-                         background:linear-gradient(to right,#2ab573,#4facfe);
-                         border-radius:10px"></div>
-                </div>
-            </div>
-
-            <button onclick="mostrarIntersticial(); navegar('add_refeicao')"
-                style="padding:15px; width:100%; background:#2ab573;
-                color:#fff; border:none; border-radius:25px; font-weight:bold">
-                ➕ Adicionar Refeição
-            </button>
-
-            <button onclick="mostrarRecompensado(); alert('Dica premium liberada!')"
-                style="margin-top:15px; padding:15px; width:100%;
-                background:#667eea; color:#fff; border:none; border-radius:25px">
-                🎁 Dica Premium
-            </button>
-        </div>`;
-        return;
-    }
-
-    /* ===== ADICIONAR REFEIÇÃO ===== */
-    if (estado.tela === "add_refeicao") {
-        app.innerHTML = `
-        <div style="padding:20px">
-            <h3>Adicionar refeição</h3>
-
-            <input id="kcal" type="number" placeholder="Calorias"
-                style="width:100%; padding:15px; margin-bottom:10px">
-
-            <button onclick="salvarRefeicao()"
-                style="padding:15px; width:100%; background:#2ab573;
-                color:#fff; border:none; border-radius:25px">
-                Salvar
-            </button>
-
-            <button onclick="navegar('home')"
-                style="margin-top:10px; padding:10px; width:100%">
-                Voltar
-            </button>
-        </div>`;
-        return;
-    }
+• Creatina 100g
+• Whey Creme
+• Whey Chocolate
+• Whey Morango
+• Hipercalórico Chocolate
+• Hipercalórico Cookies
+• Termogênico
+• L-Creatina 1000mg
+• L-Creatina 2000mg
+• Psyllium`
+  );
 }
-
-/* =========================
-   SALVAR REFEIÇÃO
-========================= */
-function salvarRefeicao() {
-    const kcal = Number(document.getElementById("kcal").value);
-
-    if (!kcal || kcal <= 0) {
-        alert("Informe as calorias");
-        return;
-    }
-
-    estado.calorias += kcal;
-    estado.historico.push({
-        kcal,
-        data: new Date().toLocaleString()
-    });
-
-    salvar();
-    navegar("home");
-}
-
-/* =========================
-   START
-========================= */
-render();
-</script>
-<script>
-/* =========================
-   DICA DIÁRIA
-========================= */
-const dicas = [
-    "Beba pelo menos 2L de água por dia 💧",
-    "Inclua proteínas em todas as refeições 🍗",
-    "Evite bebidas açucaradas 🥤",
-    "Prefira alimentos naturais 🥦",
-    "Dormir bem ajuda no emagrecimento 😴"
-];
-
-function mostrarDicaDiaria() {
-    const dia = new Date().getDate();
-    alert("💡 Dica do dia:\n\n" + dicas[dia % dicas.length]);
-}
-
-/* =========================
-   ANÁLISE DE IMAGEM (SIMULADA)
-========================= */
-function analisarImagem() {
-    mostrarIntersticial();
-
-    setTimeout(() => {
-        const kcalEstimadas = Math.floor(Math.random() * 400) + 200;
-
-        estado.calorias += kcalEstimadas;
-        estado.historico.push({
-            kcal: kcalEstimadas,
-            origem: "Imagem",
-            data: new Date().toLocaleString()
-        });
-
-        salvar();
-        alert(`📸 Análise concluída!\nEstimativa: ${kcalEstimadas} kcal`);
-        render();
-    }, 1000);
-}
-
-/* =========================
-   MENU PRINCIPAL
-========================= */
-function menuInferior() {
-    return `
-    <div style="
-        position:fixed;
-        bottom:60px;
-        left:0;
-        width:100%;
-        display:flex;
-        justify-content:space-around;
-        background:#fff;
-        padding:10px 0;
-        border-top:1px solid #ddd">
-
-        <button onclick="navegar('home')">🏠</button>
-        <button onclick="mostrarDicaDiaria()">💡</button>
-        <button onclick="analisarImagem()">📸</button>
-        <button onclick="navegar('add_refeicao')">➕</button>
-    </div>
-    `;
-}
-
-/* =========================
-   SOBRESCREVE RENDER (FINAL)
-========================= */
-const renderOriginal = render;
-
-render = function() {
-    renderOriginal();
-    document.body.insertAdjacentHTML("beforeend", menuInferior());
-};
-
-/* =========================
-   PROTEÇÃO DE ERRO GLOBAL
-========================= */
-window.onerror = function(msg, url, line) {
-    console.error("Erro:", msg, "linha:", line);
-    alert("⚠️ Ocorreu um erro inesperado, reinicie o app.");
-};
 </script>
 
 </body>
