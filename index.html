@@ -5,57 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>NutriShot Elements</title>
     <style>
-        :root { 
-            --primary: #2ab573; 
-            --blue-action: #2490eb; 
-            --bg: #f9fafb; 
-            --water: #3498db;
-        }
-        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; overflow-x: hidden; }
+        :root { --primary: #2ab573; --blue-action: #2490eb; --bg: #f9fafb; --water: #3498db; }
+        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; }
         
         /* Sidebar */
         .sidebar { position: fixed; top: 0; left: -280px; width: 250px; height: 100%; background: #fff; z-index: 10000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.1); padding: 20px; }
         .sidebar.active { left: 0; }
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: none; }
         .sidebar-item { padding: 15px; border-bottom: 1px solid #eee; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; }
-        .menu-icon { font-size: 24px; cursor: pointer; padding: 5px 15px; }
-
-        .texto-logo {
-            font-size: 24px; font-weight: 800;
-            background: linear-gradient(to right, #2490eb, #2ab573, #f39c12);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
-        }
-
-        .input-nutri { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; }
+        
+        .texto-logo { font-size: 24px; font-weight: 800; background: linear-gradient(to right, #2490eb, #2ab573, #f39c12); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; text-align: center; }
+        .input-nutri { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; display: block; margin-left: auto; margin-right: auto; }
         .input-metade { width: 40%; display: inline-block; }
         
         .btn-azul { width: calc(100% - 40px); background: var(--blue-action); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer; }
-
-        .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-        .card-fogo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; display: flex; justify-content: space-between; align-items: center; }
+        .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; }
+        .card-fogo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; display: flex; justify-content: space-between; align-items: center; }
         
         .grid-7 { display: flex; justify-content: space-between; align-items: flex-end; height: 40px; margin-top: 10px; }
         .col-dia { display: flex; flex-direction: column; align-items: center; flex: 1; }
         .barra-v { width: 25px; height: 4px; background: #eee; border-radius: 2px; }
-        .barra-v.active { background: #6a11cb; }
+        .barra-v.active { background: #6a11cb; height: 6px; }
 
         .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin-top: 8px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--primary); transition: width 0.5s; }
-        .progress-bar.water { background: var(--water); }
 
-        .selector-objetivo { display: flex; gap: 10px; margin-bottom: 15px; }
-        .opt-obj { flex: 1; padding: 10px; border-radius: 12px; border: 2px solid #eee; text-align: center; font-weight: bold; cursor: pointer; font-size: 12px; }
-        .opt-obj.active { border-color: var(--primary); background: #f0fff7; color: var(--primary); }
-
-        .btn-principal { width: 100%; background: linear-gradient(to right, #667eea, #764ba2); color: white; border: none; padding: 18px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
-        .btn-outline { width: 100%; background: transparent; color: #666; border: 1px solid #ddd; padding: 15px; border-radius: 15px; cursor: pointer; font-weight: bold; }
-        
-        .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; z-index: 99; }
+        .btn-principal { width: 100%; background: linear-gradient(to right, #667eea, #764ba2); color: white; border: none; padding: 18px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .btn-outline { width: 100%; background: transparent; color: #666; border: 1px solid #ddd; padding: 15px; border-radius: 15px; cursor: pointer; font-weight: bold; margin-top: 10px; }
         
         .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
-        .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; overflow: hidden; }
-        #bar-progress { width: 0%; height: 100%; background: #2ab573; transition: width 0.1s linear; }
+        #bar-progress { width: 0%; height: 8px; background: #2ab573; border-radius: 10px; transition: width 0.1s linear; }
+        .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; }
     </style>
 </head>
 <body>
@@ -64,9 +44,8 @@
     <div id="sidebar" class="sidebar">
         <h3 class="texto-logo">NutriShot</h3>
         <div class="sidebar-item" onclick="navegar('home'); toggleMenu()">🏠 Dashboard</div>
-        <div class="sidebar-item" onclick="navegar('progresso_semanal'); toggleMenu()">📊 Histórico Semanal</div>
         <div class="sidebar-item" onclick="navegar('catalogo'); toggleMenu()">🛒 Suplementos</div>
-        <div class="sidebar-item" style="color: #e74c3c; margin-top: 20px;" onclick="estado.logado=false; toggleMenu(); render()">🚪 Sair</div>
+        <div class="sidebar-item" style="color: #e74c3c; margin-top: 20px;" onclick="sair()">🚪 Sair</div>
     </div>
 
     <div id="ads-overlay" class="ads-overlay">
@@ -77,19 +56,31 @@
     <div id="app"></div>
 
     <script>
-        let estado = JSON.parse(localStorage.getItem('nutrishot_v7')) || {
-            logado: false, tela: 'cadastro', nomeUsuario: '', objetivo: 'perda',
-            peso: 70, altura: 170, imc: 24.2, classification: 'Normal',
-            calorias: 0, prot: 0, carb: 0, gord: 0, aguaAtual: 0, historico: [],
-            historicoSemanal: [], sequencia: 1, ultimoAcesso: new Date().toLocaleDateString(),
-            tempRefeicao: 'Almoço', fotoSelecionada: null
+        let estado = JSON.parse(localStorage.getItem('nutrishot_v8')) || {
+            logado: false, tela: 'login', nomeUsuario: '', objetivo: 'perda',
+            peso: 70, altura: 170, imc: 24.2, calorias: 0, prot: 0, carb: 0, gord: 0,
+            historico: [], ultimoResultado: null, fotoSelecionada: null
         };
 
-        function salvar() { localStorage.setItem('nutrishot_v7', JSON.stringify(estado)); }
-        function navegar(tela) { estado.tela = tela; salvar(); render(); window.scrollTo(0,0); }
+        function salvar() { localStorage.setItem('nutrishot_v8', JSON.stringify(estado)); }
+        function navegar(tela) { estado.tela = tela; salvar(); render(); }
         function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('overlay').style.display = document.getElementById('sidebar').classList.contains('active') ? 'block' : 'none';
+            const s = document.getElementById('sidebar');
+            const o = document.getElementById('overlay');
+            s.classList.toggle('active');
+            o.style.display = s.classList.contains('active') ? 'block' : 'none';
+        }
+        function sair() { estado.logado = false; estado.tela = 'login'; salvar(); render(); }
+
+        function validarAcesso(isCadastro) {
+            if(isCadastro) {
+                estado.nomeUsuario = document.getElementById('nome-f').value;
+                const p = parseFloat(document.getElementById('peso-f').value) || 70;
+                const a = parseFloat(document.getElementById('altura-f').value) || 170;
+                estado.imc = (p / ((a/100)*(a/100))).toFixed(1);
+            }
+            estado.logado = true;
+            navegar('home');
         }
 
         function rodarAnuncio(texto, callback) {
@@ -104,71 +95,68 @@
             }, 40);
         }
 
-        function prepararFoto(event) {
-            const file = event.target.files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = e => { estado.fotoSelecionada = e.target.result; render(); };
-                reader.readAsDataURL(file);
-            }
-        }
-
         function confirmarAnalise() {
-            rodarAnuncio("Nossa IA está identificando os alimentos...", () => {
+            rodarAnuncio("IA NutriShot em ação: Analisando densidade calórica...", () => {
                 const cal = Math.floor(Math.random() * 200 + 350);
                 estado.calorias += cal;
                 estado.prot += Math.floor(cal * 0.05);
                 estado.carb += Math.floor(cal * 0.12);
                 estado.gord += Math.floor(cal * 0.03);
+                estado.ultimoResultado = { tipo: estado.tempRefeicao, cal: cal };
                 estado.historico.unshift({tipo: estado.tempRefeicao, cal: cal});
                 estado.fotoSelecionada = null;
-                navegar('home');
+                navegar('resultado_analise');
             });
         }
 
         function render() {
             const root = document.getElementById('app');
+            
             if (!estado.logado) {
+                const isLogin = estado.tela === 'login';
                 root.innerHTML = `
                     <div style="padding: 50px 20px; text-align: center;">
                         <h1 class="texto-logo">NutriShot Elements</h1>
-                        <input type="text" id="nome-f" class="input-nutri" placeholder="Nome">
-                        <div style="display:flex; justify-content:center; gap:10px;">
-                            <input type="number" id="peso-f" class="input-nutri input-metade" placeholder="Peso (kg)">
-                            <input type="number" id="altura-f" class="input-nutri input-metade" placeholder="Altura (cm)">
-                        </div>
-                        <input type="email" id="email-f" class="input-nutri" placeholder="E-mail">
-                        <button class="btn-azul" onclick="validarEEntrar()">CRIAR MINHA CONTA</button>
-                    </div>`; return;
+                        ${!isLogin ? `
+                            <input type="text" id="nome-f" class="input-nutri" placeholder="Nome Completo">
+                            <div style="display:flex; justify-content:center; gap:10px; width:85%; margin:0 auto;">
+                                <input type="number" id="peso-f" class="input-nutri input-metade" placeholder="Peso (kg)">
+                                <input type="number" id="altura-f" class="input-nutri input-metade" placeholder="Altura (cm)">
+                            </div>
+                        ` : ''}
+                        <input type="email" class="input-nutri" placeholder="E-mail">
+                        <input type="password" class="input-nutri" placeholder="Senha">
+                        <button class="btn-azul" onclick="validarAcesso(${!isLogin})">${isLogin ? 'ENTRAR' : 'CRIAR CONTA'}</button>
+                        <p onclick="navegar('${isLogin ? 'cadastro' : 'login'}')" style="margin-top:20px; font-size:14px; cursor:pointer;">
+                            ${isLogin ? 'Novo por aqui? <b style="color:var(--blue-action)">Cadastre-se</b>' : 'Já tem conta? <b style="color:var(--blue-action)">Faça Login</b>'}
+                        </p>
+                    </div>`;
+                return;
             }
 
             if (estado.tela === 'home') {
-                const perc = Math.min((estado.calorias / 2577) * 100, 100);
-                let diaSemana = new Date().getDay();
-                let indiceAtivo = diaSemana === 0 ? 6 : diaSemana - 1;
-
                 root.innerHTML = `
                     <div style="padding: 20px; display: flex; align-items:center; gap:10px;">
-                        <span class="menu-icon" onclick="toggleMenu()">☰</span>
-                        <div><small style="color:#888;">Olá,</small> <b>${estado.nomeUsuario}</b></div>
+                        <span style="font-size:24px; cursor:pointer;" onclick="toggleMenu()">☰</span>
+                        <div><small style="color:#888;">Bem-vindo,</small> <b>${estado.nomeUsuario || 'Usuário'}</b></div>
                     </div>
 
                     <div class="card card-fogo">
-                        <div><small>Sequência Diária</small><div style="font-size: 22px; font-weight: bold;">${estado.sequencia} Dias 🔥</div></div>
+                        <div><small>Sequência</small><div style="font-size: 22px; font-weight: bold;">1 Dia 🔥</div></div>
                         <div style="text-align:right"><small>Meu IMC</small><div style="font-size: 22px; font-weight: bold;">${estado.imc}</div></div>
                     </div>
 
-                    <div class="card" onclick="navegar('progresso_semanal')" style="cursor:pointer">
-                        <div style="display:flex; justify-content:space-between;"><b>Progresso Semanal</b> <small style="color:var(--blue-action)">Ver tudo →</small></div>
+                    <div class="card">
+                        <b>Progresso Semanal</b>
                         <div class="grid-7">
-                            ${['S','T','Q','Q','S','S','D'].map((d, i) => `<div class="col-dia"><div class="barra-v ${i === indiceAtivo ? 'active' : ''}"></div><span style="font-size:10px; margin-top:5px;">${d}</span></div>`).join('')}
+                            ${['S','T','Q','Q','S','S','D'].map((d, i) => `<div class="col-dia"><div class="barra-v ${i===0?'active':''}"></div><span style="font-size:10px;">${d}</span></div>`).join('')}
                         </div>
                     </div>
 
                     <div class="card">
                         <small>Consumo de Calorias</small>
                         <div style="font-size: 24px; font-weight: bold;">${estado.calorias} <span style="font-size:14px; color:#ccc">/ 2577 kcal</span></div>
-                        <div class="progress-container"><div class="progress-bar" style="width: ${perc}%"></div></div>
+                        <div class="progress-container"><div class="progress-bar" style="width: ${(estado.calorias/2577)*100}%"></div></div>
                     </div>
 
                     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin:0 20px;">
@@ -178,12 +166,10 @@
                     </div>
 
                     <div class="card">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><b>Refeições de Hoje</b> <button onclick="navegar('add_refeicao')" style="border:none; background:var(--primary); color:#fff; border-radius:8px; padding:4px 8px;">+ Add</button></div>
-                        ${estado.historico.length === 0 ? '<p style="text-align:center; color:#999; font-size:12px;">Nenhum registro.</p>' : estado.historico.map(h => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;"><span>${h.tipo}</span><b>${h.cal} kcal</b></div>`).join('')}
+                        <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><b>Refeições</b> <button onclick="navegar('add_refeicao')" style="border:none; background:var(--primary); color:#fff; border-radius:8px; padding:4px 8px;">+ Add</button></div>
+                        ${estado.historico.map(h => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;"><span>${h.tipo}</span><b>${h.cal} kcal</b></div>`).join('')}
                     </div>
-
-                    <button class="fab" onclick="navegar('add_refeicao')">+</button>
-                `; return;
+                `;
             }
 
             if (estado.tela === 'add_refeicao') {
@@ -191,66 +177,46 @@
                     <div style="padding: 20px;">
                         <div onclick="navegar('home')" style="cursor:pointer; font-weight:bold; color:var(--blue-action);">← Voltar</div>
                         <h3 style="text-align:center;">Nova Refeição</h3>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom:20px;">
-                            ${['Café', 'Almoço', 'Jantar', 'Lanche'].map(t => `<div onclick="estado.tempRefeicao='${t}'; render()" style="padding:15px; border-radius:15px; text-align:center; border: 2px solid ${estado.tempRefeicao===t?'var(--primary)':'#eee'}; background: ${estado.tempRefeicao===t?'#f0fff7':'#fff'}"><b>${t}</b></div>`).join('')}
-                        </div>
                         <div class="card" style="text-align:center;">
                             ${!estado.fotoSelecionada ? `
                                 <button class="btn-principal" onclick="document.getElementById('cam').click()">📸 Tirar Foto</button>
-                                <button class="btn-outline" onclick="document.getElementById('gal').click()">📁 Galeria de Fotos</button>
-                                <input type="file" id="cam" capture="environment" accept="image/*" style="display:none" onchange="prepararFoto(event)">
-                                <input type="file" id="gal" accept="image/*" style="display:none" onchange="prepararFoto(event)">
+                                <button class="btn-outline" onclick="document.getElementById('gal').click()">📁 Galeria</button>
+                                <input type="file" id="cam" capture="environment" accept="image/*" style="display:none" onchange="const f=event.target.files[0]; if(f){const r=new FileReader(); r.onload=e=>{estado.fotoSelecionada=e.target.result; render()}; r.readAsDataURL(f);}">
+                                <input type="file" id="gal" accept="image/*" style="display:none" onchange="const f=event.target.files[0]; if(f){const r=new FileReader(); r.onload=e=>{estado.fotoSelecionada=e.target.result; render()}; r.readAsDataURL(f);}">
                             ` : `
                                 <img src="${estado.fotoSelecionada}" style="width:100%; border-radius:12px; margin-bottom:15px;">
                                 <button class="btn-principal" onclick="confirmarAnalise()">🚀 ANALISAR COM IA</button>
-                                <button class="btn-outline" onclick="estado.fotoSelecionada=null; render()">Escolher Outra</button>
+                                <button class="btn-outline" onclick="estado.fotoSelecionada=null; render()">Remover</button>
                             `}
                         </div>
-                    </div>`; return;
+                    </div>`;
+            }
+
+            if (estado.tela === 'resultado_analise') {
+                root.innerHTML = `
+                    <div style="padding: 40px 20px; text-align: center;">
+                        <h2 style="color: var(--blue-action);">Análise Concluída!</h2>
+                        <div class="card">
+                            <p>Seu <b>${estado.ultimoResultado.tipo}</b> tem:</p>
+                            <h1 style="color: var(--primary);">${estado.ultimoResultado.cal} kcal</h1>
+                        </div>
+                        <div style="background: #f0fff7; padding: 15px; border-radius:10px; text-align: left; margin-bottom: 20px;">
+                            <b style="color: var(--primary);">💡 Dica da Nutri:</b>
+                            <p style="font-size: 14px;">Beba 200ml de água para melhorar a absorção dos nutrientes.</p>
+                        </div>
+                        <button class="btn-principal" onclick="navegar('home')">VOLTAR AO INÍCIO</button>
+                    </div>`;
             }
 
             if (estado.tela === 'catalogo') {
-                const SUPLEMENTOS = {
-                    ganho: [{ nome:"Creatina Growth 100g", foto:"creatina-100g.png", link:"https://amzn.to/4b47g9o" }, { nome:"Whey Chocolate", foto:"wey-choco.png", link:"https://amzn.to/3LjWMIB" }],
-                    perda: [{ nome:"Psyllium Cápsulas", foto:"Psyllium-caps.png", link:"https://amzn.to/4sBfMmq" }, { nome:"Termogênico Burn", foto:"termog.png", link:"https://amzn.to/4b5phUQ" }]
-                };
-                const lista = estado.objetivo === 'ganho' ? SUPLEMENTOS.ganho : SUPLEMENTOS.perda;
-                root.innerHTML = `
-                    <div style="padding: 20px;">
-                        <div onclick="navegar('home')" style="margin-bottom:15px; cursor:pointer; color:var(--blue-action); font-weight:bold;">← Voltar</div>
-                        <div class="selector-objetivo">
-                            <div class="opt-obj ${estado.objetivo === 'perda' ? 'active' : ''}" onclick="estado.objetivo='perda'; render()">Emagrecer</div>
-                            <div class="opt-obj ${estado.objetivo === 'ganho' ? 'active' : ''}" onclick="estado.objetivo='ganho'; render()">Ganhar Massa</div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                            ${lista.map(p => `
-                                <div style="background:#fff; border-radius:16px; padding:12px; text-align:center; border:1px solid #eee;">
-                                    <img src="${p.foto}" style="width:100%; height:80px; object-fit:contain;">
-                                    <b style="font-size:11px; display:block; margin:8px 0;">${p.nome}</b>
-                                    <a href="${p.link}" target="_blank" style="text-decoration:none"><button style="width:100%; background:var(--primary); color:#fff; border:none; padding:8px; border-radius:8px; font-size:10px; font-weight:bold;">Comprar</button></a>
-                                </div>`).join("")}
-                        </div>
-                    </div>`; return;
-            }
-
-            if (estado.tela === 'progresso_semanal') {
-                root.innerHTML = `
-                    <div style="padding: 20px;">
-                        <div onclick="navegar('home')" style="cursor:pointer; font-weight:bold; color:var(--blue-action); margin-bottom:20px;">← Voltar</div>
-                        <h2>Histórico Semanal</h2>
-                        ${estado.historicoSemanal.length === 0 ? '<p style="color:#999">Dados aparecerão após 24h.</p>' : ''}
-                    </div>`; return;
+                root.innerHTML = `<div style="padding: 20px;"><div onclick="navegar('home')" style="cursor:pointer; color:var(--blue-action);">← Voltar</div>
+                <div style="display:flex; gap:10px; margin: 20px 0;">
+                    <div class="btn-outline" style="margin:0; flex:1; border-color:${estado.objetivo==='perda'?'var(--primary)':'#ddd'}" onclick="estado.objetivo='perda'; render()">Emagrecer</div>
+                    <div class="btn-outline" style="margin:0; flex:1; border-color:${estado.objetivo==='ganho'?'var(--primary)':'#ddd'}" onclick="estado.objetivo='ganho'; render()">Massa</div>
+                </div>
+                <p>Catálogo de suplementos recomendado para seu objetivo.</p></div>`;
             }
         }
-
-        function validarEEntrar() {
-            estado.nomeUsuario = document.getElementById('nome-f').value || 'Usuário';
-            const p = parseFloat(document.getElementById('peso-f').value) || 70;
-            const a = parseFloat(document.getElementById('altura-f').value) || 170;
-            estado.imc = (p / ((a/100)*(a/100))).toFixed(1);
-            estado.logado = true; estado.tela = 'home'; salvar(); render();
-        }
-
         render();
     </script>
 </body>
