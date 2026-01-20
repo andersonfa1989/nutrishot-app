@@ -195,6 +195,47 @@
             });
         }
 
+        /* NOVA FUNÇÃO: GERAR PLANO E ENVIAR WHATSAPP */
+        function gerarPlanoWhatsApp() {
+            rodarAnuncio('Gerando Plano Inteligente...', () => {
+                const imc = parseFloat(estado.imc);
+                const obj = estado.objetivo;
+                
+                // Lógica de sugestão baseada no IMC
+                let baseDieta = "";
+                if(imc > 25) {
+                    baseDieta = "Foco em Deficit Calórico e Fibras para acelerar metabolismo.";
+                } else {
+                    baseDieta = "Foco em Densidade Nutricional e Proteína de alto valor biológico.";
+                }
+
+                const plano = `Olá! Aqui está meu Plano NutriShot Elements 🚀%0A%0A` +
+                `*PERFIL:* ${estado.nomeUsuario}%0A` +
+                `*OBJETIVO:* Secar e Ganhar Massa (1400 kcal)%0A` +
+                `*IMC:* ${estado.imc} (${estado.classification})%0A` +
+                `*ESTRATÉGIA:* ${baseDieta}%0A%0A` +
+                `*--- DIETA DIÁRIA SUGERIDA ---*%0A%0A` +
+                `🌅 *CAFÉ DA MANHÃ (300 kcal):*%0A` +
+                `- 2 ovos mexidos + 1 fatia de pão integral%0A` +
+                `- 1 fruta (mamão ou maçã)%0A%0A` +
+                `☀️ *ALMOÇO (450 kcal):*%0A` +
+                `- 120g de Frango Grelhado ou Peixe%0A` +
+                `- 3 colheres de arroz integral + Meia concha de feijão%0A` +
+                `- Salada verde à vontade%0A%0A` +
+                `🍎 *LANCHE DA TARDE (250 kcal):*%0A` +
+                `- 1 Iogurte natural + 15g de aveia%0A` +
+                `- 3 castanhas do Pará%0A%0A` +
+                `🌙 *JANTAR (400 kcal):*%0A` +
+                `- 100g de carne magra ou patinho%0A` +
+                `- 120g de batata doce ou mandioquinha%0A` +
+                `- Brócolis e legumes no vapor%0A%0A` +
+                `💧 *META DE ÁGUA:* ${Math.round(estado.peso * 35)}ml diários.%0A%0A` +
+                `_Gerado pela IA NutriShot Elements_`;
+
+                window.open(`https://wa.me/?text=${plano}`, '_blank');
+            });
+        }
+
         function render() {
             const root = document.getElementById('app');
             if (!estado.logado) {
@@ -237,7 +278,7 @@
                             <div class="menu-item" onclick="menuNav('home')">🏠 Dashboard</div>
                             <div class="menu-item" onclick="menuNav('catalogo')">🛒 Loja de Suplementos</div>
                             <div class="menu-item" onclick="editarMedidas(); toggleMenu()">⚖️ Atualizar Medidas</div>
-                            <div class="menu-item" onclick="rodarAnuncio('Gerando Plano...', () => alert('Seu plano semanal foi enviado ao e-mail!')); toggleMenu()">📅 Plano Alimentar</div>
+                            <div class="menu-item" onclick="gerarPlanoWhatsApp(); toggleMenu()">📅 Gerar Plano WhatsApp</div>
                             <div class="menu-item" onclick="rodarAnuncio('Saindo...', () => {estado.logado=false; render()})" style="color:#e74c3c; border-top:1px solid #eee; margin-top:20px;">🚪 Sair da Conta</div>
                         </div>
                     </div>
@@ -272,7 +313,7 @@
                              data-ad-client="ca-pub-6941311170472131"
                              data-ad-slot="2257554053"
                              data-ad-format="auto"
-                             data-full-width-responsive="true"></ins>
+                             data-ad-full-width-responsive="true"></ins>
                         <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
                     </div>
 
