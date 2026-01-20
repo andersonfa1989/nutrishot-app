@@ -5,276 +5,213 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>NutriShot Elements - Pro</title>
     
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6941311170472131" crossorigin="anonymous"></script>
+
     <style>
         :root { 
             --primary: #2ab573; 
-            --primary-dark: #1f8a55;
-            --blue: #2490eb; 
+            --blue-action: #2490eb; 
             --bg: #f4f7f6; 
             --white: #ffffff;
             --text-dark: #2c3e50;
-            --gray: #95a5a6;
         }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text-dark); overflow-x: hidden; }
-
-        /* --- UI COMPONENTS --- */
-        .container { padding: 20px; max-width: 500px; margin: 0 auto; }
-        .card { background: var(--white); border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.03); }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #333; padding-bottom: 80px; }
         
-        .header-app { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--white); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .logo-text { font-weight: 800; font-size: 20px; background: linear-gradient(135deg, var(--blue), var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-        .btn-main { width: 100%; padding: 18px; border-radius: 16px; border: none; background: linear-gradient(135deg, var(--blue), var(--primary)); color: white; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; box-shadow: 0 8px 20px rgba(36, 144, 235, 0.2); }
-        .btn-main:active { transform: scale(0.98); }
-
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; color: var(--gray); }
-        .input-field { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #ddd; font-size: 16px; outline: none; transition: 0.3s; }
-        .input-field:focus { border-color: var(--primary); }
-
-        /* --- DASHBOARD ELEMENTS --- */
-        .macro-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-        .macro-item { text-align: center; padding: 15px; border-radius: 16px; background: #f8faf9; }
-        .macro-item b { display: block; font-size: 18px; color: var(--primary); }
-        .macro-item small { color: var(--gray); font-size: 11px; text-transform: uppercase; }
-
-        /* --- IA PLAN DISPLAY --- */
-        .meal-card { padding: 15px; border-radius: 16px; background: #fff; border-left: 5px solid var(--primary); margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .meal-card h4 { margin: 0 0 5px 0; color: var(--primary); font-size: 16px; }
-        .meal-card p { margin: 0; font-size: 14px; line-height: 1.5; color: #555; }
-
-        /* --- LOADING OVERLAY --- */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; }
-        .loader { width: 50px; height: 50px; border: 5px solid #333; border-top: 5px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* --- SIDEBAR --- */
-        .sidebar { position: fixed; top: 0; left: -100%; width: 80%; max-width: 300px; height: 100%; background: white; z-index: 3000; transition: 0.4s; padding: 40px 20px; box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
+        /* Sidebar */
+        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 10000; transition: 0.3s; box-shadow: 2px 0 15px rgba(0,0,0,0.1); }
         .sidebar.active { left: 0; }
-        .menu-link { padding: 15px 0; border-bottom: 1px solid #eee; display: block; text-decoration: none; color: var(--text-dark); font-weight: 600; cursor: pointer; }
+        .sidebar-header { padding: 40px 20px; background: linear-gradient(135deg, var(--blue-action), var(--primary)); color: white; }
+        .menu-item { padding: 15px 25px; display: flex; align-items: center; gap: 15px; cursor: pointer; border-bottom: 1px solid #f5f5f5; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 9999; backdrop-filter: blur(2px); }
+        .sidebar-overlay.active { display: block; }
+
+        /* Cards e UI */
+        .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .texto-logo { font-size: 24px; font-weight: 800; background: linear-gradient(to right, #2490eb, #2ab573); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; }
+        .btn-principal { width: calc(100% - 40px); background: linear-gradient(to right, var(--blue-action), var(--primary)); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        
+        /* Dashboard Stats */
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 20px; }
+        .stat-box { background: white; padding: 15px; border-radius: 20px; text-align: center; border: 1px solid #eee; }
+        .stat-value { display: block; font-size: 20px; font-weight: bold; color: var(--blue-action); }
+        
+        /* Plano Alimentar IA */
+        .meal-box { background: #f8faf9; padding: 15px; border-radius: 15px; margin-bottom: 10px; border-left: 4px solid var(--primary); }
+        .meal-box b { color: var(--primary); display: block; margin-bottom: 5px; }
+
+        /* Banner Ads */
+        .ad-footer { position: fixed; bottom: 0; width: 100%; height: 60px; background: #fff; border-top: 1px solid #eee; display: flex; justify-content: center; align-items: center; z-index: 999; }
+
+        /* Progress Bars */
+        .bar-bg { width: 100%; height: 8px; background: #eee; border-radius: 10px; margin-top: 8px; overflow: hidden; }
+        .bar-fill { height: 100%; background: var(--primary); transition: 0.3s; }
+
+        .overlay-ia { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 99999; flex-direction: column; align-items: center; justify-content: center; color: white; }
     </style>
 </head>
 <body>
 
-    <div id="loading" class="overlay">
-        <div class="loader"></div>
-        <h3 id="loading-text">NutriShot IA processando...</h3>
-        <p style="padding: 0 40px; font-size: 14px; color: #888;">Estamos calculando seus macros e selecionando os melhores alimentos.</p>
-    </div>
-
-    <div id="menu" class="sidebar">
-        <h2 class="logo-text">NutriShot Elements</h2>
-        <div class="menu-link" onclick="navegar('home')">🏠 Dashboard</div>
-        <div class="menu-link" onclick="gerarPlanoIA()">🥗 Gerar Novo Plano IA</div>
-        <div class="menu-link" onclick="navegar('perfil')">👤 Meu Perfil</div>
-        <div class="menu-link" onclick="navegar('cadastro')" style="color: #e74c3c; margin-top: 20px;">🚪 Sair</div>
+    <div id="ia-loader" class="overlay-ia">
+        <div style="width: 50px; height: 50px; border: 5px solid #333; border-top: 5px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <h3 id="ia-texto" style="margin-top: 20px;">NutriShot IA Processando...</h3>
+        <script>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</script>
     </div>
 
     <div id="app"></div>
 
+    <div class="ad-footer">
+        <ins class="adsbygoogle" style="display:inline-block;width:320px;height:50px" data-ad-client="ca-pub-6941311170472131" data-ad-slot="2257554053"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
     <script>
-        // --- BANCO DE DADOS E LÓGICA ---
-        let db = JSON.parse(localStorage.getItem('nutrishot_pro_db')) || {
-            user: { nome: "", peso: 0, altura: 0, idade: 0, objetivo: "perda", sexo: "m" },
-            stats: { tmb: 0, macros: { p: 0, c: 0, g: 0 } },
-            plano: null,
+        // Banco de Dados Local
+        let db = JSON.parse(localStorage.getItem('nutrishot_v6')) || {
+            user: { nome: "Isaac", peso: 75, altura: 175, objetivo: "perda", sexo: "m", idade: 25 },
+            stats: { calorias: 0, agua: 0, macros: { p: 0, c: 0, g: 0 } },
+            planoAtivo: null,
             logado: false,
             tela: 'cadastro'
         };
 
-        function salvar() { 
-            localStorage.setItem('nutrishot_pro_db', JSON.stringify(db)); 
-            render(); 
-        }
+        function salvar() { localStorage.setItem('nutrishot_v6', JSON.stringify(db)); }
+        function navegar(t) { db.tela = t; render(); window.scrollTo(0,0); }
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebar-overlay').classList.toggle('active'); }
 
-        function navegar(tela) { db.tela = tela; render(); window.scrollTo(0,0); }
-
-        function toggleMenu() { document.getElementById('menu').classList.toggle('active'); }
-
-        // --- CÁLCULOS DE NUTRIÇÃO ---
-        function calcularTMB() {
-            let tmb = 0;
+        // Lógica de Nutrição Real
+        function calcularMetas() {
             const { peso, altura, idade, sexo, objetivo } = db.user;
+            let tmb = (sexo === 'm') ? (10 * peso) + (6.25 * altura) - (5 * idade) + 5 : (10 * peso) + (6.25 * altura) - (5 * idade) - 161;
+            tmb = Math.round(tmb * 1.5); // Fator atividade moderada
             
-            // Equação de Mifflin-St Jeor
-            if (sexo === 'm') {
-                tmb = (10 * peso) + (6.25 * altura) - (5 * idade) + 5;
-            } else {
-                tmb = (10 * peso) + (6.25 * altura) - (5 * idade) - 161;
-            }
-
-            // Fator de atividade moderada (1.55)
-            tmb = Math.round(tmb * 1.55);
-
-            // Ajuste de Objetivo
             if (objetivo === 'perda') {
-                db.stats.tmb = tmb - 500; // Déficit
-                db.stats.macros = { p: peso * 2, g: peso * 0.8, c: (db.stats.tmb - (peso*2*4) - (peso*0.8*9)) / 4 };
+                db.metaKcal = tmb - 500;
+                db.stats.macros = { p: peso * 2, g: peso * 0.8, c: Math.round((db.metaKcal - (peso*2*4) - (peso*0.8*9)) / 4) };
             } else {
-                db.stats.tmb = tmb + 400; // Superávit
-                db.stats.macros = { p: peso * 2.2, g: peso * 1, c: (db.stats.tmb - (peso*2.2*4) - (peso*1*9)) / 4 };
+                db.metaKcal = tmb + 400;
+                db.stats.macros = { p: peso * 2.2, g: peso * 1, c: Math.round((db.metaKcal - (peso*2.2*4) - (peso*1*9)) / 4) };
             }
-            db.stats.macros.c = Math.round(db.stats.macros.c);
+            db.metaAgua = peso * 35;
         }
 
-        const ALIMENTOS = {
+        const PLANOS_BASE = {
             perda: [
-                { r: "Café da Manhã", d: "2 Ovos cozidos, 1 fatia de pão integral e 100g de mamão." },
-                { r: "Almoço", d: "150g Frango grelhado, 3 colheres de arroz integral, brócolis à vontade." },
-                { r: "Lanche", d: "1 Iogurte natural desnatado com 1 colher de farelo de aveia." },
-                { r: "Jantar", d: "Omelete de 3 claras e 1 gema, salada verde com azeite de oliva." }
+                { t: "Café da Manhã", d: "2 Ovos mexidos + 1 fatia de pão integral + 100g de Melão." },
+                { t: "Almoço", d: "150g de Frango + 3 colheres de Arroz + Salada verde à vontade." },
+                { t: "Lanche", d: "1 Iogurte natural + 1 colher de aveia." },
+                { t: "Jantar", d: "Omelete de espinafre (3 claras) + tomate e pouco sal." }
             ],
             ganho: [
-                { r: "Café da Manhã", d: "3 Ovos mexidos, 2 fatias de pão com pasta de amendoim e 1 banana." },
-                { r: "Almoço", d: "200g Carne moída, 6 colheres de arroz, feijão e batata doce." },
-                { r: "Lanche", d: "Shake: 300ml leite, 1 dose de Whey, 2 colheres de aveia e 1 fruta." },
-                { r: "Jantar", d: "150g de Frango, 200g de Macarrão integral com molho de tomate." }
+                { t: "Café da Manhã", d: "3 Ovos + 2 fatias de pão com pasta de amendoim + 1 Banana." },
+                { t: "Almoço", d: "200g de Carne moída + 6 colheres de Arroz + Feijão." },
+                { t: "Lanche", d: "Shake: 300ml leite + 1 dose de Whey + Aveia." },
+                { t: "Jantar", d: "150g Frango + 200g Macarrão integral com molho tomate." }
             ]
         };
 
-        function gerarPlanoIA() {
-            if(db.tela === 'cadastro') return;
-            const loader = document.getElementById('loading');
+        function acaoIA(texto, proxTela) {
+            const loader = document.getElementById('ia-loader');
+            document.getElementById('ia-texto').innerText = texto;
             loader.style.display = 'flex';
-            
             setTimeout(() => {
-                calcularTMB();
-                db.plano = db.user.objetivo === 'perda' ? ALIMENTOS.perda : ALIMENTOS.ganho;
                 loader.style.display = 'none';
-                db.tela = 'plano';
-                salvar();
-                if(document.getElementById('menu').classList.contains('active')) toggleMenu();
-            }, 2500);
+                if(proxTela === 'plano') db.planoAtivo = db.user.objetivo === 'perda' ? PLANOS_BASE.perda : PLANOS_BASE.ganho;
+                navegar(proxTela);
+            }, 2000);
         }
 
-        function enviarWhats() {
-            let msg = `*NUTRI-SHOT ELEMENTS - MEU PLANO*\n\n`;
-            msg += `Meta Diária: *${db.stats.tmb} kcal*\n`;
-            msg += `Prot: ${db.stats.macros.p}g | Carb: ${db.stats.macros.c}g | Gord: ${db.stats.macros.g}g\n\n`;
-            db.plano.forEach(m => msg += `*${m.r}:* ${m.d}\n`);
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
-        }
-
-        // --- RENDERIZAÇÃO ---
         function render() {
-            const root = document.getElementById('app');
+            const app = document.getElementById('app');
+            calcularMetas();
 
-            if (db.tela === 'cadastro') {
-                root.innerHTML = `
-                <div class="container">
-                    <div style="text-align:center; margin-bottom:30px;">
-                        <h1 class="logo-text" style="font-size:32px;">NutriShot Elements</h1>
-                        <p style="color:var(--gray)">Sua jornada inteligente começa aqui.</p>
-                    </div>
+            if (!db.logado) {
+                app.innerHTML = `
+                <div style="padding: 60px 20px; text-align: center;">
+                    <div class="texto-logo">NutriShot Elements</div>
                     <div class="card">
-                        <div class="input-group">
-                            <label>Nome Completo</label>
-                            <input type="text" id="reg-nome" class="input-field" placeholder="Ex: Isaac Silva">
-                        </div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                            <div class="input-group"><label>Peso (kg)</label><input type="number" id="reg-peso" class="input-field" placeholder="70"></div>
-                            <div class="input-group"><label>Altura (cm)</label><input type="number" id="reg-altura" class="input-field" placeholder="175"></div>
-                        </div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                            <div class="input-group"><label>Idade</label><input type="number" id="reg-idade" class="input-field" placeholder="25"></div>
-                            <div class="input-group">
-                                <label>Sexo</label>
-                                <select id="reg-sexo" class="input-field">
-                                    <option value="m">Masculino</option>
-                                    <option value="f">Feminino</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="input-group">
-                            <label>Seu Objetivo</label>
-                            <select id="reg-obj" class="input-field">
-                                <option value="perda">Perder Peso (Definição)</option>
-                                <option value="ganho">Ganhar Massa (Bulking)</option>
-                            </select>
-                        </div>
-                        <button class="btn-main" onclick="finalizarCadastro()">CRIAR MEU PLANO AGORA</button>
+                        <input type="text" id="cad-nome" class="btn-principal" style="background:white; color:#333; border:1px solid #ddd;" placeholder="Nome">
+                        <input type="number" id="cad-peso" class="btn-principal" style="background:white; color:#333; border:1px solid #ddd;" placeholder="Peso (kg)">
+                        <select id="cad-obj" class="btn-principal" style="background:white; color:#333; border:1px solid #ddd;">
+                            <option value="perda">Emagrecimento</option>
+                            <option value="ganho">Ganho de Massa</option>
+                        </select>
+                        <button class="btn-principal" onclick="db.logado=true; acaoIA('Calculando Perfil...', 'home')">GERAR MEU ACESSO</button>
                     </div>
                 </div>`;
                 return;
             }
 
-            // Header padrão para as demais telas
-            const header = `
-            <div class="header-app">
-                <div onclick="toggleMenu()" style="font-size:24px; cursor:pointer;">☰</div>
-                <div class="logo-text">NutriShot</div>
-                <div style="width:24px;"></div>
-            </div>`;
-
             if (db.tela === 'home') {
-                root.innerHTML = header + `
-                <div class="container">
-                    <div class="card" style="background: linear-gradient(135deg, #2c3e50, #000); color:white; border:none;">
-                        <small style="opacity:0.8">Meta Diária</small>
-                        <h2 style="margin:5px 0; font-size:32px;">${db.stats.tmb} <span style="font-size:16px; opacity:0.6">kcal</span></h2>
-                        <div class="macro-grid">
-                            <div class="macro-item" style="background: rgba(255,255,255,0.1);">
-                                <small style="color:#eee">Prot</small><b style="color:var(--primary)">${db.stats.macros.p}g</b>
-                            </div>
-                            <div class="macro-item" style="background: rgba(255,255,255,0.1);">
-                                <small style="color:#eee">Carb</small><b style="color:var(--blue)">${db.stats.macros.c}g</b>
-                            </div>
-                            <div class="macro-item" style="background: rgba(255,255,255,0.1);">
-                                <small style="color:#eee">Gord</small><b style="color:#f39c12">${db.stats.macros.g}g</b>
-                            </div>
-                        </div>
+                app.innerHTML = `
+                <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleMenu()"></div>
+                <div id="sidebar" class="sidebar">
+                    <div class="sidebar-header"><b>NutriShot Pro</b><br><small>${db.user.nome}</small></div>
+                    <div class="menu-item" onclick="toggleMenu(); navegar('home')">🏠 Dashboard</div>
+                    <div class="menu-item" onclick="toggleMenu(); acaoIA('IA Gerando Sugestões...', 'plano')">📅 Plano Alimentar</div>
+                    <div class="menu-item" onclick="db.logado=false; render()">🚪 Sair</div>
+                </div>
+                
+                <div style="padding:20px; display:flex; justify-content:space-between; align-items:center;">
+                    <div onclick="toggleMenu()" style="font-size:24px;">☰</div>
+                    <div class="texto-logo" style="margin:0">NutriShot</div>
+                </div>
+
+                <div class="card" style="background: linear-gradient(135deg, #2c3e50, #000); color:white; border:none;">
+                    <small>Meta Diária de Calorias</small>
+                    <div style="font-size:32px; font-weight:bold;">${db.metaKcal} <span style="font-size:14px; opacity:0.6">kcal</span></div>
+                    <div style="display:flex; gap:15px; margin-top:10px;">
+                        <div><small>P: ${db.stats.macros.p}g</small></div>
+                        <div><small>C: ${db.stats.macros.c}g</small></div>
+                        <div><small>G: ${db.stats.macros.g}g</small></div>
                     </div>
-                    
-                    <h3 style="margin-bottom:15px;">Ações Rápidas</h3>
-                    <button class="btn-main" onclick="gerarPlanoIA()" style="margin-bottom:15px;">🔄 RECALCULAR PLANO ALIMENTAR</button>
-                    <button class="btn-main" onclick="navegar('plano')" style="background: var(--white); color: var(--blue); border: 2px solid var(--blue); box-shadow:none;">📖 VER MEU PLANO ATUAL</button>
-                </div>`;
+                </div>
+
+                <div class="stat-grid">
+                    <div class="stat-box">
+                        <small>Água</small>
+                        <span class="stat-value">${db.stats.agua}ml</span>
+                        <div class="bar-bg"><div class="bar-fill" style="width:${(db.stats.agua/db.metaAgua)*100}%; background:var(--blue-action)"></div></div>
+                        <button onclick="db.stats.agua+=250; render()" style="margin-top:10px; border:none; background:none; color:var(--blue-action); font-weight:bold;">+ 250ml</button>
+                    </div>
+                    <div class="stat-box">
+                        <small>Refeições</small>
+                        <span class="stat-value">${db.stats.calorias}</span>
+                        <div class="bar-bg"><div class="bar-fill" style="width:${(db.stats.calorias/db.metaKcal)*100}%"></div></div>
+                        <button onclick="navegar('add')" style="margin-top:10px; border:none; background:none; color:var(--primary); font-weight:bold;">+ Adicionar</button>
+                    </div>
+                </div>
+
+                <button class="btn-principal" onclick="acaoIA('IA Gerando Plano...', 'plano')">✨ GERAR PLANO AUTOMÁTICO</button>
+                `;
             }
 
             if (db.tela === 'plano') {
-                root.innerHTML = header + `
-                <div class="container">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                        <h2 style="margin:0">Plano Gerado ✨</h2>
-                        <span style="font-size:12px; background:#e8f5e9; color:var(--primary); padding:5px 10px; border-radius:20px; font-weight:bold;">IA ATIVA</span>
-                    </div>
-                    
-                    ${db.plano.map(m => `
-                        <div class="meal-card">
-                            <h4>${m.r}</h4>
-                            <p>${m.d}</p>
+                app.innerHTML = `
+                <div style="padding:20px;">
+                    <div onclick="navegar('home')" style="color:var(--blue-action); font-weight:bold;">← Voltar</div>
+                    <h2 style="margin-top:20px;">Seu Plano IA 🍏</h2>
+                    ${db.planoAtivo.map(m => `
+                        <div class="meal-box">
+                            <b>${m.t}</b>
+                            <span>${m.d}</span>
                         </div>
                     `).join('')}
+                    <button class="btn-principal" onclick="window.open('https://wa.me/?text=Meu Plano NutriShot...')">📲 ENVIAR PARA WHATSAPP</button>
+                </div>`;
+            }
 
-                    <button class="btn-main" onclick="enviarWhats()" style="margin-top:20px; background:#25d366;">📲 ENVIAR PARA WHATSAPP</button>
-                    <button onclick="navegar('home')" style="width:100%; background:none; border:none; color:var(--gray); margin-top:15px; font-weight:bold;">Voltar ao Início</button>
+            if (db.tela === 'add') {
+                app.innerHTML = `
+                <div style="padding:20px; text-align:center;">
+                    <h3>Registrar Refeição</h3>
+                    <div class="card">
+                        <p>Tire uma foto ou use a galeria para a IA analisar as calorias.</p>
+                        <button class="btn-principal" onclick="acaoIA('IA Analisando Prato...', 'home')">📸 ESCANEAR PRATO</button>
+                        <button onclick="navegar('home')" style="background:none; border:none; color:gray;">Cancelar</button>
+                    </div>
                 </div>`;
             }
         }
-
-        function finalizarCadastro() {
-            const n = document.getElementById('reg-nome').value;
-            const p = document.getElementById('reg-peso').value;
-            const a = document.getElementById('reg-altura').value;
-            const i = document.getElementById('reg-idade').value;
-            
-            if(!n || !p || !a || !i) return alert("Por favor, preencha todos os campos.");
-
-            db.user = {
-                nome: n,
-                peso: parseFloat(p),
-                altura: parseFloat(a),
-                idade: parseInt(i),
-                sexo: document.getElementById('reg-sexo').value,
-                objetivo: document.getElementById('reg-obj').value
-            };
-            db.logado = true;
-            calcularTMB();
-            gerarPlanoIA();
-        }
-
         render();
     </script>
 </body>
