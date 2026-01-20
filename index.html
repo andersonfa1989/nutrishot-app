@@ -11,8 +11,15 @@
             --bg: #f9fafb; 
             --water: #3498db;
         }
-        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; }
+        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; overflow-x: hidden; }
         
+        /* Menu Lateral */
+        .sidebar { position: fixed; top: 0; left: -280px; width: 250px; height: 100%; background: #fff; z-index: 10000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.1); padding: 20px; }
+        .sidebar.active { left: 0; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: none; }
+        .sidebar-item { padding: 15px; border-bottom: 1px solid #eee; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .menu-icon { font-size: 24px; cursor: pointer; padding: 5px 15px; }
+
         .img-logo-principal { width: 170px; margin-bottom: 5px; } 
         .texto-logo {
             font-size: 24px; 
@@ -74,10 +81,11 @@
         
         .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; }
         #img-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; border: 1px solid #ddd; }
-        .banner-inline { background: #eee; border: 1px dashed #ccc; padding: 15px; margin: 20px; border-radius: 15px; text-align: center; color: #999; font-size: 12px; }
 
         .refeicao-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
         .refeicao-item:last-child { border-bottom: none; }
+
+        .hist-item { background: #fff; margin-bottom: 12px; padding: 15px; border-radius: 15px; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
 
         .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
         .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; overflow: hidden; }
@@ -85,6 +93,15 @@
     </style>
 </head>
 <body>
+
+    <div id="overlay" class="sidebar-overlay" onclick="toggleMenu()"></div>
+    <div id="sidebar" class="sidebar">
+        <h3 class="texto-logo">NutriShot</h3>
+        <div class="sidebar-item" onclick="navegar('home'); toggleMenu()">🏠 Dashboard</div>
+        <div class="sidebar-item" onclick="navegar('progresso_semanal'); toggleMenu()">📊 Progresso Semanal</div>
+        <div class="sidebar-item" onclick="navegar('catalogo'); toggleMenu()">🛒 Suplementos</div>
+        <div class="sidebar-item" style="color: #e74c3c; margin-top: 20px;" onclick="estado.logado=false; toggleMenu(); render()">🚪 Sair da Conta</div>
+    </div>
 
     <div id="ads-overlay" class="ads-overlay">
         <div id="ad-text" style="font-size: 18px; font-weight: bold;">IA NutriShot em ação...</div>
@@ -114,16 +131,24 @@
             ]
         };
 
-        let estado = JSON.parse(localStorage.getItem('nutrishot_v5')) || {
-            logado: false, tela: 'cadastro', nomeUsuario: 'Isaac', objetivo: 'perda',
+        let estado = JSON.parse(localStorage.getItem('nutrishot_v6')) || {
+            logado: false, tela: 'cadastro', nomeUsuario: '', objetivo: 'perda',
             peso: 70, altura: 170, imc: 24.2, classification: 'Normal',
             calorias: 0, prot: 0, carb: 0, gord: 0, aguaAtual: 0, historico: [],
-            sequencia: 1, ultimoAcesso: new Date().toDateString(),
+            historicoSemanal: [],
+            sequencia: 1, ultimoAcesso: new Date().toLocaleDateString(),
             tempRefeicao: 'Almoço', fotoSelecionada: null, ultimoResultado: null
         };
 
-        function salvar() { localStorage.setItem('nutrishot_v5', JSON.stringify(estado)); }
+        function salvar() { localStorage.setItem('nutrishot_v6', JSON.stringify(estado)); }
         function navegar(tela) { estado.tela = tela; salvar(); render(); window.scrollTo(0,0); }
+        function toggleMenu() {
+            const s = document.getElementById('sidebar');
+            const o = document.getElementById('overlay');
+            const isOpen = s.classList.contains('active');
+            s.classList.toggle('active');
+            o.style.display = isOpen ? 'none' : 'block';
+        }
 
         function infoIMC(peso, altura) {
             const altM = altura / 100;
@@ -138,18 +163,33 @@
             return { valor: imc, texto: classe };
         }
 
-        // Lógica de Sequência Ativa
-        function verificarSequencia() {
-            const hoje = new Date().toDateString();
+        function verificarE_ResetarDia() {
+            const hoje = new Date().toLocaleDateString();
             if (estado.ultimoAcesso !== hoje) {
+                // Salva o dia que passou no histórico
+                if (estado.calorias > 0 || estado.aguaAtual > 0) {
+                    if(!estado.historicoSemanal) estado.historicoSemanal = [];
+                    estado.historicoSemanal.unshift({
+                        data: estado.ultimoAcesso,
+                        cal: estado.calorias,
+                        agua: estado.aguaAtual,
+                        prot: estado.prot
+                    });
+                    if(estado.historicoSemanal.length > 7) estado.historicoSemanal.pop();
+                }
+
+                // Lógica de Sequência
                 const ontem = new Date();
                 ontem.setDate(ontem.getDate() - 1);
-                
-                if (estado.ultimoAcesso === ontem.toDateString()) {
+                if (estado.ultimoAcesso === ontem.toLocaleDateString()) {
                     estado.sequencia++;
                 } else {
                     estado.sequencia = 1;
                 }
+
+                // RESET para o novo dia
+                estado.calorias = 0; estado.prot = 0; estado.carb = 0; estado.gord = 0;
+                estado.aguaAtual = 0; estado.historico = [];
                 estado.ultimoAcesso = hoje;
                 salvar();
             }
@@ -180,7 +220,7 @@
                 estado.classification = res.texto;
             }
             estado.logado = true; estado.tela = 'home'; 
-            verificarSequencia();
+            verificarE_ResetarDia();
             salvar(); render();
         }
 
@@ -256,15 +296,15 @@
                 const perc = Math.min((estado.calorias / 2577) * 100, 100);
                 const metaAgua = Math.round(estado.peso * 35);
                 const percAgua = Math.min((estado.aguaAtual / metaAgua) * 100, 100);
-
-                // Dia da semana dinâmico
                 let diaSemanaJS = new Date().getDay(); 
                 let indiceAtivo = diaSemanaJS === 0 ? 6 : diaSemanaJS - 1;
 
                 root.innerHTML = `
                     <div style="padding: 20px; display: flex; justify-content: space-between; align-items:center;">
-                        <div><small style="color:#888; display:block;">Bom dia,</small><b style="font-size:18px;">${estado.nomeUsuario}</b></div>
-                        <span onclick="estado.logado=false; render()" style="background:#eee; padding:5px 12px; border-radius:10px; font-size:12px; cursor:pointer;">Sair</span>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span class="menu-icon" onclick="toggleMenu()">☰</span>
+                            <div><small style="color:#888; display:block;">Bom dia,</small><b style="font-size:18px;">${estado.nomeUsuario}</b></div>
+                        </div>
                     </div>
 
                     <div class="card card-fogo">
@@ -283,15 +323,13 @@
                         <button class="btn-water" onclick="beberAgua()">+ BEBER 250ML</button>
                     </div>
 
-                    <div class="card">
-                        <b>Progresso Semanal</b>
+                    <div class="card" onclick="navegar('progresso_semanal')" style="cursor:pointer">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <b>Progresso Semanal</b>
+                            <small style="color:var(--blue-action)">Ver tudo →</small>
+                        </div>
                         <div class="grid-7">
-                            ${['S','T','Q','Q','S','S','D'].map((d, i) => `
-                                <div class="col-dia">
-                                    <div class="barra-v ${i === indiceAtivo ? 'active' : ''}"></div>
-                                    <span class="dia-txt">${d}</span>
-                                </div>
-                            `).join('')}
+                            ${['S','T','Q','Q','S','S','D'].map((d, i) => `<div class="col-dia"><div class="barra-v ${i === indiceAtivo ? 'active' : ''}"></div><span class="dia-txt">${d}</span></div>`).join('')}
                         </div>
                     </div>
 
@@ -299,8 +337,6 @@
                         <div class="opt-obj ${estado.objetivo === 'perda' ? 'active' : ''}" onclick="estado.objetivo='perda'; render()">Emagrecer</div>
                         <div class="opt-obj ${estado.objetivo === 'ganho' ? 'active' : ''}" onclick="estado.objetivo='ganho'; render()">Ganho Massa</div>
                     </div>
-
-                    <button class="btn-loja" onclick="navegar('catalogo')">🛒 VER SUPLEMENTOS</button>
 
                     <div class="card">
                         <small>Consumo de Calorias</small>
@@ -314,26 +350,34 @@
                         <div class="card" style="margin:0; padding:15px; text-align:center;"><small>Gord</small><br><b>${estado.gord}g</b></div>
                     </div>
 
-                    <div class="card" style="border: 1px solid var(--primary); background: #fafffb;">
-                        <b style="color:var(--primary)">Dica de Ouro ✨</b>
-                        <button onclick="rodarAnuncio('Buscando Dica...', ()=>navegar('dica'))" style="width:100%; background:var(--primary); color:white; border:none; padding:12px; border-radius:12px; margin-top:10px; font-weight:bold;">📺 Ver Dica Exclusiva</button>
-                    </div>
-
                     <div class="card">
                         <b style="display:block; margin-bottom:10px;">Refeições de Hoje</b>
-                        ${estado.historico.length === 0 ? 
-                            `<div style="text-align:center; color:#999; padding:10px;"><small>Nenhuma refeição registrada hoje.</small></div>` : 
-                            estado.historico.map(h => `
-                                <div class="refeicao-item">
-                                    <span><b>${h.tipo}</b></span>
-                                    <span style="color:var(--primary); font-weight:bold;">${h.cal} kcal</span>
+                        ${estado.historico.length === 0 ? `<div style="text-align:center; color:#999; padding:10px;"><small>Nenhuma refeição registrada hoje.</small></div>` : estado.historico.map(h => `<div class="refeicao-item"><span><b>${h.tipo}</b></span><span style="color:var(--primary); font-weight:bold;">${h.cal} kcal</span></div>`).join('')}
+                    </div>
+
+                    <button class="fab" onclick="navegar('add_refeicao')">+</button>
+                `; return;
+            }
+
+            if (estado.tela === 'progresso_semanal') {
+                root.innerHTML = `
+                    <div style="padding: 20px;">
+                        <div onclick="navegar('home')" style="cursor:pointer; font-weight:bold; color:var(--blue-action); margin-bottom:20px;">← Voltar</div>
+                        <h2 style="margin-bottom:20px;">Histórico por Data</h2>
+                        ${!estado.historicoSemanal || estado.historicoSemanal.length === 0 ? 
+                            '<p style="text-align:center; color:#999; margin-top:50px;">Nenhum histórico disponível.<br>Os dados aparecerão aqui após a virada do dia.</p>' : 
+                            estado.historicoSemanal.map(h => `
+                                <div class="hist-item">
+                                    <div style="font-size:13px; color:#888; margin-bottom:8px;">📅 <b>${h.data}</b></div>
+                                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
+                                        <div><small>Calorias</small><br><b>${h.cal}</b></div>
+                                        <div><small>Água</small><br><b>${h.agua}ml</b></div>
+                                        <div><small>Prot</small><br><b>${h.prot}g</b></div>
+                                    </div>
                                 </div>
                             `).join('')
                         }
                     </div>
-
-                    <div class="banner-inline"><small>ANÚNCIO</small><br><b>ESPAÇO PUBLICITÁRIO</b></div>
-                    <button class="fab" onclick="navegar('add_refeicao')">+</button>
                 `; return;
             }
 
@@ -390,20 +434,9 @@
                     </div>
                 `; return;
             }
-
-            if (estado.tela === 'dica') {
-                root.innerHTML = `
-                    <div class="dica-container">
-                        <div style="font-size:60px">💡</div>
-                        <h2 style="color:var(--primary); margin:0; letter-spacing:1px;">DICA EXCLUSIVA</h2>
-                        <div class="dica-texto-grande">"Mastigar devagar aumenta a saciedade e melhora a absorção dos nutrientes pelo seu corpo!"</div>
-                        <button class="btn-principal" style="width:100%;" onclick="navegar('home')">CONTINUAR JORNADA</button>
-                    </div>
-                `;
-            }
         }
 
-        verificarSequencia();
+        verificarE_ResetarDia();
         render();
     </script>
 </body>
