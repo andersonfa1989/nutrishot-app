@@ -410,6 +410,79 @@
             }
         }
         verificarSequencia(); render();
+/* ================================
+   🔄 RESET DIÁRIO AUTOMÁTICO
+   ================================ */
+function verificarResetDiario() {
+    const hoje = new Date().toDateString();
+
+    if (!estado.ultimoReset || estado.ultimoReset !== hoje) {
+        estado.calorias = 0;
+        estado.prot = 0;
+        estado.carb = 0;
+        estado.gord = 0;
+        estado.aguaAtual = 0;
+        estado.historico = [];
+        estado.ultimoReset = hoje;
+        salvar();
+    }
+}
+
+/* ================================
+   📊 PROGRESSO SEMANAL POR KCAL
+   ================================ */
+function calcularProgressoSemanal() {
+    const dias = [0,0,0,0,0,0,0];
+    const hoje = new Date();
+
+    estado.historico.forEach(item => {
+        if (!item.data) return;
+        const d = new Date(item.data);
+        const diff = Math.floor((hoje - d) / (1000 * 60 * 60 * 24));
+        if (diff >= 0 && diff < 7) {
+            const idx = d.getDay() === 0 ? 6 : d.getDay() - 1;
+            dias[idx] += item.cal;
+        }
+    });
+
+    const meta = 2577;
+    return dias.map(v => Math.min((v / meta) * 100, 100));
+}
+
+/* ================================
+   🧠 AJUSTE NO REGISTRO DAS REFEIÇÕES
+   ================================ */
+const confirmarAnaliseOriginal = confirmarAnalise;
+confirmarAnalise = function () {
+    rodarAnuncio("IA analisando nutrientes...", () => {
+        const cal = Math.floor(Math.random() * 200 + 350);
+
+        estado.calorias += cal;
+        estado.prot += Math.floor(cal * 0.05);
+        estado.carb += Math.floor(cal * 0.12);
+        estado.gord += Math.floor(cal * 0.03);
+
+        estado.historico.unshift({
+            tipo: estado.tempRefeicao,
+            cal: cal,
+            data: new Date().toDateString()
+        });
+
+        estado.ultimoResultado = {
+            tipo: estado.tempRefeicao,
+            cal: cal
+        };
+
+        estado.fotoSelecionada = null;
+        salvar();
+        navegar('resultado_analise');
+    });
+};
+
+/* ================================
+   🔁 GARANTIA DE EXECUÇÃO
+   ================================ */
+verificarResetDiario();
     </script>
 </body>
 </html>
