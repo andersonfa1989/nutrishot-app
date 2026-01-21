@@ -8,122 +8,94 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6941311170472131" crossorigin="anonymous"></script>
 
     <style>
-        :root { 
-            --primary: #2ab573; 
-            --blue-action: #2490eb; 
-            --bg: #f9fafb; 
-            --water: #3498db;
-        }
-        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; overflow-x: hidden; }
+        :root { --primary: #2ab573; --blue-action: #2490eb; --bg: #f9fafb; --water: #3498db; }
+        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 80px; overflow-x: hidden; }
         
-        /* Estilos do Menu Lateral (Sidebar) */
-        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 10000; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 2px 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+        /* Sidebar */
+        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 10000; transition: 0.3s; box-shadow: 2px 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
         .sidebar.active { left: 0; }
         .sidebar-header { padding: 40px 20px 20px 20px; background: linear-gradient(135deg, var(--blue-action), var(--primary)); color: white; }
         .sidebar-menu { padding: 20px 0; flex-grow: 1; }
-        .menu-item { padding: 15px 25px; display: flex; align-items: center; gap: 15px; cursor: pointer; font-weight: 500; transition: 0.2s; color: #444; }
-        .menu-item:hover { background: #f0f7f4; color: var(--primary); }
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 9999; backdrop-filter: blur(2px); }
+        .menu-item { padding: 15px 25px; display: flex; align-items: center; gap: 15px; cursor: pointer; font-weight: 500; color: #444; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 9999; }
         .sidebar-overlay.active { display: block; }
 
-        /* Elementos da Interface */
+        /* UI Elements */
         .img-logo-principal { width: 170px; margin-bottom: 5px; } 
-        .texto-logo { font-size: 24px; font-weight: 800; background: linear-gradient(to right, #2490eb, #2ab573, #f39c12); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0 0 20px 0; letter-spacing: -0.5px; }
-        .input-nutri { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; }
-        .input-metade { width: 40%; display: inline-block; }
-        .btn-azul { width: calc(100% - 40px); background: var(--blue-action); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(36, 144, 235, 0.3); }
-        .footer-link { margin-top: 20px; font-size: 14px; cursor: pointer; color: #000; font-weight: 500; }
-        .footer-link span { color: var(--blue-action); font-weight: 700; }
-        .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-        .card-fogo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; display: flex; justify-content: space-between; align-items: center; }
-        .imc-info { text-align: right; background: rgba(255,255,255,0.15); padding: 8px 12px; border-radius: 12px; min-width: 80px; }
-        .imc-label { font-size: 10px; opacity: 0.9; display: flex; align-items: center; justify-content: flex-end; gap: 4px; }
-        .imc-status { font-size: 10px; font-weight: bold; text-transform: uppercase; margin-top: 2px; display: block; }
-        .grid-7 { display: flex; justify-content: space-between; align-items: flex-end; height: 50px; margin-top: 15px; }
-        .col-dia { display: flex; flex-direction: column; align-items: center; flex: 1; }
-        .barra-v { width: 30px; height: 4px; background: #eee; border-radius: 2px; transition: width 0.3s ease; }
-        .barra-v.active { background: #6a11cb; width: 40px; }
-        .dia-txt { font-size: 10px; color: #aaa; margin-top: 5px; }
-        .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--primary); transition: width 0.5s ease; }
-        .progress-bar.water { background: var(--water); }
-        .btn-water { background: var(--water); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
-        .selector-objetivo { display: flex; gap: 10px; margin: 0 20px 15px 20px; }
-        .opt-obj { flex: 1; padding: 12px; border-radius: 12px; border: 2px solid #eee; background: #fff; text-align: center; font-weight: bold; cursor: pointer; font-size: 13px; }
-        .opt-obj.active { border-color: var(--primary); background: #f0fff7; color: var(--primary); }
-        .dica-container { min-height: 85vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; background: radial-gradient(circle at top right, #f0fff7, #ffffff); text-align: center; }
-        .dica-texto-grande { font-size: 30px; font-weight: 800; line-height: 1.2; color: #222; margin: 30px 0; }
-        .btn-principal { width: calc(100% - 40px); background: linear-gradient(to right, #667eea, #764ba2); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer; }
-        .btn-loja { background: #2ab573; color: white; border: none; padding: 15px; border-radius: 12px; width: calc(100% - 40px); margin: 0 20px; font-weight: bold; cursor: pointer; font-size: 14px; }
-        .btn-outline { background: transparent; color: #666; border: 1px solid #ddd; padding: 12px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 500; }
-        .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; }
-        #img-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; border: 1px solid #ddd; }
+        .texto-logo { font-size: 24px; font-weight: 800; background: linear-gradient(to right, #2490eb, #2ab573, #f39c12); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
+        .input-nutri { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; }
+        .btn-azul { width: calc(100% - 40px); background: var(--blue-action); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-weight: bold; }
+        .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; }
+        .card-fogo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; display: flex; justify-content: space-between; align-items: center; }
         
-        .ad-banner-container { margin: 20px; text-align: center; background: #eee; border-radius: 15px; overflow: hidden; min-height: 50px; }
-        .refeicao-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
-        .refeicao-item:last-child { border-bottom: none; }
+        /* Gráfico Corrigido */
+        .grid-7 { display: flex; justify-content: space-between; align-items: flex-end; height: 60px; margin-top: 15px; }
+        .col-dia { display: flex; flex-direction: column; align-items: center; flex: 1; }
+        .barra-v { width: 30px; height: 5px; background: #eee; border-radius: 4px; transition: 0.3s; }
+        .dia-txt { font-size: 10px; color: #aaa; margin-top: 5px; }
+
+        /* Banner AdMob Fixed Bottom */
+        .ad-footer-fixed { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #eee; text-align: center; z-index: 999; min-height: 50px; }
+        .ad-banner-inline { margin: 15px 20px; text-align: center; min-height: 100px; background: #fcfcfc; border-radius: 10px; }
+
+        .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--primary); transition: 0.5s; }
+        .fab { position: fixed; bottom: 80px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; z-index: 99; }
+        
         .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
         .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; overflow: hidden; }
-        #bar-progress { width: 0%; height: 100%; background: #2ab573; transition: width 0.1s linear; }
+        #bar-progress { width: 0%; height: 100%; background: #2ab573; }
     </style>
 </head>
 <body>
 
     <div id="ads-overlay" class="ads-overlay">
-        <div id="ad-text" style="font-size: 18px; font-weight: bold;">IA NutriShot em ação...</div>
+        <div id="ad-text">IA NutriShot em ação...</div>
         <div class="bar-container"><div id="bar-progress"></div></div>
     </div>
 
     <div id="app"></div>
 
-    <script>
-        const LOGO_URL = "icone-512.png";
-        
-        const SUPLEMENTOS = {
-            ganho: [
-                { nome:"Creatina Growth 100g", foto:"creatina-100g.png", link:"https://amzn.to/4b47g9o" },
-                { nome:"Whey Chocolate", foto:"wey-choco.png", link:"https://amzn.to/3LjWMIB" },
-                { nome:"Whey Morango", foto:"wey-moran.png", link:"https://amzn.to/4sPsdvg" },
-                { nome:"Whey Creme", foto:"wey-creme.png", link:"https://amzn.to/4qq9ODl" },
-                { nome:"Gainer Chocolate", foto:"Hipercalórico-choco.png", link:"https://amzn.to/4qpZKKC" },
-                { nome:"Gainer Cookies", foto:"Hipercalórico-cooki.png", link:"https://amzn.to/4bC9A7C" }
-            ],
-            perda: [
-                { nome:"Psyllium Cápsulas", foto:"Psyllium-caps.png", link:"https://amzn.to/4sBfMmq" },
-                { nome:"Psyllium em Pó", foto:"Psyllium-po.png", link:"https://amzn.to/3YINEAk" },
-                { nome:"Ultra Burn Termogênico", foto:"termog.png", link:"https://amzn.to/4b5phUQ" },
-                { nome:"L-Carnitina 2000mg", foto:"l-creat2000.png", link:"https://amzn.to/4bBHcCw" },
-                { nome:"L-Carnitina 1000mg", foto:"l-creat1000.png", link:"https://amzn.to/3LJAv6S" }
-            ]
-        };
+    <div class="ad-footer-fixed" id="footer-ad">
+        <ins class="adsbygoogle"
+             style="display:inline-block;width:320px;height:50px"
+             data-ad-client="ca-pub-6941311170472131"
+             data-ad-slot="2257554053"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
 
+    <script>
+        const LOGO_URL = "https://i.ibb.co/Lz0D7Yd/icone-512.png";
         let estado = JSON.parse(localStorage.getItem('nutrishot_v5')) || {
-            logado: false, tela: 'cadastro', nomeUsuario: 'Isaac', objetivo: 'perda',
+            logado: false, tela: 'cadastro', nomeUsuario: 'Usuário', objetivo: 'perda',
             peso: 70, altura: 170, imc: 24.2, classification: 'Normal',
             calorias: 0, prot: 0, carb: 0, gord: 0, aguaAtual: 0, historico: [],
             sequencia: 1, ultimoAcesso: new Date().toDateString(),
-            tempRefeicao: 'Almoço', fotoSelecionada: null, ultimoResultado: null, ultimoReset: null
+            ultimoReset: null, tempRefeicao: 'Almoço', fotoSelecionada: null
         };
 
         function salvar() { localStorage.setItem('nutrishot_v5', JSON.stringify(estado)); }
-        function navegar(tela) { estado.tela = tela; salvar(); render(); window.scrollTo(0,0); }
-
-        function toggleMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            if(sidebar && overlay) {
-                sidebar.classList.toggle('active');
-                overlay.classList.toggle('active');
-            }
+        
+        function navegar(tela) { 
+            estado.tela = tela; 
+            salvar(); 
+            render(); 
+            window.scrollTo(0,0);
+            // Refresh AdMob Push
+            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
         }
 
-        function menuNav(tela) { toggleMenu(); navegar(tela); }
+        function toggleMenu() {
+            document.getElementById('sidebar')?.classList.toggle('active');
+            document.getElementById('sidebar-overlay')?.classList.toggle('active');
+        }
 
-        function infoIMC(peso, altura) {
-            const altM = altura / 100;
-            const imc = (peso / (altM * altM)).toFixed(1);
-            let classe = imc < 18.5 ? "Magreza" : imc < 25 ? "Normal" : imc < 30 ? "Sobrepeso" : imc < 35 ? "Obesidade I" : imc < 40 ? "Obesidade II" : "Mórbida";
-            return { valor: imc, texto: classe };
+        function verificarResetDiario() {
+            const hoje = new Date().toDateString();
+            if (estado.ultimoReset !== hoje) {
+                estado.calorias = 0; estado.aguaAtual = 0; estado.ultimoReset = hoje;
+                salvar();
+            }
         }
 
         function verificarSequencia() {
@@ -135,31 +107,19 @@
             }
         }
 
-        function editarMedidas() {
-            const novoPeso = prompt("Digite seu peso atual (kg):", estado.peso);
-            const novaAltura = prompt("Digite sua altura atual (cm):", estado.altura);
-            if(novoPeso && novaAltura) {
-                estado.peso = parseFloat(novoPeso); estado.altura = parseFloat(novaAltura);
-                const res = infoIMC(estado.peso, estado.altura);
-                estado.imc = res.valor; estado.classification = res.texto;
-                salvar(); render();
-            }
+        function calcularProgressoSemanal() {
+            const dias = [0,0,0,0,0,0,0];
+            const hoje = new Date();
+            estado.historico.forEach(item => {
+                const d = new Date(item.data);
+                const diff = Math.floor((hoje - d) / (1000 * 60 * 60 * 24));
+                if (diff >= 0 && diff < 7) {
+                    const idx = d.getDay() === 0 ? 6 : d.getDay() - 1;
+                    dias[idx] += item.cal;
+                }
+            });
+            return dias.map(v => Math.min((v / 2577) * 100, 100));
         }
-
-        function validarEEntrar() {
-            const email = document.getElementById('email-f').value;
-            if(email.length < 3) { alert("Preencha os campos!"); return; }
-            if(document.getElementById('nome-f')) { 
-                estado.nomeUsuario = document.getElementById('nome-f').value || 'Usuário';
-                estado.peso = parseFloat(document.getElementById('peso-f').value) || 70;
-                estado.altura = parseFloat(document.getElementById('altura-f').value) || 170;
-                const res = infoIMC(estado.peso, estado.altura);
-                estado.imc = res.valor; estado.classification = res.texto;
-            }
-            estado.logado = true; estado.tela = 'home'; verificarSequencia(); salvar(); render();
-        }
-
-        function beberAgua() { estado.aguaAtual += 250; salvar(); render(); }
 
         function rodarAnuncio(texto, callback) {
             const overlay = document.getElementById('ads-overlay');
@@ -169,182 +129,98 @@
             let p = 0;
             const tempo = setInterval(() => {
                 p += 5; bar.style.width = p + '%';
-                if(p >= 100) { clearInterval(tempo); overlay.style.display = 'none'; bar.style.width = '0%'; callback(); }
+                if(p >= 100) { clearInterval(tempo); overlay.style.display = 'none'; callback(); }
             }, 60);
-        }
-
-        function prepararFoto(event) {
-            const file = event.target.files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = function(e) { estado.fotoSelecionada = e.target.result; render(); }
-                reader.readAsDataURL(file);
-            }
         }
 
         function confirmarAnalise() {
             rodarAnuncio("IA analisando nutrientes...", () => {
                 const cal = Math.floor(Math.random() * 200 + 350);
-
                 estado.calorias += cal;
-                estado.prot += Math.floor(cal * 0.05);
-                estado.carb += Math.floor(cal * 0.12);
-                estado.gord += Math.floor(cal * 0.03);
-
-                estado.historico.unshift({
-                    tipo: estado.tempRefeicao,
-                    cal: cal,
-                    data: new Date().toDateString()
-                });
-
-                estado.ultimoResultado = {
-                    tipo: estado.tempRefeicao,
-                    cal: cal
-                };
-
+                estado.historico.unshift({ tipo: estado.tempRefeicao, cal: cal, data: new Date().toDateString() });
+                estado.ultimoResultado = { tipo: estado.tempRefeicao, cal: cal };
                 salvar();
-                estado.fotoSelecionada = null;
                 navegar('resultado_analise');
             });
-        }
-
-        function gerarPlanoWhatsApp() {
-            rodarAnuncio('Gerando Plano Inteligente...', () => {
-                const imc = parseFloat(estado.imc);
-                let baseDieta = imc > 25 ? "Foco em Deficit Calórico e Fibras." : "Foco em Densidade Nutricional.";
-
-                const plano = `Olá! Aqui está meu Plano NutriShot Elements 🚀%0A%0A` +
-                `*PERFIL:* ${estado.nomeUsuario}%0A` +
-                `*IMC:* ${estado.imc} (${estado.classification})%0A` +
-                `*ESTRATÉGIA:* ${baseDieta}%0A%0A` +
-                `_Gerado pela IA NutriShot Elements_`;
-
-                window.open(`https://wa.me/?text=${plano}`, '_blank');
-            });
-        }
-
-        function verificarResetDiario() {
-            const hoje = new Date().toDateString();
-            if (!estado.ultimoReset || estado.ultimoReset !== hoje) {
-                estado.calorias = 0; estado.prot = 0; estado.carb = 0; estado.gord = 0;
-                estado.aguaAtual = 0; estado.ultimoReset = hoje;
-                salvar();
-            }
-        }
-
-        function calcularProgressoSemanal() {
-            const dias = [0,0,0,0,0,0,0];
-            const hoje = new Date();
-            estado.historico.forEach(item => {
-                if (!item.data) return;
-                const d = new Date(item.data);
-                const diff = Math.floor((hoje - d) / (1000 * 60 * 60 * 24));
-                if (diff >= 0 && diff < 7) {
-                    const idx = d.getDay() === 0 ? 6 : d.getDay() - 1;
-                    dias[idx] += item.cal;
-                }
-            });
-            const meta = 2577;
-            return dias.map(v => Math.min((v / meta) * 100, 100));
         }
 
         function render() {
             const root = document.getElementById('app');
             if (!estado.logado) {
-                const isCadastro = estado.tela === 'cadastro';
-                root.innerHTML = `<div style="padding: 50px 20px; text-align: center;"><img src="${LOGO_URL}" class="img-logo-principal" onerror="this.src='https://i.ibb.co/Lz0D7Yd/icone-512.png'"><h1 class="texto-logo">NutriShot Elements</h1>${isCadastro ? `<input type="text" id="nome-f" class="input-nutri" placeholder="Nome"><div style="display:flex; justify-content:center; gap:10px;"><input type="number" id="peso-f" class="input-nutri input-metade" placeholder="Peso (kg)"><input type="number" id="altura-f" class="input-nutri input-metade" placeholder="Altura (cm)"></div>` : ''}<input type="email" id="email-f" class="input-nutri" placeholder="E-mail"><input type="password" id="pass-f" class="input-nutri" placeholder="Senha"><button class="btn-azul" onclick="validarEEntrar()">${isCadastro ? 'CRIAR MINHA CONTA' : 'ENTRAR NO APP'}</button><p class="footer-link" onclick="navegar('${isCadastro ? 'login' : 'cadastro'}')">${isCadastro ? 'Já tem uma conta? <span>Entrar</span>' : 'Novo por aqui? <span>Criar Conta</span>'}</p></div>`; return;
+                root.innerHTML = `<div style="padding: 50px 20px; text-align: center;"><img src="${LOGO_URL}" class="img-logo-principal"><h1 class="texto-logo">NutriShot</h1><input type="text" id="nome-f" class="input-nutri" placeholder="Nome"><button class="btn-azul" onclick="estado.logado=true; estado.nomeUsuario=document.getElementById('nome-f').value; navegar('home')">ENTRAR</button></div>`;
+                return;
             }
 
             if (estado.tela === 'home') {
                 const progressoSemana = calcularProgressoSemanal();
-                const metaAgua = Math.round(estado.peso * 35);
-                const percAgua = Math.min((estado.aguaAtual / metaAgua) * 100, 100);
-                let diaSemanaJS = new Date().getDay(); let indiceAtivo = diaSemanaJS === 0 ? 6 : diaSemanaJS - 1;
-
                 root.innerHTML = `
                     <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleMenu()"></div>
                     <div id="sidebar" class="sidebar">
-                        <div class="sidebar-header"><b style="font-size: 22px;">NutriShot AI</b><br><small>${estado.nomeUsuario}</small></div>
+                        <div class="sidebar-header"><b>NutriShot AI</b></div>
                         <div class="sidebar-menu">
-                            <div class="menu-item" onclick="menuNav('home')">🏠 Dashboard</div>
-                            <div class="menu-item" onclick="menuNav('catalogo')">🛒 Loja de Suplementos</div>
-                            <div class="menu-item" onclick="editarMedidas(); toggleMenu()">⚖️ Atualizar Medidas</div>
-                            <div class="menu-item" onclick="gerarPlanoWhatsApp(); toggleMenu()">📅 Gerar Plano WhatsApp</div>
-                            <div class="menu-item" onclick="rodarAnuncio('Saindo...', () => {estado.logado=false; render()})" style="color:#e74c3c; border-top:1px solid #eee; margin-top:20px;">🚪 Sair da Conta</div>
+                            <div class="menu-item" onclick="navegar('home'); toggleMenu()">🏠 Home</div>
+                            <div class="menu-item" onclick="navegar('dica'); toggleMenu()">💡 Dica Diária</div>
                         </div>
                     </div>
 
-                    <div style="padding: 20px; display: flex; justify-content: space-between; align-items:center;">
-                        <div style="display:flex; align-items:center; gap:15px;">
-                            <div onclick="toggleMenu()" style="font-size:24px; cursor:pointer;">☰</div>
-                            <div><small style="color:#888;">Olá,</small><br><b>${estado.nomeUsuario}</b></div>
-                        </div>
-                    </div>
+                    <div style="padding: 20px;" onclick="toggleMenu()">☰ <b>${estado.nomeUsuario}</b></div>
 
                     <div class="card card-fogo">
-                        <div><small>Sequência</small><div style="font-size: 26px; font-weight: bold;">${estado.sequencia} Dias 🔥</div></div>
-                        <div class="imc-info" onclick="editarMedidas()">
-                            <div class="imc-label">Perfil ✎</div>
-                            <div style="font-size: 22px; font-weight: bold;">${estado.imc}</div>
-                            <span class="imc-status">${estado.classification}</span>
-                        </div>
+                        <div>Sequência: <b>${estado.sequencia} Dias 🔥</b></div>
+                        <div>IMC: <b>${estado.imc}</b></div>
                     </div>
 
-                    <div class="card" style="border-left: 5px solid var(--water);">
-                        <b>Hidratação 💧</b><br>
-                        <small>${estado.aguaAtual}ml / ${metaAgua}ml</small>
-                        <div class="progress-container"><div class="progress-bar water" style="width: ${percAgua}%"></div></div>
-                        <button class="btn-water" onclick="beberAgua()">+ BEBER 250ML</button>
+                    <div class="ad-banner-inline">
+                        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6941311170472131" data-ad-slot="2257554053" data-ad-format="rectangle"></ins>
                     </div>
 
                     <div class="card">
-                        <b>Progresso Semanal</b>
+                        <b>Progresso Semanal (Kcal)</b>
                         <div class="grid-7">
                           ${['S','T','Q','Q','S','S','D'].map((d, i) => `
                             <div class="col-dia">
-                              <div class="barra-v" style="
-                                width:${30 + progressoSemana[i] / 4}px;
-                                background:${progressoSemana[i] > 0 ? '#6a11cb' : '#eee'};
-                                ${i === indiceAtivo ? 'box-shadow: 0 0 10px rgba(106,17,203,0.3);' : ''}
-                              "></div>
+                              <div class="barra-v" style="width:${30 + progressoSemana[i] / 4}px; background:${progressoSemana[i] > 0 ? '#6a11cb' : '#eee'};"></div>
                               <span class="dia-txt">${d}</span>
                             </div>
                           `).join('')}
                         </div>
                     </div>
 
-                    <div class="selector-objetivo">
-                        <div class="opt-obj ${estado.objetivo === 'perda' ? 'active' : ''}" onclick="estado.objetivo='perda'; render()">Emagrecer</div>
-                        <div class="opt-obj ${estado.objetivo === 'ganho' ? 'active' : ''}" onclick="estado.objetivo='ganho'; render()">Ganho Massa</div>
-                    </div>
-
                     <div class="card">
-                        <small>Calorias</small>
-                        <div style="font-size: 26px; font-weight: bold;">${estado.calorias} <span style="font-size:14px; color:#ccc">/ 2577 kcal</span></div>
+                        <b>Calorias: ${estado.calorias} / 2577</b>
                         <div class="progress-container"><div class="progress-bar" style="width: ${(estado.calorias/2577)*100}%"></div></div>
                     </div>
 
-                    <div class="card">
-                        <b>Refeições de Hoje</b>
-                        ${estado.historico.filter(h => h.data === new Date().toDateString()).length === 0 ? `<div style="text-align:center; color:#999; padding:10px;"><small>Nenhuma registrada.</small></div>` : 
-                        estado.historico.filter(h => h.data === new Date().toDateString()).map(h => `<div class="refeicao-item"><span><b>${h.tipo}</b></span><span style="color:var(--primary); font-weight:bold;">${h.cal} kcal</span></div>`).join('')}
-                    </div>
-
                     <button class="fab" onclick="navegar('add_refeicao')">+</button>
-                `; return;
+                `;
             }
 
-            if (estado.tela === 'catalogo') {
-                const lista = estado.objetivo === 'ganho' ? SUPLEMENTOS.ganho : SUPLEMENTOS.perda;
-                root.innerHTML = `<div style="padding: 20px;"><div onclick="navegar('home')" style="margin-bottom:15px; cursor:pointer; color:var(--blue-action); font-weight:bold;">← Voltar</div><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">${lista.map(p => `<div style="background:#fff; border-radius:16px; padding:12px; text-align:center; border:1px solid #eee; height:200px; display:flex; flex-direction:column; justify-content:space-between;"><img src="${p.foto}" style="width:100%; height:85px; object-fit:contain;" onerror="this.src='https://via.placeholder.com/150'"><b style="font-size:11px;">${p.nome}</b><a href="${p.link}" target="_blank" style="text-decoration:none"><button style="width:100%; background:var(--primary); color:#fff; border:none; padding:8px; border-radius:8px; font-weight:bold; font-size:11px;">Ver Oferta</button></a></div>`).join("")}</div></div>`; return;
+            if (estado.tela === 'dica') {
+                root.innerHTML = `
+                    <div style="padding: 20px;">
+                        <button onclick="navegar('home')">← Voltar</button>
+                        <h2>Dica do Dia</h2>
+                        <div class="card">Beba água antes das refeições para acelerar o metabolismo.</div>
+                        <div class="ad-banner-inline">
+                            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6941311170472131" data-ad-slot="2257554053" data-ad-format="auto"></ins>
+                        </div>
+                    </div>`;
             }
 
             if (estado.tela === 'add_refeicao') {
-                root.innerHTML = `<div style="padding: 20px;"><div onclick="navegar('home')" style="cursor:pointer; font-weight:bold; color:var(--blue-action);">← Voltar</div><h2 style="text-align:center; margin-top:30px;">Qual é a refeição?</h2><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">${['Café', 'Almoço', 'Jantar', 'Lanche'].map(t => `<div onclick="estado.tempRefeicao='${t}'; render()" style="padding:20px; border-radius:15px; text-align:center; border: 2px solid ${estado.tempRefeicao===t?'var(--primary)':'#eee'}; background: ${estado.tempRefeicao===t?'#f0fff7':'#fff'}"><b>${t}</b></div>`).join('')}</div><div class="card" style="text-align:center; margin-top: 20px;">${!estado.fotoSelecionada ? `<button class="btn-principal" style="width:100%; margin: 10px 0" onclick="document.getElementById('take-photo').click()">📸 Tirar Foto</button><button class="btn-outline" onclick="document.getElementById('pick-gallery').click()">📁 Galeria</button><input type="file" id="take-photo" capture="environment" accept="image/*" style="display:none" onchange="prepararFoto(event)"><input type="file" id="pick-gallery" accept="image/*" style="display:none" onchange="prepararFoto(event)">` : `<img src="${estado.fotoSelecionada}" id="img-preview"><button class="btn-principal" style="width:100%; margin:0" onclick="confirmarAnalise()">🚀 ANALISAR AGORA</button><button class="btn-outline" style="margin-top:15px" onclick="estado.fotoSelecionada=null; render()">🗑️ Escolher Outra</button>`}</div></div>`; return;
+                root.innerHTML = `
+                    <div style="padding: 20px;">
+                        <button onclick="navegar('home')">← Voltar</button>
+                        <h2>Analisar Refeição</h2>
+                        <div class="ad-banner-inline">
+                            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6941311170472131" data-ad-slot="2257554053" data-ad-format="link"></ins>
+                        </div>
+                        <button class="btn-azul" onclick="confirmarAnalise()">📸 TIRAR FOTO</button>
+                    </div>`;
             }
 
             if (estado.tela === 'resultado_analise') {
-                root.innerHTML = `<div class="dica-container"><div style="font-size:60px">🚀</div><h2 style="color:var(--blue-action);">ANÁLISE CONCLUÍDA</h2><div class="dica-texto-grande">Sua refeição de <span style="color:var(--primary)">${estado.ultimoResultado.tipo}</span> tem cerca de <span style="color:var(--blue-action)">${estado.ultimoResultado.cal} kcal</span>!</div><button class="btn-principal" style="width:100%;" onclick="navegar('home')">VOLTAR AO INÍCIO</button></div>`;
+                root.innerHTML = `<div style="padding:50px; text-align:center"><h2>${estado.ultimoResultado.cal} kcal</h2><button class="btn-azul" onclick="navegar('home')">OK</button></div>`;
             }
         }
 
