@@ -70,7 +70,7 @@
     .btn-loja { background: #2ab573; color: white; border: none; padding: 15px; border-radius: 12px; width: calc(100% - 40px); margin: 0 20px; font-weight: bold; cursor: pointer; font-size: 14px; }
     .btn-outline { background: transparent; color: #666; border: 1px solid #ddd; padding: 12px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 500; }
 
-    /* FAB subiu um pouco para não colidir com o rodapé menor */
+    /* FAB sobe para não colidir com o rodapé */
     .fab { position: fixed; bottom: 70px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; } 
 
     #img-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; border: 1px solid #ddd; }
@@ -125,7 +125,7 @@
     const LOGO_URL = "icone-512.png";
     const isNative = !!(window?.Capacitor?.isNativePlatform?.() && window.Capacitor.isNativePlatform()) || !!window.cordova;
 
-    // >>>>>> SUBSTITUA AQUI APÓS ME ENVIAR OS IDs <<<<<<
+    // >>>>>> SUBSTITUA AQUI COM SEUS IDs AdMob <<<<<<
     const ADMOB = {
       APP_ID: 'ADMOB_APP_ID',                 // ex: ca-app-pub-XXXX~YYYY (Manifest)
       BANNER_ID: 'ADMOB_BANNER_ID',           // ex: ca-app-pub-XXXX/AAAA
@@ -152,7 +152,7 @@
     };
 
     let estado = JSON.parse(localStorage.getItem('nutrishot_v5')) || {
-      logado: false, tela: 'cadastro', nomeUsuario: 'Isaac', objetivo: 'perda',
+      logado: false, tela: 'cadastro', nomeUsuario: 'Usuário', objetivo: 'perda',
       peso: 70, altura: 170, imc: 24.2, classification: 'Normal',
       calorias: 0, prot: 0, carb: 0, gord: 0, aguaAtual: 0, historico: [],
       sequencia: 1, ultimoAcesso: new Date().toDateString(),
@@ -246,7 +246,7 @@
           body: JSON.stringify({ imageBase64: estado.fotoSelecionada })
         });
         if(!res.ok) throw new Error('Falha na IA');
-        return await res.json();
+        return await res.json(); // { kcal, prot, carb, gord }
       } catch (e) {
         console.warn('Falha IA, usando fallback randômico', e);
         const cal = Math.floor(Math.random() * 200 + 350);
@@ -281,7 +281,125 @@
       });
     }
 
-    /* ============ Progresso semanal (kcal por dia) ============ */
+    /* ===================== PLANO ALIMENTAR AUTOMÁTICO ===================== 
+       Regras simples (baseadas em prática comum para estimativa, sem PII):
+       - meta kcal = fator(IMC, objetivo) * peso (kg)
+       - protein_g, fat_g por kg; carbs = resto
+    ----------------------------------------------------------------------- */
+    function getImcFaixa(imc) {
+      if (imc < 18.5) return 'baixo';
+      if (imc < 25) return 'normal';
+      if (imc < 30) return 'sobrepeso';
+      if (imc < 35) return 'obesidade1';
+      if (imc < 40) return 'obesidade2';
+      return 'obesidade3';
+    }
+
+    function calcularAlvoCalorico(objetivo, imc, peso) {
+      const faixa = getImcFaixa(imc);
+      let kcalKg;
+      if (objetivo === 'perda') {
+        // déficit mais agressivo se IMC alto
+        if (faixa === 'obesidade2' || faixa === 'obesidade3') kcalKg = 22;
+        else if (faixa === 'sobrepeso' || faixa === 'obesidade1') kcalKg = 24;
+        else kcalKg = 26; // leve déficit se IMC < 25
+      } else { // ganho
+        if (faixa === 'baixo') kcalKg = 38;
+        else if (faixa === 'normal') kcalKg = 34;
+        else kcalKg = 30; // bulk mais conservador para IMC >= 25
+      }
+      // Limites de segurança
+      const kcal = Math.round(Math.max(1200, Math.min(4200, kcalKg * peso)));
+      return kcal;
+    }
+
+    function calcularMacros(objetivo, imc, peso, kcal) {
+      const faixa = getImcFaixa(imc);
+      // g/kg
+      let protKg, gordKg;
+      if (objetivo === 'perda') {
+        protKg = (faixa === 'sobrepeso' || faixa.includes('obesidade')) ? 2.0 : 1.6;
+        gordKg = 0.8;
+      } else {
+        protKg = 1.8;
+        gordKg = 1.0;
+      }
+      const prot = Math.round(protKg * peso);           // g
+      const gord = Math.round(gordKg * peso);           // g
+      const kcalProt = prot * 4;
+      const kcalGord = gord * 9;
+      const carb = Math.max(0, Math.round((kcal - (kcalProt + kcalGord)) / 4));
+      return { prot, carb, gord };
+    }
+
+    function gerarSugestoesRefeicoes(objetivo, kcalDia, macros) {
+      // distribuição: 20% / 35% / 20% / 25%
+      const dist = [0.20, 0.35, 0.20, 0.25];
+      const nomes = ['Café da manhã', 'Almoço', 'Lanche', 'Jantar'];
+
+      // menus básicos distintos por objetivo
+      const menusPerda = [
+        ['Ovos mexidos (2) + pão integral (1 fatia) + fruta', 'Iogurte natural (170g) + aveia (15g)'],
+        ['Frango grelhado (120g) + arroz integral (3 c.s.) + feijão (1/2 concha) + salada', 'Peixe grelhado (120g) + purê de abóbora (120g) + legumes'],
+        ['Iogurte + chia (10g) + castanhas (3 un)', 'Shake whey + água + 1 fruta pequena'],
+        ['Carne magra (100g) + batata doce (120g) + brócolis', 'Omelete (3 ovos) + salada + azeite (1 c.chá)']
+      ];
+      const menusGanho = [
+        ['Ovos (3) + pão integral (2 fatias) + fruta + pasta de amendoim (1 c.s.)', 'Iogurte grego + granola (30g) + banana'],
+        ['Frango/Patinho (150g) + arroz (5 c.s.) + feijão (1 concha) + salada + azeite (1 c.s.)', 'Peixe (150g) + purê batata (180g) + legumes + fio de azeite'],
+        ['Whey + leite + banana + aveia (30g)', 'Sanduíche integral com atum/queijo e salada'],
+        ['Carne magra (150g) + massa integral (120g cozida) + legumes', 'Omelete (4 ovos) + arroz (3 c.s.) + salada']
+      ];
+      const base = objetivo === 'perda' ? menusPerda : menusGanho;
+
+      return dist.map((p, i) => {
+        const kcal = Math.round(kcalDia * p);
+        // macro proporcional simples
+        const prot = Math.round(macros.prot * p);
+        const carb = Math.round(macros.carb * p);
+        const gord = Math.round(macros.gord * p);
+
+        const opcoes = base[i];
+        return {
+          nome: nomes[i],
+          kcal, prot, carb, gord,
+          sugestao: opcoes[ (kcal + prot + i*3) % opcoes.length ] // pseudo-aleatório estável
+        };
+      });
+    }
+
+    function gerarPlanoAuto() {
+      const objetivo = estado.objetivo;                 // 'perda' | 'ganho'
+      const imc = parseFloat(estado.imc);
+      const peso = parseFloat(estado.peso);
+
+      const kcal = calcularAlvoCalorico(objetivo, imc, peso);
+      const macros = calcularMacros(objetivo, imc, peso, kcal);
+      const refeicoes = gerarSugestoesRefeicoes(objetivo, kcal, macros);
+
+      const agua = Math.round(peso * 35); // ml/dia
+
+      return { kcal, ...macros, refeicoes, agua };
+    }
+
+    function montarTextoPlanoWhats(plano) {
+      const { kcal, prot, carb, gord, refeicoes, agua } = plano;
+      const header = `*PLANO ${estado.objetivo === 'perda' ? 'EMAGRECER' : 'GANHO DE MASSA'}* (${kcal} kcal/dia)%0A` +
+                     `IMC: ${estado.imc} (${estado.classification}) • Peso: ${estado.peso}kg%0A` +
+                     `Macros/dia → Prot: ${prot}g • Carb: ${carb}g • Gord: ${gord}g%0A%0A` +
+                     `*Refeições sugeridas*:%0A`;
+      const linhas = refeicoes.map(r => `• ${r.nome} (${r.kcal} kcal) → P:${r.prot}g C:${r.carb}g G:${r.gord}g%0A  - ${r.sugestao}`).join('%0A');
+      const rodape = `%0A%0A💧 Água/dia: ${agua} ml%0A_Gerado pela IA NutriShot_`;
+      return header + linhas + rodape;
+    }
+
+    function gerarPlanoWhatsApp() {
+      const plano = gerarPlanoAuto();
+      const texto = montarTextoPlanoWhats(plano);
+      window.open(`https://wa.me/?text=${texto}`, '_blank');
+    }
+
+    /* ===================== PROGRESSO SEMANAL ===================== */
     function calcularProgressoSemanal() {
       const dias = [0,0,0,0,0,0,0];
       const hoje = new Date();
@@ -358,8 +476,8 @@
           if (webFooter) webFooter.remove();
 
           window.admob.banner.show({ id: { android: ADMOB.BANNER_ID }, size: 'BANNER', position: 'BOTTOM_CENTER' });
-          window.admob.interstitial.load({ id: { android: ADMOB.INTERSTITIAL_ID }});
-          window.admob.rewardVideo.load({ id: { android: ADMOB.REWARDED_ID }});
+          window.admob.interstitial.load({ id: { android: ADMOB_INTERSTITIAL_ID }});
+          window.admob.rewardVideo.load({ id: { android: ADMOB_REWARDED_ID }});
 
           admobReady = true;
           return;
@@ -412,29 +530,8 @@
       window.addEventListener('load', initAdMobIfAvailable);
     }
 
-    /* Plano WhatsApp */
-    function gerarPlanoWhatsApp() {
-      rodarAnuncio('Gerando Plano Inteligente...', () => {
-        const imc = parseFloat(estado.imc);
-        let baseDieta = imc > 25 ? 
-          "Foco em Deficit Calórico e Fibras para acelerar metabolismo." :
-          "Foco em Densidade Nutricional e Proteína de alto valor biológico.";
-
-        const plano = `Olá! Aqui está meu Plano NutriShot Elements 🚀%0A%0A` +
-        `*PERFIL:* ${estado.nomeUsuario}%0A` +
-        `*OBJETIVO:* Secar e Ganhar Massa (1400 kcal)%0A` +
-        `*IMC:* ${estado.imc} (${estado.classification})%0A` +
-        `*ESTRATÉGIA:* ${baseDieta}%0A%0A` +
-        `*--- DIETA DIÁRIA SUGERIDA ---*%0A%0A` +
-        `🌅 *CAFÉ:* 2 ovos + 1 pão integral + fruta%0A` +
-        `☀️ *ALMOÇO:* 120g frango/peixe + arroz integral + feijão + salada%0A` +
-        `🍎 *LANCHE:* Iogurte + 15g aveia + 3 castanhas%0A` +
-        `🌙 *JANTAR:* 100g carne magra + 120g batata doce + legumes%0A%0A` +
-        `💧 *META DE ÁGUA:* ${Math.round(estado.peso * 35)}ml/dia.%0A%0A` +
-        `_Gerado pela IA NutriShot Elements_`;
-        window.open(`https://wa.me/?text=${plano}`, '_blank');
-      });
-    }
+    /* Plano WhatsApp (usa plano automático) */
+    function gerarPlanoWhatsAppAntigo() { gerarPlanoWhatsApp(); } // compat se existir chamada antiga
 
     /* ------------------------ Render ------------------------ */
     function render() {
@@ -480,10 +577,11 @@
             </div>
             <div class="sidebar-menu">
               <div class="menu-item" onclick="menuNav('home')">🏠 Dashboard</div>
+              <div class="menu-item" onclick="menuNav('plano')">🍽 Plano alimentar</div>
               <div class="menu-item" onclick="menuNav('progresso')">📈 Progresso semanal</div>
               <div class="menu-item" onclick="menuNav('catalogo')">🛒 Loja de Suplementos</div>
               <div class="menu-item" onclick="editarMedidas(); toggleMenu()">⚖️ Atualizar Medidas</div>
-              <div class="menu-item" onclick="gerarPlanoWhatsApp(); toggleMenu()">📅 Gerar Plano WhatsApp</div>
+              <div class="menu-item" onclick="gerarPlanoWhatsApp(); toggleMenu()">📤 Compartilhar Plano (WhatsApp)</div>
               <div class="menu-item" onclick="showRewardedReal(({value})=>{ estado.aguaAtual += 250; salvar(); alert('Recompensa: +250ml de água!'); })">🎁 Ganhar +250ml (Anúncio)</div>
               <div class="menu-item" onclick="rodarAnuncio('Saindo...', () => {estado.logado=false; render()})" style="color:#e74c3c; border-top:1px solid #eee; margin-top:20px;">🚪 Sair da Conta</div>
             </div>
@@ -522,8 +620,8 @@
           </div>
 
           <div class="selector-objetivo">
-            <div class="opt-obj ${estado.objetivo === 'perda' ? 'active' : ''}" onclick="estado.objetivo='perda'; render()">Emagrecer</div>
-            <div class="opt-obj ${estado.objetivo === 'ganho' ? 'active' : ''}" onclick="estado.objetivo='ganho'; render()">Ganho Massa</div>
+            <div class="opt-obj ${estado.objetivo === 'perda' ? 'active' : ''}" onclick="estado.objetivo='perda'; salvar(); render()">Emagrecer</div>
+            <div class="opt-obj ${estado.objetivo === 'ganho' ? 'active' : ''}" onclick="estado.objetivo='ganho'; salvar(); render()">Ganho Massa</div>
           </div>
 
           <button class="btn-loja" onclick="navegar('catalogo')">🛒 VER SUPLEMENTOS RECOMENDADOS</button>
@@ -547,12 +645,49 @@
 
           <div class="card">
             <b style="display:block; margin-bottom:10px;">Refeições de Hoje</b>
-            ${refeicoesHoje.length === 0 ? `<div style="text-align:center; color:#999; padding:10px;"><small>Nenhuma refeição registrada hoje.</small></div>` : 
-            refeicoesHoje.map(h => `<div class="refeicao-item" style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0f0;"><span><b>${h.tipo}</b></span><span style="color:var(--primary); font-weight:bold;">${h.cal} kcal</span></div>`).join('')}
+            ${
+              (estado.historico||[]).filter(h => h.data === new Date().toDateString()).length === 0 
+              ? `<div style="text-align:center; color:#999; padding:10px;"><small>Nenhuma refeição registrada hoje.</small></div>` 
+              : (estado.historico||[]).filter(h => h.data === new Date().toDateString()).map(h => 
+                  `<div class="refeicao-item" style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0f0;"><span><b>${h.tipo}</b></span><span style="color:var(--primary); font-weight:bold;">${h.cal} kcal</span></div>`
+                ).join('')
+            }
           </div>
 
           <button class="fab" onclick="navegar('add_refeicao')">+</button>
         `; return;
+      }
+
+      if (estado.tela === 'plano') {
+        const plano = gerarPlanoAuto();
+        const nomes = ['Café da manhã','Almoço','Lanche','Jantar'];
+        document.getElementById('app').innerHTML = `
+          <div style="padding: 20px;">
+            <div onclick="navegar('home')" style="cursor:pointer; font-weight:bold; color:var(--blue-action);">← Voltar</div>
+            <h2 style="margin:10px 0; font-size:18px;">Plano alimentar</h2>
+            <div class="card" style="border-left:4px solid var(--primary)">
+              <b>Meta diária</b>
+              <div style="margin-top:6px;font-size:16px"><b>${plano.kcal} kcal</b> • Prot <b>${plano.prot}g</b> • Carb <b>${plano.carb}g</b> • Gord <b>${plano.gord}g</b></div>
+              <small style="color:#666">Objetivo: <b>${estado.objetivo==='perda'?'Emagrecer':'Ganho de Massa'}</b> • IMC ${estado.imc} (${estado.classification})</small>
+            </div>
+
+            ${plano.refeicoes.map((r, i)=>`
+              <div class="card">
+                <b>${nomes[i]} • ${r.kcal} kcal</b>
+                <div style="margin-top:6px;color:#555">P:${r.prot}g • C:${r.carb}g • G:${r.gord}g</div>
+                <div style="margin-top:8px">${r.sugestao}</div>
+              </div>
+            `).join('')}
+
+            <div class="card">
+              <b>Hidratação</b>
+              <div style="margin-top:6px;">Meta diária de água: <b>${plano.agua} ml</b></div>
+            </div>
+
+            <button class="btn-principal" onclick="gerarPlanoWhatsApp()">📤 Compartilhar plano (WhatsApp)</button>
+          </div>
+        `;
+        return;
       }
 
       if (estado.tela === 'progresso') {
