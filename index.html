@@ -1,223 +1,194 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <title>NutriShot Elements</title>
-    
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6941311170472131" crossorigin="anonymous"></script>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>NutriShot Elements</title>
 
-    <style>
-        :root { 
-            --primary: #2ab573; 
-            --blue-action: #2490eb; 
-            --bg: #f9fafb; 
-            --water: #3498db;
-        }
-        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; overflow-x: hidden; }
-        
-        /* Sidebar */
-        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 10000; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 2px 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-        .sidebar.active { left: 0; }
-        .sidebar-header { padding: 40px 20px 20px 20px; background: linear-gradient(135deg, var(--blue-action), var(--primary)); color: white; }
-        .sidebar-menu { padding: 20px 0; flex-grow: 1; }
-        .menu-item { padding: 15px 25px; display: flex; align-items: center; gap: 15px; cursor: pointer; font-weight: 500; transition: 0.2s; color: #444; }
-        .menu-item:hover { background: #f0f7f4; color: var(--primary); }
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 9999; backdrop-filter: blur(2px); }
-        .sidebar-overlay.active { display: block; }
+<!-- AdSense / AdMob Web -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6941311170472131"
+crossorigin="anonymous"></script>
 
-        /* Interface */
-        .img-logo-principal { width: 170px; margin-bottom: 5px; } 
-        .texto-logo { font-size: 24px; font-weight: 800; background: linear-gradient(to right, #2490eb, #2ab573, #f39c12); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0 0 20px 0; letter-spacing: -0.5px; }
-        .input-nutri { width: 85%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; }
-        .input-metade { width: 40%; display: inline-block; }
-        .btn-azul { width: calc(100% - 40px); background: var(--blue-action); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(36, 144, 235, 0.3); }
-        .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-        .card-fogo { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; display: flex; justify-content: space-between; align-items: center; }
-        .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--primary); transition: width 0.5s ease; }
-        .btn-water { background: var(--water); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
-        .fab { position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; background: #000; color: #fff; border-radius: 50%; font-size: 30px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 99; }
-        
-        /* Container AdMob */
-        .ad-banner-container { margin: 15px 20px; text-align: center; min-height: 50px; background: #f0f0f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #999; }
-
-        .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
-        .bar-container { width: 70%; height: 8px; background: #333; border-radius: 10px; margin-top: 25px; overflow: hidden; }
-        #bar-progress { width: 0%; height: 100%; background: #2ab573; }
-    </style>
+<style>
+:root{
+--primary:#2ab573;
+--blue-action:#2490eb;
+--bg:#f9fafb;
+--water:#3498db;
+}
+body{margin:0;font-family:Segoe UI,Roboto,sans-serif;background:var(--bg);color:#333;padding-bottom:60px;}
+.card{background:#fff;border-radius:20px;padding:20px;margin:15px 20px;border:1px solid #eee;}
+.btn{background:var(--primary);color:#fff;border:none;padding:12px;border-radius:12px;font-weight:bold;width:100%;}
+.sidebar{position:fixed;top:0;left:-280px;width:280px;height:100%;background:#fff;transition:.3s;z-index:1000}
+.sidebar.active{left:0}
+.sidebar-menu .menu-item{padding:15px 20px;cursor:pointer;border-bottom:1px solid #eee}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:999}
+.sidebar-overlay.active{display:block}
+.refeicao-item{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee}
+.ad-banner-container{margin:20px;background:#eee;border-radius:15px;overflow:hidden}
+</style>
 </head>
+
 <body>
 
-    <div id="ads-overlay" class="ads-overlay">
-        <div id="ad-text" style="font-size: 18px; font-weight: bold;">Carregando Anúncio...</div>
-        <div class="bar-container"><div id="bar-progress"></div></div>
+<div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleMenu()"></div>
+
+<div id="sidebar" class="sidebar">
+    <div class="sidebar-menu">
+        <div class="menu-item" onclick="menuNav('home')">🏠 Dashboard</div>
+        <div class="menu-item" onclick="menuNav('historico')">📊 Histórico Diário</div>
+        <div class="menu-item" onclick="menuNav('catalogo')">🛒 Suplementos</div>
+        <div class="menu-item" onclick="estado.logado=false; salvar(); render()">🚪 Sair</div>
     </div>
+</div>
 
-    <div id="app"></div>
+<div id="app"></div>
 
-    <script>
-        // IDs AdMob Configurados
-        const ADMOB = {
-            APP_ID: 'ca-app-pub-6941311170472131~1202658535',
-            BANNER_ID: 'ca-app-pub-6941311170472131/2257554053',
-            INTERSTITIAL_ID: 'ca-app-pub-6941311170472131/2273031775',
-            REWARDED_ID: 'ca-app-pub-6941311170472131/4221550021'
-        };
+<script>
+// =============================
+// ADMOB IDS
+// =============================
+const ADMOB={
+APP_ID:'ca-app-pub-6941311170472131~1202658535',
+BANNER_ID:'ca-app-pub-6941311170472131/2257554053'
+};
 
-        const LOGO_URL = "https://i.ibb.co/Lz0D7Yd/icone-512.png";
-        
-        let estado = JSON.parse(localStorage.getItem('nutrishot_v5')) || {
-            logado: false, tela: 'cadastro', nomeUsuario: '', objetivo: 'perda',
-            peso: 70, altura: 170, imc: 24.2, classification: 'Normal',
-            calorias: 0, prot: 0, carb: 0, gord: 0, aguaAtual: 0, historico: [],
-            sequencia: 1, ultimoAcesso: new Date().toDateString(),
-            tempRefeicao: 'Almoço', fotoSelecionada: null, ultimoResultado: null
-        };
+// =============================
+let estado=JSON.parse(localStorage.getItem('nutrishot'))||{
+logado:true,
+tela:'home',
+nomeUsuario:'Usuário',
+peso:70,
+aguaAtual:0,
+historico:[],
+ultimoReset:null
+};
 
-        function salvar() { localStorage.setItem('nutrishot_v5', JSON.stringify(estado)); }
-        function navegar(tela) { estado.tela = tela; salvar(); render(); window.scrollTo(0,0); }
+function salvar(){localStorage.setItem('nutrishot',JSON.stringify(estado));}
 
-        function toggleMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            if(sidebar) { sidebar.classList.toggle('active'); overlay.classList.toggle('active'); }
-        }
+// =============================
+// MENU
+// =============================
+function toggleMenu(){
+document.getElementById('sidebar').classList.toggle('active');
+document.getElementById('sidebar-overlay').classList.toggle('active');
+}
+function menuNav(t){toggleMenu();estado.tela=t;render();}
 
-        // Função que simula o Interstitial/Rewarded AdMob
-        function rodarAnuncio(texto, callback) {
-            const overlay = document.getElementById('ads-overlay');
-            const bar = document.getElementById('bar-progress');
-            document.getElementById('ad-text').innerText = texto;
-            overlay.style.display = 'flex';
-            let p = 0;
-            const tempo = setInterval(() => {
-                p += 2; 
-                bar.style.width = p + '%';
-                if(p >= 100) { 
-                    clearInterval(tempo); 
-                    overlay.style.display = 'none'; 
-                    bar.style.width = '0%'; 
-                    callback(); 
-                }
-            }, 50); // Simula 2.5 segundos de anúncio
-        }
+// =============================
+// ADS
+// =============================
+function carregarBannerAdMob(){
+try{(adsbygoogle=window.adsbygoogle||[]).push({});}
+catch(e){console.log("Ads ainda não pronto");}
+}
 
-        function render() {
-            const root = document.getElementById('app');
-            
-            // TELA LOGIN / CADASTRO
-            if (!estado.logado) {
-                const isCadastro = estado.tela === 'cadastro';
-                root.innerHTML = `
-                    <div style="padding: 50px 20px; text-align: center;">
-                        <img src="${LOGO_URL}" class="img-logo-principal">
-                        <h1 class="texto-logo">NutriShot Elements</h1>
-                        ${isCadastro ? `
-                            <input type="text" id="nome-f" class="input-nutri" placeholder="Nome">
-                            <div style="display:flex; justify-content:center; gap:10px;">
-                                <input type="number" id="peso-f" class="input-nutri input-metade" placeholder="Peso (kg)">
-                                <input type="number" id="altura-f" class="input-nutri input-metade" placeholder="Altura (cm)">
-                            </div>
-                        ` : ''}
-                        <input type="email" id="email-f" class="input-nutri" placeholder="E-mail">
-                        <input type="password" id="pass-f" class="input-nutri" placeholder="Senha">
-                        <button class="btn-azul" onclick="validarEEntrar()">ENTRAR</button>
-                    </div>
-                `;
-                return;
-            }
+// =============================
+// ÁGUA
+// =============================
+function beberAgua(){
+estado.aguaAtual+=250;
+estado.historico.push({
+tipo:'Água',
+cal:0,
+data:new Date().toDateString()
+});
+salvar();render();
+}
 
-            // TELA HOME
-            if (estado.tela === 'home') {
-                const metaAgua = Math.round(estado.peso * 35);
-                const percAgua = Math.min((estado.aguaAtual / metaAgua) * 100, 100);
-                
-                root.innerHTML = `
-                    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleMenu()"></div>
-                    <div id="sidebar" class="sidebar">
-                        <div class="sidebar-header"><b>NutriShot AI</b></div>
-                        <div class="sidebar-menu">
-                            <div class="menu-item" onclick="navegar('home'); toggleMenu()">🏠 Home</div>
-                            <div class="menu-item" onclick="rodarAnuncio('Saindo...', () => {estado.logado=false; render()})">🚪 Sair</div>
-                        </div>
-                    </div>
+// =============================
+// HISTÓRICO POR DIA
+// =============================
+function historicoPorDia(){
+const dias={};
+estado.historico.forEach(h=>{
+if(!dias[h.data]) dias[h.data]={cal:0,itens:[]};
+dias[h.data].cal+=h.cal;
+dias[h.data].itens.push(h);
+});
+return dias;
+}
 
-                    <div style="padding: 20px; display: flex; justify-content: space-between;">
-                        <div onclick="toggleMenu()" style="font-size:24px;">☰</div>
-                        <div><b>${estado.nomeUsuario}</b></div>
-                    </div>
+// =============================
+// RESET DIÁRIO
+// =============================
+function verificarReset(){
+const hoje=new Date().toDateString();
+if(estado.ultimoReset!==hoje){
+estado.aguaAtual=0;
+estado.ultimoReset=hoje;
+salvar();
+}
+}
 
-                    <div class="ad-banner-container">
-                        <ins class="adsbygoogle"
-                             style="display:block"
-                             data-ad-client="ca-pub-6941311170472131"
-                             data-ad-slot="2257554053"
-                             data-ad-format="auto"
-                             data-full-width-responsive="true"></ins>
-                        <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
-                    </div>
+// =============================
+// RENDER
+// =============================
+function render(){
+verificarReset();
+const root=document.getElementById('app');
 
-                    <div class="card card-fogo">
-                        <div><small>Sequência</small><br><b>${estado.sequencia} Dias 🔥</b></div>
-                        <div style="text-align:right"><small>IMC</small><br><b>${estado.imc}</b></div>
-                    </div>
+if(estado.tela==='home'){
+root.innerHTML=`
+<div style="padding:20px;display:flex;justify-content:space-between">
+<div onclick="toggleMenu()">☰</div>
+<b>Olá, ${estado.nomeUsuario}</b>
+</div>
 
-                    <div class="card">
-                        <b>Hidratação 💧</b><br>
-                        <small>${estado.aguaAtual}ml / ${metaAgua}ml</small>
-                        <div class="progress-container"><div class="progress-bar" style="width:${percAgua}%; background:var(--water)"></div></div>
-                        <button class="btn-water" onclick="estado.aguaAtual+=250; salvar(); render()">+ BEBER 250ML</button>
-                    </div>
+<div class="card">
+<b>Hidratação</b>
+<p>${estado.aguaAtual} ml</p>
+<button class="btn" onclick="beberAgua()">+ 250ml</button>
+</div>
 
-                    <div class="card" style="border: 1px solid var(--primary);">
-                        <b>Dica Premium</b>
-                        <button class="btn-azul" style="width:100%; margin:10px 0; background:var(--primary)" onclick="rodarAnuncio('Carregando Dica...', ()=>navegar('dica'))">VER DICA (ANÚNCIO)</button>
-                    </div>
+<div class="ad-banner-container">
+<ins class="adsbygoogle"
+id="banner-dashboard"
+style="display:block"
+data-ad-client="ca-pub-6941311170472131"
+data-ad-slot="2257554053"
+data-ad-format="auto"
+data-ad-full-width-responsive="true"></ins>
+</div>
+`;
+setTimeout(carregarBannerAdMob,300);
+return;
+}
 
-                    <button class="fab" onclick="navegar('add_refeicao')">+</button>
-                `;
-            }
+if(estado.tela==='historico'){
+const dados=historicoPorDia();
+const datas=Object.keys(dados).sort((a,b)=>new Date(b)-new Date(a));
+root.innerHTML=`
+<div style="padding:20px">
+<div onclick="menuNav('home')" style="cursor:pointer;color:var(--blue-action)">← Voltar</div>
+<h2>Histórico Diário</h2>
 
-            // TELA ADICIONAR REFEIÇÃO
-            if (estado.tela === 'add_refeicao') {
-                root.innerHTML = `
-                    <div style="padding: 20px; text-align:center;">
-                        <h2 onclick="navegar('home')">← Voltar</h2>
-                        <div class="card">
-                            <h3>Tirar foto do prato</h3>
-                            <button class="btn-azul" onclick="simularAnalise()">📸 ANALISAR REFEIÇÃO</button>
-                        </div>
-                    </div>
-                `;
-            }
+${datas.length===0?'<p>Nenhum registro</p>':
+datas.map(d=>`
+<div class="card">
+<b>${d}</b>
+<p>🔥 ${dados[d].cal} kcal</p>
+${dados[d].itens.map(i=>`
+<div class="refeicao-item">
+<span>${i.tipo}</span>
+<span>${i.cal>0?i.cal+' kcal':'💧'}</span>
+</div>`).join('')}
+</div>`).join('')}
+</div>`;
+return;
+}
 
-            if (estado.tela === 'dica') {
-                root.innerHTML = `
-                    <div style="padding: 40px; text-align:center;">
-                        <h1>💡</h1>
-                        <p>"Beber água antes das refeições ajuda na digestão!"</p>
-                        <button class="btn-azul" onclick="navegar('home')">VOLTAR</button>
-                    </div>
-                `;
-            }
-        }
+if(estado.tela==='catalogo'){
+root.innerHTML=`
+<div style="padding:20px">
+<div onclick="menuNav('home')" style="cursor:pointer;color:var(--blue-action)">← Voltar</div>
+<h2>Catálogo</h2>
+<p>Em breve...</p>
+</div>`;
+}
+}
 
-        function validarEEntrar() {
-            estado.nomeUsuario = document.getElementById('nome-f')?.value || 'Usuário';
-            estado.logado = true;
-            navegar('home');
-        }
-
-        function simularAnalise() {
-            rodarAnuncio("IA analisando seu prato...", () => {
-                alert("Refeição Analisada! +450 kcal");
-                estado.calorias += 450;
-                navegar('home');
-            });
-        }
-
-        render();
-    </script>
+render();
+</script>
 </body>
 </html>
