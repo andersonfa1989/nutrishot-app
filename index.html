@@ -2,184 +2,267 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <title>NutriShot Elements Ultra</title>
     
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6941311170472131" crossorigin="anonymous"></script>
-
     <style>
-        :root { 
-            --primary: #2ab573; 
-            --blue-action: #2490eb; 
-            --bg: #f9fafb; 
-            --water: #3498db;
+        :root {
+            --primary: #2ab573;
+            --blue: #2490eb;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-dark: #2d3436;
             --danger: #ff4757;
         }
-        body { margin: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #333; padding-bottom: 40px; overflow-x: hidden; }
-        
-        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 10000; transition: 0.3s; box-shadow: 2px 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-        .sidebar.active { left: 0; }
-        .sidebar-header { padding: 40px 20px 20px 20px; background: linear-gradient(135deg, var(--blue-action), var(--primary)); color: white; }
-        .menu-item { padding: 15px 25px; display: flex; align-items: center; gap: 15px; cursor: pointer; font-weight: 500; color: #444; }
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 9999; }
-        .sidebar-overlay.active { display: block; }
 
-        .texto-logo { font-size: 24px; font-weight: 800; background: linear-gradient(to right, #2490eb, #2ab573, #f39c12); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .btn-azul { width: calc(100% - 40px); background: var(--blue-action); color: white; border: none; padding: 18px; border-radius: 30px; margin: 10px 20px; font-size: 18px; font-weight: bold; cursor: pointer; }
-        .card { background: #fff; border-radius: 20px; padding: 20px; margin: 15px 20px; border: 1px solid #eee; }
+        body { 
+            margin: 0; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: var(--bg); 
+            color: var(--text-dark);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Container do Anúncio Overlay (AdMob) */
+        .ad-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 99999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-align: center;
+        }
+
+        .progress-container {
+            width: 80%;
+            height: 4px;
+            background: #333;
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.1s linear;
+        }
+
+        /* Estilos da Interface */
+        .container { padding: 20px; padding-top: 40px; }
+        .card { 
+            background: var(--card-bg); 
+            border-radius: 24px; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05); 
+        }
         
-        .progress-container { width: 100%; height: 10px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--primary); transition: width 0.5s ease; }
+        .header-logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--blue), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+        }
+
+        .btn-main {
+            background: var(--blue);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 16px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-main:active { transform: scale(0.98); }
         
-        .ads-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
-        #bar-progress { width: 0%; height: 100%; background: #2ab573; transition: width 0.1s linear; }
-        .refeicao-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #f1f1f1;
+        }
     </style>
 </head>
 <body>
-
-    <div id="ads-overlay" class="ads-overlay">
-        <div id="ad-text" style="font-size: 18px; font-weight: bold; margin-bottom: 20px;">Carregando Anúncio...</div>
-        <div id="admob-container" style="min-height: 250px;">
-             <ins class="adsbygoogle"
-                 style="display:inline-block;width:300px;height:250px"
-                 data-ad-client="ca-pub-6941311170472131"
-                 data-ad-slot="2257554053"></ins>
-        </div>
-        <div style="width: 70%; height: 8px; background: #333; border-radius: 10px; overflow: hidden; margin-top: 20px;">
-            <div id="bar-progress"></div>
+    <div id="ad-overlay" class="ad-overlay">
+        <h3 id="ad-label">Sincronizando com AdMob...</h3>
+        <div class="progress-container">
+            <div id="ad-progress-bar" class="progress-bar"></div>
         </div>
     </div>
 
-    <div id="app"></div>
+    <div class="container" id="main-view">
+        </div>
 
     <script>
-        /* 1. MEMÓRIA PERMANENTE */
-        let estado = JSON.parse(localStorage.getItem('nutrishot_v6')) || {
-            logado: false, tela: 'home', nomeUsuario: 'Isaac',
-            calorias: 0, 
-            historicoGeral: [], 
-            ultimoReset: new Date().toDateString()
+        /* CONFIGURAÇÃO DOS IDS FORNECIDOS */
+        const ADMOB_CONFIG = {
+            APP_ID: "ca-app-pub-6941311170472131~1202658535",
+            BANNER: "ca-app-pub-6941311170472131/2257554053",
+            INTERSTITIAL: "ca-app-pub-6941311170472131/2273031775",
+            REWARDED: "ca-app-pub-6941311170472131/4221550021"
+        };
+        /* SISTEMA DE PERSISTÊNCIA */
+        const Storage = {
+            get: () => {
+                const data = localStorage.getItem('nutrishot_data_v1');
+                return data ? JSON.parse(data) : {
+                    caloriasHoje: 0,
+                    historico: [], // Array de objetos {data: '', hora: '', cal: 0, nome: ''}
+                    ultimaData: new Date().toDateString(),
+                    perfil: { nome: "Isaac" }
+                };
+            },
+            save: (dados) => {
+                localStorage.setItem('nutrishot_data_v1', JSON.stringify(dados));
+            }
         };
 
-        function salvar() { localStorage.setItem('nutrishot_v6', JSON.stringify(estado)); }
+        let appData = Storage.get();
 
-        /* 2. GESTÃO DE CALORIAS (RESET 24H) */
-        function verificarResetDiario() {
+        /* VERIFICADOR DE RESET DIÁRIO (Zera calorias, mantém histórico) */
+        function checkDailyReset() {
             const hoje = new Date().toDateString();
-            if (estado.ultimoReset !== hoje) {
-                estado.calorias = 0; 
-                estado.ultimoReset = hoje;
-                salvar();
+            if (appData.ultimaData !== hoje) {
+                appData.caloriasHoje = 0;
+                appData.ultimaData = hoje;
+                Storage.save(appData);
             }
         }
+        /* GERENCIADOR DE ANÚNCIOS */
+        function processarAnuncio(tipo, acaoSucesso) {
+            const overlay = document.getElementById('ad-overlay');
+            const bar = document.getElementById('ad-progress-bar');
+            const label = document.getElementById('ad-label');
 
-        /* LÓGICA DE ANÚNCIO ADMOB */
-        function rodarAnuncio(texto, callback) {
-            const overlay = document.getElementById('ads-overlay');
-            const bar = document.getElementById('bar-progress');
-            document.getElementById('ad-text').innerText = texto;
+            label.innerText = tipo === 'REWARDED' ? "Desbloqueando Conteúdo..." : "Processando Dados...";
             overlay.style.display = 'flex';
 
-            // Comandos para chamar o AdMob se estiver em um App (WebView)
-            if (window.Android && window.Android.showInterstitial) {
-                window.Android.showInterstitial(); // Exemplo para Apps Android
-            }
-
-            let p = 0;
-            const tempo = setInterval(() => {
-                p += 2; bar.style.width = p + '%';
-                if(p >= 100) { 
-                    clearInterval(tempo); 
-                    overlay.style.display = 'none'; 
-                    bar.style.width = '0%'; 
-                    callback(); 
+            // Comandos para o WebView do Android detectar a intenção de exibir AdMob
+            try {
+                if (window.Android) {
+                    if (tipo === 'INTERSTITIAL') window.Android.showInterstitial();
+                    if (tipo === 'REWARDED') window.Android.showRewarded();
                 }
-            }, 50);
+            } catch (e) { console.warn("Ambiente web: Simulando AdMob"); }
+
+            let progresso = 0;
+            const intervalo = setInterval(() => {
+                progresso += 4;
+                bar.style.width = progresso + '%';
+
+                if (progresso >= 100) {
+                    clearInterval(intervalo);
+                    overlay.style.display = 'none';
+                    bar.style.width = '0%';
+                    acaoSucesso(); // Executa a função do app após o anúncio
+                }
+            }, 80); // Simula o tempo de carregamento/exibição
+        }
+        /* NAVEGAÇÃO E LÓGICA DE NEGÓCIO */
+        function navegar(tela) {
+            window.currentScreen = tela;
+            render();
         }
 
-        /* 3. AGRUPAMENTO INTELIGENTE E REGISTRO */
-        function confirmarAnalise() {
-            rodarAnuncio("Analisando Prato via AdMob...", () => {
-                const cal = Math.floor(Math.random() * 200 + 350);
-                estado.calorias += cal;
+        function adicionarRefeicao(nome) {
+            // Exibe anúncio Intersticial antes de mostrar o resultado
+            processarAnuncio('INTERSTITIAL', () => {
+                const caloriasGeradas = Math.floor(Math.random() * (600 - 200 + 1)) + 200;
                 
-                estado.historicoGeral.unshift({
-                    tipo: estado.tempRefeicao || 'Refeição',
-                    cal: cal,
+                const novaEntrada = {
+                    id: Date.now(),
+                    nome: nome,
+                    cal: caloriasGeradas,
                     data: new Date().toLocaleDateString('pt-BR'),
-                    hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})
-                });
+                    hora: new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})
+                };
 
-                salvar();
-                render();
+                appData.caloriasHoje += caloriasGeradas;
+                appData.historico.unshift(novaEntrada); // Adiciona no início da lista
+                Storage.save(appData);
+                navegar('home');
             });
         }
-
         function render() {
-            const root = document.getElementById('app');
+            const root = document.getElementById('main-view');
             
-            if (estado.tela === 'home') {
+            if (!window.currentScreen || window.currentScreen === 'home') {
                 root.innerHTML = `
-                    <div style="padding: 20px;">
-                        <h1 class="texto-logo">NutriShot</h1>
-                        <div class="card" style="background: var(--primary); color: white;">
-                            <small>Calorias de Hoje</small>
-                            <h2>${estado.calorias} kcal</h2>
-                        </div>
+                    <div class="header-logo">NutriShot Pro</div>
+                    
+                    <div class="card" style="background: linear-gradient(135deg, var(--primary), #20965f); color: white;">
+                        <small>Total de Hoje</small>
+                        <h1 style="margin: 5px 0 0 0; font-size: 36px;">${appData.caloriasHoje} <span style="font-size: 18px;">kcal</span></h1>
+                    </div>
 
-                        <div class="card" style="text-align:center; background:#eee; min-height:50px;">
-                            <small>Publicidade AdMob</small>
-                            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6941311170472131" data-ad-slot="2257554053" data-ad-format="auto"></ins>
-                        </div>
+                    <button class="btn-main" onclick="adicionarRefeicao('Refeição Rápida')">📸 ANALISAR REFEIÇÃO</button>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button class="btn-main" style="background: #6c757d; flex: 1;" onclick="navegar('historico')">📋 HISTÓRICO</button>
+                        <button class="btn-main" style="background: var(--primary); flex: 1;" onclick="processarAnuncio('REWARDED', () => alert('Dica: Proteínas ajudam na saciedade!'))">💡 DICA AD</button>
+                    </div>
 
-                        <div class="card">
-                            <b>Dica Diária</b>
-                            <button class="btn-azul" onclick="rodarAnuncio('Carregando Dica...', () => alert('Coma mais fibras!'))" style="margin:10px 0; width:100%;">VER DICA (ADS)</button>
-                        </div>
-
-                        <div class="card">
-                            <b>Histórico</b>
-                            ${estado.historicoGeral.slice(0, 3).map(h => `
-                                <div class="refeicao-item"><span>${h.tipo}</span><b>${h.cal} kcal</b></div>
-                            `).join('')}
-                            <button onclick="estado.tela='historico'; render()" style="width:100%; background:none; border:none; color:var(--blue-action); margin-top:10px;">Ver histórico completo</button>
-                        </div>
-
-                        <button class="btn-azul" onclick="confirmarAnalise()">📸 ANALISAR COMIDA</button>
+                    <div style="margin-top: 30px;">
+                        <h3>Últimas Atividades</h3>
+                        ${appData.historico.slice(0, 3).map(i => `
+                            <div class="history-item">
+                                <span>${i.nome} <br><small style="color: #888">${i.hora}</small></span>
+                                <b style="color: var(--primary)">+${i.cal} kcal</b>
+                            </div>
+                        `).join('')}
                     </div>
                 `;
-            }
-
-            if (estado.tela === 'historico') {
-                const grupos = estado.historicoGeral.reduce((acc, obj) => {
-                    acc[obj.data] = acc[obj.data] || [];
-                    acc[obj.data].push(obj);
+            } else if (window.currentScreen === 'historico') {
+                // Agrupando por data para uma visão limpa
+                const grupos = appData.historico.reduce((acc, item) => {
+                    acc[item.data] = acc[item.data] || [];
+                    acc[item.data].push(item);
                     return acc;
                 }, {});
 
                 root.innerHTML = `
-                    <div style="padding: 20px;">
-                        <button onclick="estado.tela='home'; render()">← Voltar</button>
-                        <h2>Seu Histórico Permanente</h2>
-                        ${Object.keys(grupos).map(data => `
-                            <div style="font-weight:bold; margin-top:15px; color: var(--primary)">${data}</div>
-                            <div class="card">
-                                ${grupos[data].map(item => `
-                                    <div class="refeicao-item">
-                                        <span>${item.tipo} <br> <small>${item.hora}</small></span>
-                                        <b>${item.cal} kcal</b>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        `).join('')}
-                        <button class="btn-azul" style="background:var(--danger)" onclick="if(confirm('Limpar histórico?')){estado.historicoGeral=[]; salvar(); render()}">LIMPAR TUDO</button>
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                        <button onclick="navegar('home')" style="border:none; background:none; font-size: 24px; cursor:pointer;">←</button>
+                        <h2 style="margin:0">Meu Histórico</h2>
                     </div>
+
+                    ${Object.keys(grupos).length === 0 ? '<p>Nenhum registro encontrado.</p>' : ''}
+
+                    ${Object.keys(grupos).map(data => `
+                        <div style="margin: 20px 0 10px 5px; font-weight: bold; color: var(--blue);">${data}</div>
+                        <div class="card">
+                            ${grupos[data].map(i => `
+                                <div class="history-item">
+                                    <span>${i.nome} <small>(${i.hora})</small></span>
+                                    <b>${i.cal} kcal</b>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `).join('')}
+                    
+                    <button class="btn-main" style="background: var(--danger); margin-top: 40px;" 
+                            onclick="if(confirm('Limpar tudo?')){appData.historico=[]; Storage.save(appData); navegar('historico')}">
+                        LIMPAR TODO O HISTÓRICO
+                    </button>
                 `;
             }
         }
 
-        verificarResetDiario();
+        // Inicialização
+        checkDailyReset();
         render();
     </script>
 </body>
