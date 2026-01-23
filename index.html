@@ -1,239 +1,240 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
 <title>NutriShot Elements</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6941311170472131" crossorigin="anonymous"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-:root{
- --primary:#2ab573;
- --blue:#2490eb;
- --bg:#f9fafb;
- --water:#3498db;
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f6fa;
 }
-body{
- margin:0;
- font-family:Segoe UI,Roboto,sans-serif;
- background:var(--bg);
- padding-bottom:90px;
+.app {
+    display: flex;
+    height: 100vh;
 }
-.card{
- background:#fff;
- border-radius:20px;
- padding:20px;
- margin:15px 20px;
- border:1px solid #eee;
+.menu {
+    width: 240px;
+    background: #1e272e;
+    color: #fff;
+    padding: 15px;
 }
-.sidebar{
- position:fixed;
- top:0; left:-280px;
- width:280px; height:100%;
- background:#fff;
- z-index:1000;
- transition:.3s;
- box-shadow:2px 0 15px rgba(0,0,0,.1);
+.menu h2 {
+    text-align: center;
+    margin-bottom: 20px;
 }
-.sidebar.active{left:0}
-.sidebar-header{
- padding:40px 20px;
- background:linear-gradient(135deg,var(--blue),var(--primary));
- color:#fff;
+.menu-item {
+    padding: 10px;
+    margin-bottom: 8px;
+    background: #2f3640;
+    cursor: pointer;
+    border-radius: 6px;
 }
-.menu-item{
- padding:15px 25px;
- cursor:pointer;
- font-weight:500;
+.menu-item:hover {
+    background: #40739e;
 }
-.menu-item:hover{background:#f0f7f4}
-.overlay{
- position:fixed;
- inset:0;
- background:rgba(0,0,0,.4);
- display:none;
- z-index:999;
+.conteudo {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
 }
-.overlay.active{display:block}
-.fab{
- position:fixed;
- bottom:110px;
- right:20px;
- width:65px; height:65px;
- border-radius:50%;
- background:#000;
- color:#fff;
- font-size:28px;
- border:none;
+.card {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
 }
-.banner-fixed{
- position:fixed;
- bottom:0; left:0;
- width:100%;
- background:#fff;
- padding:6px 0;
- border-top:1px solid #ddd;
- z-index:999;
+.produto img {
+    width: 100%;
+    border-radius: 6px;
 }
-.progress{
- height:10px;
- background:#eee;
- border-radius:10px;
- overflow:hidden;
+.botao {
+    padding: 10px;
+    background: #27ae60;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
 }
-.progress div{
- height:100%;
- background:var(--primary);
+.botao:hover {
+    opacity: 0.9;
 }
-canvas{width:100%}
+.footer-banner {
+    position: fixed;
+    bottom: 0;
+    left: 240px;
+    right: 0;
+    background: #fbc531;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+.hidden {
+    display: none;
+}
 </style>
 </head>
 
 <body>
+<div class="app">
+    <div class="menu">
+        <h2>NutriShot</h2>
+        <div class="menu-item" onclick="mostrar('dashboard')">🏠 Dashboard</div>
+        <div class="menu-item" onclick="mostrar('loja')">🛒 Loja de Suplementos</div>
+        <div class="menu-item" onclick="mostrar('medidas')">📏 Atualizar Medidas</div>
+        <div class="menu-item" onclick="mostrar('plano')">🥗 Plano Alimentar</div>
+        <div class="menu-item" onclick="mostrar('grafico')">📊 Gráfico Semanal</div>
+        <div class="menu-item" onclick="mostrar('historico')">📜 Histórico Diário</div>
+        <div class="menu-item" onclick="mostrar('premium')">💎 Premium</div>
+        <div class="menu-item" onclick="sair()">🚪 Sair</div>
+    </div>
 
-<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    <div class="conteudo">
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="card">
+            <h3>Bem-vindo 👋</h3>
+            <p>Acompanhe sua evolução diária.</p>
+        </div>
 
-<div class="sidebar" id="sidebar">
- <div class="sidebar-header">
-  <b>NutriShot</b><br>
-  <small id="userName"></small>
- </div>
+        <!-- LOJA -->
+        <div id="loja" class="card hidden">
+            <h3>🛒 Loja de Suplementos</h3>
 
- <div class="menu-item" onclick="nav('home')">🏠 Dashboard</div>
- <div class="menu-item" onclick="nav('catalogo')">🛒 Loja de Suplementos</div>
- <div class="menu-item" onclick="atualizarMedidas()">⚖️ Atualizar Medidas</div>
- <div class="menu-item" onclick="gerarPlanoWhats()">📋 Plano Alimentar (WhatsApp)</div>
- <div class="menu-item" onclick="nav('grafico')">📊 Gráfico Semanal</div>
- <div class="menu-item" onclick="nav('historico')">📜 Histórico Diário</div>
- <div class="menu-item" onclick="ativarPremium()">💎 Premium</div>
- <div class="menu-item" onclick="logout()" style="color:#e74c3c;border-top:1px solid #eee">🚪 Sair</div>
+            <div class="produto">
+                <p>Creatina 100g</p>
+                <a href="https://seulink.com/creatina-100g" target="_blank">Comprar</a>
+            </div>
+
+            <div class="produto">
+                <p>Whey Creme</p>
+                <a href="https://seulink.com/wey-creme" target="_blank">Comprar</a>
+            </div>
+
+            <div class="produto">
+                <p>Whey Chocolate</p>
+                <a href="https://seulink.com/wey-choco" target="_blank">Comprar</a>
+            </div>
+
+            <div class="produto">
+                <p>Whey Morango</p>
+                <a href="https://seulink.com/wey-moran" target="_blank">Comprar</a>
+            </div>
+
+            <div class="produto">
+                <p>Hipercalórico Chocolate</p>
+                <a href="https://seulink.com/Hipercalórico-choco" target="_blank">Comprar</a>
+            </div>
+
+            <div class="produto">
+                <p>Hipercalórico Cookies</p>
+                <a href="https://seulink.com/Hipercalórico-cooki" target="_blank">Comprar</a>
+            </div>
+
+            <div class="produto">
+                <p>Termogênico</p>
+                <a href="https://seulink.com/termog" target="_blank">Comprar</a>
+            </div>
+
+            <div class="produto">
+                <p>L-Creatina 1000mg</p>
+                <a href="https://seulink.com/l-creat1000" target="_blank">Comprar</a>
+            </div>
+
+            <div class="produto">
+                <p>L-Creatina 2000mg</p>
+                <a href="https://seulink.com/l-creat2000" target="_blank">Comprar</a>
+            </div>
+
+            <div class="produto">
+                <p>Psyllium</p>
+                <a href="https://seulink.com/psyllium" target="_blank">Comprar</a>
+            </div>
+        </div>
+
+        <!-- MEDIDAS -->
+        <div id="medidas" class="card hidden">
+            <h3>📏 Atualizar Medidas</h3>
+            <input placeholder="Peso (kg)">
+            <input placeholder="Altura (cm)">
+            <button class="botao">Salvar</button>
+        </div>
+
+        <!-- PLANO -->
+        <div id="plano" class="card hidden">
+            <h3>🥗 Plano Alimentar</h3>
+            <select id="objetivo">
+                <option value="emagrecer">Emagrecer</option>
+                <option value="massa">Ganhar Massa</option>
+            </select>
+            <button class="botao" onclick="enviarWhats()">Enviar WhatsApp</button>
+        </div>
+
+        <!-- GRÁFICO -->
+        <div id="grafico" class="card hidden">
+            <h3>📊 Gráfico Semanal</h3>
+            <canvas id="graficoSemanal"></canvas>
+        </div>
+
+        <!-- HISTÓRICO -->
+        <div id="historico" class="card hidden">
+            <h3>📜 Histórico Diário</h3>
+            <p>Refeições e hidratação registradas por dia.</p>
+        </div>
+
+        <!-- PREMIUM -->
+        <div id="premium" class="card hidden">
+            <h3>💎 Premium</h3>
+            <p>Remova anúncios e desbloqueie relatórios.</p>
+            <button class="botao">Assinar</button>
+        </div>
+    </div>
 </div>
 
-<div id="app"></div>
-
-<div class="banner-fixed" id="banner">
- <ins class="adsbygoogle"
-  style="display:block"
-  data-ad-client="ca-pub-6941311170472131"
-  data-ad-slot="2257554053"
-  data-ad-format="auto"></ins>
+<div class="footer-banner">
+    🚀 Versão Free — Assine o Premium
 </div>
 
 <script>
-/* ================= ESTADO ================= */
-const estado = JSON.parse(localStorage.getItem("nutrishot_final")) || {
- logado:false,
- nome:"Usuário",
- peso:70,
- altura:170,
- objetivo:"perda",
- calorias:0,
- agua:0,
- historico:[],
- premium:false,
- tela:"home",
- ultimoReset:""
-};
+function mostrar(id) {
+    document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
 
-/* =============== SUPLEMENTOS =============== */
-const SUPLEMENTOS = {
- ganho:[
-  {nome:"Creatina Growth 100g",foto:"creatina-100g.png",link:"https://amzn.to/4b47g9o"},
-  {nome:"Whey Chocolate",foto:"wey-choco.png",link:"https://amzn.to/3LjWMIB"},
-  {nome:"Whey Morango",foto:"wey-moran.png",link:"https://amzn.to/4sPsdvg"},
-  {nome:"Whey Creme",foto:"wey-creme.png",link:"https://amzn.to/4qq9ODl"},
-  {nome:"Gainer Chocolate",foto:"Hipercalórico-choco.png",link:"https://amzn.to/4qpZKKC"},
-  {nome:"Gainer Cookies",foto:"Hipercalórico-cooki.png",link:"https://amzn.to/4bC9A7C"}
- ],
- perda:[
-  {nome:"Psyllium Cápsulas",foto:"Psyllium-caps.png",link:"https://amzn.to/4sBfMmq"},
-  {nome:"Psyllium em Pó",foto:"Psyllium-po.png",link:"https://amzn.to/3YINEAk"},
-  {nome:"Ultra Burn Termogênico",foto:"termog.png",link:"https://amzn.to/4b5phUQ"},
-  {nome:"L-Carnitina 2000mg",foto:"l-creat2000.png",link:"https://amzn.to/4bBHcCw"},
-  {nome:"L-Carnitina 1000mg",foto:"l-creat1000.png",link:"https://amzn.to/3LJAv6S"}
- ]
-};
-
-/* ================= FUNÇÕES ================= */
-function salvar(){localStorage.setItem("nutrishot_final",JSON.stringify(estado))}
-function toggleMenu(){sidebar.classList.toggle("active");overlay.classList.toggle("active")}
-function nav(t){estado.tela=t;salvar();render();toggleMenu()}
-function logout(){estado.logado=false;salvar();render()}
-function ativarPremium(){estado.premium=true;salvar();alert("Premium ativado!");render()}
-
-function atualizarMedidas(){
- const p=prompt("Peso (kg):",estado.peso);
- const a=prompt("Altura (cm):",estado.altura);
- if(p&&a){estado.peso=p;estado.altura=a;salvar()}
+    if (id === 'grafico') renderGrafico();
 }
 
-function gerarPlanoWhats(){
- let plano="";
- if(estado.objetivo==="perda"){
-  plano=`PLANO PARA EMAGRECIMENTO 🥗%0A
- Café: ovos + fruta%0A
- Almoço: frango + arroz integral + salada%0A
- Lanche: iogurte + aveia%0A
- Jantar: peixe + legumes%0A
- Água: ${estado.peso*35}ml`;
- }else{
-  plano=`PLANO PARA GANHO DE MASSA 💪%0A
- Café: ovos + pão + whey%0A
- Almoço: carne + arroz + feijão%0A
- Lanche: banana + pasta de amendoim%0A
- Jantar: frango + batata doce%0A
- Água: ${estado.peso*40}ml`;
- }
- window.open("https://wa.me/?text="+plano,"_blank");
+function renderGrafico() {
+    const ctx = document.getElementById('graficoSemanal');
+    if (!ctx) return;
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+            datasets: [{
+                label: 'Kcal',
+                data: [1800,2000,1900,2100,1950,2200,2000]
+            }]
+        }
+    });
 }
 
-/* ================= RENDER ================= */
-function render(){
- banner.style.display=estado.premium?"none":"block";
- userName.innerText=estado.nome;
+function enviarWhats() {
+    const obj = document.getElementById('objetivo').value;
+    let texto = obj === 'emagrecer'
+        ? 'Plano para emagrecimento: café leve, almoço equilibrado, jantar low carb.'
+        : 'Plano para ganho de massa: proteína alta, carbo bom, pós treino reforçado.';
 
- if(!estado.logado){
-  app.innerHTML=`
-   <div style="padding:40px;text-align:center">
-    <h2>NutriShot Elements</h2>
-    <input id="n" placeholder="Seu nome">
-    <br><br>
-    <button onclick="estado.nome=n.value||'Usuário';estado.logado=true;salvar();render()">Entrar</button>
-   </div>`;
-  return;
- }
-
- if(estado.tela==="home"){
-  app.innerHTML=`
-   <div style="padding:20px">
-    <div onclick="toggleMenu()">☰</div>
-    <div class="card">
-     <b>Objetivo</b><br>
-     <button onclick="estado.objetivo='perda';render()">Emagrecer</button>
-     <button onclick="estado.objetivo='ganho';render()">Ganho Massa</button>
-    </div>
-   </div>`;
- }
-
- if(estado.tela==="catalogo"){
-  const lista=estado.objetivo==="ganho"?SUPLEMENTOS.ganho:SUPLEMENTOS.perda;
-  app.innerHTML=`
-   <div style="padding:20px">
-    <h3>Suplementos</h3>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-     ${lista.map(p=>`
-      <div class="card" style="text-align:center">
-       <img src="${p.foto}" style="width:100%;height:90px;object-fit:contain">
-       <b>${p.nome}</b>
-       <a href="${p.link}" target="_blank"><button>Ver Oferta</button></a>
-      </div>`).join("")}
-    </div>
-   </div>`;
- }
+    window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`);
 }
 
-render();
+function sair() {
+    alert('Sessão encerrada');
+}
 </script>
 </body>
 </html>
