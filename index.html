@@ -22,8 +22,8 @@ body{
 }
 .card{
  background:#fff;
- border-radius:18px;
- padding:18px;
+ border-radius:20px;
+ padding:20px;
  margin:15px 20px;
  border:1px solid #eee;
 }
@@ -58,9 +58,9 @@ body{
 .overlay.active{display:block}
 .fab{
  position:fixed;
- bottom:100px;
+ bottom:110px;
  right:20px;
- width:60px; height:60px;
+ width:65px; height:65px;
  border-radius:50%;
  background:#000;
  color:#fff;
@@ -72,7 +72,7 @@ body{
  bottom:0; left:0;
  width:100%;
  background:#fff;
- padding:5px 0;
+ padding:6px 0;
  border-top:1px solid #ddd;
  z-index:999;
 }
@@ -99,11 +99,15 @@ canvas{width:100%}
   <b>NutriShot</b><br>
   <small id="userName"></small>
  </div>
+
  <div class="menu-item" onclick="nav('home')">🏠 Dashboard</div>
- <div class="menu-item" onclick="nav('historico')">📜 Histórico Diário</div>
+ <div class="menu-item" onclick="nav('catalogo')">🛒 Loja de Suplementos</div>
+ <div class="menu-item" onclick="atualizarMedidas()">⚖️ Atualizar Medidas</div>
+ <div class="menu-item" onclick="gerarPlanoWhats()">📋 Plano Alimentar (WhatsApp)</div>
  <div class="menu-item" onclick="nav('grafico')">📊 Gráfico Semanal</div>
+ <div class="menu-item" onclick="nav('historico')">📜 Histórico Diário</div>
  <div class="menu-item" onclick="ativarPremium()">💎 Premium</div>
- <div class="menu-item" onclick="logout()" style="color:#e74c3c">🚪 Sair</div>
+ <div class="menu-item" onclick="logout()" style="color:#e74c3c;border-top:1px solid #eee">🚪 Sair</div>
 </div>
 
 <div id="app"></div>
@@ -117,9 +121,13 @@ canvas{width:100%}
 </div>
 
 <script>
-const estado = JSON.parse(localStorage.getItem("nutrishot_v6")) || {
+/* ================= ESTADO ================= */
+const estado = JSON.parse(localStorage.getItem("nutrishot_final")) || {
  logado:false,
  nome:"Usuário",
+ peso:70,
+ altura:170,
+ objetivo:"perda",
  calorias:0,
  agua:0,
  historico:[],
@@ -128,81 +136,68 @@ const estado = JSON.parse(localStorage.getItem("nutrishot_v6")) || {
  ultimoReset:""
 };
 
-function salvar(){
- localStorage.setItem("nutrishot_v6",JSON.stringify(estado));
+/* =============== SUPLEMENTOS =============== */
+const SUPLEMENTOS = {
+ ganho:[
+  {nome:"Creatina Growth 100g",foto:"creatina-100g.png",link:"https://amzn.to/4b47g9o"},
+  {nome:"Whey Chocolate",foto:"wey-choco.png",link:"https://amzn.to/3LjWMIB"},
+  {nome:"Whey Morango",foto:"wey-moran.png",link:"https://amzn.to/4sPsdvg"},
+  {nome:"Whey Creme",foto:"wey-creme.png",link:"https://amzn.to/4qq9ODl"},
+  {nome:"Gainer Chocolate",foto:"Hipercalórico-choco.png",link:"https://amzn.to/4qpZKKC"},
+  {nome:"Gainer Cookies",foto:"Hipercalórico-cooki.png",link:"https://amzn.to/4bC9A7C"}
+ ],
+ perda:[
+  {nome:"Psyllium Cápsulas",foto:"Psyllium-caps.png",link:"https://amzn.to/4sBfMmq"},
+  {nome:"Psyllium em Pó",foto:"Psyllium-po.png",link:"https://amzn.to/3YINEAk"},
+  {nome:"Ultra Burn Termogênico",foto:"termog.png",link:"https://amzn.to/4b5phUQ"},
+  {nome:"L-Carnitina 2000mg",foto:"l-creat2000.png",link:"https://amzn.to/4bBHcCw"},
+  {nome:"L-Carnitina 1000mg",foto:"l-creat1000.png",link:"https://amzn.to/3LJAv6S"}
+ ]
+};
+
+/* ================= FUNÇÕES ================= */
+function salvar(){localStorage.setItem("nutrishot_final",JSON.stringify(estado))}
+function toggleMenu(){sidebar.classList.toggle("active");overlay.classList.toggle("active")}
+function nav(t){estado.tela=t;salvar();render();toggleMenu()}
+function logout(){estado.logado=false;salvar();render()}
+function ativarPremium(){estado.premium=true;salvar();alert("Premium ativado!");render()}
+
+function atualizarMedidas(){
+ const p=prompt("Peso (kg):",estado.peso);
+ const a=prompt("Altura (cm):",estado.altura);
+ if(p&&a){estado.peso=p;estado.altura=a;salvar()}
 }
 
-function toggleMenu(){
- sidebar.classList.toggle("active");
- overlay.classList.toggle("active");
-}
-
-function nav(t){
- estado.tela=t;
- salvar();
- render();
- toggleMenu();
-}
-
-function logout(){
- estado.logado=false;
- salvar();
- render();
-}
-
-function resetDiario(){
- const hoje=new Date().toDateString();
- if(estado.ultimoReset!==hoje){
-  estado.calorias=0;
-  estado.agua=0;
-  estado.historico=[];
-  estado.ultimoReset=hoje;
-  salvar();
+function gerarPlanoWhats(){
+ let plano="";
+ if(estado.objetivo==="perda"){
+  plano=`PLANO PARA EMAGRECIMENTO 🥗%0A
+ Café: ovos + fruta%0A
+ Almoço: frango + arroz integral + salada%0A
+ Lanche: iogurte + aveia%0A
+ Jantar: peixe + legumes%0A
+ Água: ${estado.peso*35}ml`;
+ }else{
+  plano=`PLANO PARA GANHO DE MASSA 💪%0A
+ Café: ovos + pão + whey%0A
+ Almoço: carne + arroz + feijão%0A
+ Lanche: banana + pasta de amendoim%0A
+ Jantar: frango + batata doce%0A
+ Água: ${estado.peso*40}ml`;
  }
+ window.open("https://wa.me/?text="+plano,"_blank");
 }
 
-function addRefeicao(){
- const cal=Math.floor(Math.random()*400+300);
- estado.calorias+=cal;
- estado.historico.push({
-  tipo:"Refeição",
-  cal,
-  agua:0,
-  data:new Date().toDateString()
- });
- salvar();
- render();
-}
-
-function beberAgua(){
- estado.agua+=250;
- estado.historico.push({
-  tipo:"Água",
-  cal:0,
-  agua:250,
-  data:new Date().toDateString()
- });
- salvar();
- render();
-}
-
-function ativarPremium(){
- estado.premium=true;
- salvar();
- alert("Premium ativado!");
- render();
-}
-
+/* ================= RENDER ================= */
 function render(){
- resetDiario();
- document.getElementById("userName").innerText=estado.nome;
  banner.style.display=estado.premium?"none":"block";
+ userName.innerText=estado.nome;
 
  if(!estado.logado){
   app.innerHTML=`
    <div style="padding:40px;text-align:center">
     <h2>NutriShot Elements</h2>
-    <input placeholder="Seu nome" id="n" style="padding:10px">
+    <input id="n" placeholder="Seu nome">
     <br><br>
     <button onclick="estado.nome=n.value||'Usuário';estado.logado=true;salvar();render()">Entrar</button>
    </div>`;
@@ -214,57 +209,28 @@ function render(){
    <div style="padding:20px">
     <div onclick="toggleMenu()">☰</div>
     <div class="card">
-     <b>Calorias</b>
-     <h2>${estado.calorias} kcal</h2>
-     <div class="progress"><div style="width:${Math.min(estado.calorias/2500*100,100)}%"></div></div>
+     <b>Objetivo</b><br>
+     <button onclick="estado.objetivo='perda';render()">Emagrecer</button>
+     <button onclick="estado.objetivo='ganho';render()">Ganho Massa</button>
     </div>
-
-    <div class="card">
-     <b>Hidratação</b>
-     <h2>${estado.agua} ml</h2>
-     <button onclick="beberAgua()">+250ml</button>
-    </div>
-   </div>
-   <button class="fab" onclick="addRefeicao()">+</button>`;
- }
-
- if(estado.tela==="historico"){
-  app.innerHTML=`
-   <div style="padding:20px">
-    <h3>Histórico</h3>
-    ${estado.historico.map(h=>`
-     <div class="card">
-      <b>${h.tipo}</b><br>
-      ${h.cal? h.cal+" kcal":""}
-      ${h.agua? h.agua+" ml":""}
-      <small>${h.data}</small>
-     </div>`).join("")}
    </div>`;
  }
 
- if(estado.tela==="grafico"){
+ if(estado.tela==="catalogo"){
+  const lista=estado.objetivo==="ganho"?SUPLEMENTOS.ganho:SUPLEMENTOS.perda;
   app.innerHTML=`
    <div style="padding:20px">
-    <h3>Gráfico Semanal</h3>
-    <canvas id="graf"></canvas>
+    <h3>Suplementos</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+     ${lista.map(p=>`
+      <div class="card" style="text-align:center">
+       <img src="${p.foto}" style="width:100%;height:90px;object-fit:contain">
+       <b>${p.nome}</b>
+       <a href="${p.link}" target="_blank"><button>Ver Oferta</button></a>
+      </div>`).join("")}
+    </div>
    </div>`;
-  desenharGrafico();
  }
-}
-
-function desenharGrafico(){
- const ctx=document.getElementById("graf").getContext("2d");
- const dias=[0,0,0,0,0,0,0];
- estado.historico.forEach(h=>{
-  const d=new Date(h.data).getDay();
-  const i=d===0?6:d-1;
-  dias[i]+=h.cal;
- });
- ctx.clearRect(0,0,300,150);
- dias.forEach((v,i)=>{
-  ctx.fillStyle="#2ab573";
-  ctx.fillRect(30+i*40,140-v/20,25,v/20);
- });
 }
 
 render();
