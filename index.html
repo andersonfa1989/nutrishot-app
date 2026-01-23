@@ -1,177 +1,209 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>NutriShot AI</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>NutriShot Elements</title>
+
+<!-- Google Ads -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6941311170472131" crossorigin="anonymous"></script>
 
 <style>
-    :root {
-        --primary-green: #2db27d;
-        --primary-blue: #2490eb;
-        --bg-light: #f4f6f8;
-        --text-dark: #333;
-        --sidebar-bg: #ffffff;
-        --active-item-bg: #f0fdf4;
-    }
-
-    body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg-light); display: flex; }
-    .hidden { display: none; }
-
-    /* SIDEBAR ESTILO IMAGEM */
-    .menu {
-        width: 280px;
-        background: var(--sidebar-bg);
-        height: 100vh;
-        position: fixed;
-        border-right: 1px solid #eee;
-        display: flex;
-        flex-direction: column;
-        box-shadow: 2px 0 5px rgba(0,0,0,0.02);
-    }
-
-    .sidebar-header {
-        background: linear-gradient(135deg, #2490eb 0%, #2db27d 100%);
-        padding: 40px 25px;
-        color: #fff;
-    }
-
-    .sidebar-header h2 { margin: 0; font-size: 26px; font-weight: 800; }
-    .sidebar-header p { margin: 5px 0 0; opacity: 0.9; font-size: 14px; }
-
-    .menu-list { flex-grow: 1; padding-top: 10px; }
-
-    .menu a {
-        display: flex;
-        align-items: center;
-        padding: 15px 25px;
-        color: #555;
-        text-decoration: none;
-        font-weight: 500;
-        cursor: pointer;
-        border-left: 4px solid transparent;
-        transition: 0.2s;
-    }
-
-    .menu a:hover { background: var(--active-item-bg); color: var(--primary-green); }
-    
-    .menu a.active {
-        background: var(--active-item-bg);
-        color: var(--primary-green);
-        border-left: 4px solid var(--primary-green);
-    }
-
-    .menu a.logout {
-        color: #e67e22; /* Cor coral conforme a imagem */
-        border-top: 1px solid #f5f5f5;
-        margin-top: auto;
-        padding-bottom: 30px;
-    }
-
-    /* CONTEÚDO */
-    .content { margin-left: 280px; padding: 30px; width: 100%; }
-    .card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .banner { background: #6c5ce7; color: #fff; padding: 15px; border-radius: 12px; margin-bottom: 20px; }
-    
-    .btn { padding: 12px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
-    .btn-green { background: var(--primary-green); color: #fff; }
-    .btn-blue { background: var(--primary-blue); color: #fff; }
-
-    .float-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; font-size: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(45, 178, 125, 0.4); }
-    
-    .progress { height: 12px; background: #eee; border-radius: 10px; overflow: hidden; margin: 15px 0; }
-    .progress div { height: 100%; background: var(--primary-green); transition: 0.3s; }
+:root{
+  --primary:#2ab573;
+  --blue:#2490eb;
+  --bg:#f9fafb;
+}
+body{
+  margin:0;
+  font-family:Segoe UI,Roboto,sans-serif;
+  background:var(--bg);
+  color:#333;
+  overflow-x:hidden;
+}
+.card{
+  background:#fff;
+  border-radius:18px;
+  padding:18px;
+  margin:15px;
+  box-shadow:0 4px 15px rgba(0,0,0,.05);
+}
+button{
+  border:none;
+  border-radius:14px;
+  padding:14px;
+  font-weight:bold;
+  cursor:pointer;
+}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-blue{background:var(--blue);color:#fff;}
+/* MENU */
+.sidebar{
+  position:fixed;
+  top:0;left:-260px;
+  width:260px;height:100%;
+  background:#fff;
+  z-index:9999;
+  transition:.3s;
+  box-shadow:2px 0 15px rgba(0,0,0,.15);
+}
+.sidebar.active{left:0}
+.sidebar header{
+  padding:30px 20px;
+  background:linear-gradient(135deg,var(--blue),var(--primary));
+  color:#fff;
+}
+.menu-item{
+  padding:15px 22px;
+  cursor:pointer;
+  font-weight:500;
+}
+.menu-item:hover{background:#f0f7f4}
+.overlay{
+  display:none;
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,.4);
+  z-index:9998;
+}
+.overlay.active{display:block}
+/* TOPO */
+.top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:15px;
+}
+.hamb{font-size:26px;cursor:pointer}
+/* LOJA */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.prod{
+  background:#fff;
+  border-radius:16px;
+  padding:12px;
+  text-align:center;
+  border:1px solid #eee;
+}
+.prod img{
+  width:100%;
+  height:90px;
+  object-fit:contain;
+}
+.ad{
+  margin:15px;
+  border-radius:16px;
+  overflow:hidden;
+  background:#eee;
+  min-height:90px;
+}
 </style>
 </head>
 
 <body>
 
-<div class="menu">
-    <div class="sidebar-header">
-        <h2>NutriShot AI</h2>
-        <p>Isaac • Foco Perda</p>
-    </div>
-    
-    <div class="menu-list">
-        <a id="link-dashboard" class="active" onclick="show('dashboard', 'link-dashboard')">🏠 Dashboard</a>
-        <a id="link-loja" onclick="show('loja', 'link-loja')">🛒 Loja de Suplementos</a>
-        <a id="link-medidas" onclick="show('medidas', 'link-medidas')">⚖️ Atualizar Medidas</a>
-        <a id="link-plano" onclick="show('plano', 'link-plano')">📅 Gerar Plano WhatsApp</a>
-        <a id="link-historico" onclick="show('historico', 'link-historico')">📜 Histórico Diário</a>
-        <a id="link-premium" onclick="show('premium', 'link-premium')">💎 Premium</a>
-    </div>
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
-    <a class="logout" onclick="alert('Sessão encerrada')">🟧 Sair da Conta</a>
+<div class="sidebar" id="sidebar">
+  <header>
+    <b style="font-size:22px">NutriShot</b><br>
+    <small id="userName">Usuário</small>
+  </header>
+
+  <div class="menu-item" onclick="go('home')">🏠 Dashboard</div>
+  <div class="menu-item" onclick="go('shop')">🛒 Loja de Suplementos</div>
+  <div class="menu-item" onclick="alert('Em breve')">📊 Gráfico Semanal</div>
+  <div class="menu-item" onclick="alert('Em breve')">📅 Histórico Diário</div>
+  <div class="menu-item" onclick="alert('Plano enviado via WhatsApp')">📲 Plano WhatsApp</div>
+  <div class="menu-item" onclick="alert('Área Premium')">⭐ Premium</div>
+  <div class="menu-item" onclick="logout()" style="color:#e74c3c">🚪 Sair</div>
 </div>
 
-<div class="content">
-
-    <div id="dashboard" class="page">
-        <div class="banner">🚀 Sequência Ativa • 1 Dia 🔥</div>
-
-        <div class="card">
-            <h4>💧 Hidratação Diária</h4>
-            <div class="progress"><div id="aguaBar" style="width:0%"></div></div>
-            <button class="btn btn-blue" onclick="addAgua()">+ Beber 250ml</button>
-        </div>
-
-        <div class="card">
-            <h4>🔥 Consumo de Calorias</h4>
-            <h2 id="kcal">0 <small style="color:#888; font-size: 14px;">/ 2577 kcal</small></h2>
-        </div>
-
-        <div class="card">
-            <canvas id="grafico" height="100"></canvas>
-        </div>
-    </div>
-
-    <div id="loja" class="page hidden"><div class="card"><h3>🛒 Loja de Suplementos</h3><p>Os melhores produtos para seu foco.</p></div></div>
-    <div id="medidas" class="page hidden"><div class="card"><h3>⚖️ Medidas</h3><p>Peso atual: 85kg</p></div></div>
-    <div id="plano" class="page hidden"><div class="card"><h3>📅 Plano WhatsApp</h3><p>Gerar resumo para o nutricionista.</p></div></div>
-
-</div>
-
-<button class="btn btn-green float-btn" onclick="addRefeicaoRapida()">+</button>
+<div id="app"></div>
 
 <script>
-let kcal=0, agua=0;
+const SUPLEMENTOS = [
+ {nome:"Creatina Growth 100g",img:"creatina-100g.png",link:"https://amzn.to/4b47g9o"},
+ {nome:"Whey Chocolate",img:"wey-choco.png",link:"https://amzn.to/3LjWMIB"},
+ {nome:"Whey Morango",img:"wey-moran.png",link:"https://amzn.to/4sPsdvg"},
+ {nome:"Whey Creme",img:"wey-creme.png",link:"https://amzn.to/4qq9ODl"},
+ {nome:"Gainer Chocolate",img:"Hipercalórico-choco.png",link:"https://amzn.to/4qpZKKC"},
+ {nome:"Gainer Cookies",img:"Hipercalórico-cooki.png",link:"https://amzn.to/4bC9A7C"},
+ {nome:"Termogênico",img:"termog.png",link:"https://amzn.to/4b5phUQ"},
+ {nome:"L-Carnitina 1000mg",img:"l-creat1000.png",link:"https://amzn.to/3LJAv6S"},
+ {nome:"L-Carnitina 2000mg",img:"l-creat2000.png",link:"https://amzn.to/4bBHcCw"}
+];
 
-function show(id, linkId){
-    document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
-    document.querySelectorAll('.menu a').forEach(a=>a.classList.remove('active'));
-    
-    document.getElementById(id).classList.remove('hidden');
-    document.getElementById(linkId).classList.add('active');
+let tela = "home";
+const app = document.getElementById("app");
+
+function toggleMenu(){
+ sidebar.classList.toggle("active");
+ overlay.classList.toggle("active");
 }
 
-function addAgua(){
-    agua+=250;
-    document.getElementById('aguaBar').style.width=Math.min(100, (agua/2275)*100)+'%';
+function go(t){
+ toggleMenu();
+ tela=t;
+ render();
 }
 
-function addRefeicaoRapida(){
-    kcal += 350;
-    document.getElementById('kcal').innerHTML = `${kcal} <small style="color:#888; font-size: 14px;">/ 2577 kcal</small>`;
+function logout(){
+ alert("Logout realizado");
 }
 
-// Inicializar Gráfico
-new Chart(document.getElementById('grafico'),{
-    type:'line',
-    data:{
-        labels:['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
-        datasets:[{
-            label: 'Calorias',
-            data:[2100, 2300, 1900, 2500, 2100, 1800, 0],
-            borderColor: '#2db27d',
-            backgroundColor: 'rgba(45, 178, 125, 0.1)',
-            fill: true,
-            tension: 0.4
-        }]
-    },
-    options: { responsive: true }
-});
+function render(){
+ if(tela==="home"){
+  app.innerHTML=`
+  <div class="top">
+    <div class="hamb" onclick="toggleMenu()">☰</div>
+    <b>Dashboard</b>
+  </div>
+
+  <div class="card">
+    <b>Bem-vindo ao NutriShot 👋</b><br>
+    Controle total da sua alimentação.
+  </div>
+
+  <div class="ad">
+    <ins class="adsbygoogle"
+      style="display:block"
+      data-ad-client="ca-pub-6941311170472131"
+      data-ad-slot="2257554053"
+      data-ad-format="auto"
+      data-ad-full-width-responsive="true"></ins>
+  </div>
+  `;
+  setTimeout(()=>{(adsbygoogle=window.adsbygoogle||[]).push({});},500);
+ }
+
+ if(tela==="shop"){
+  app.innerHTML=`
+  <div class="top">
+    <div class="hamb" onclick="toggleMenu()">☰</div>
+    <b>Loja de Suplementos</b>
+  </div>
+
+  <div class="grid">
+    ${SUPLEMENTOS.map(p=>`
+      <div class="prod">
+        <img src="${p.img}" onerror="this.src='https://via.placeholder.com/150'">
+        <b style="font-size:12px">${p.nome}</b><br><br>
+        <a href="${p.link}" target="_blank">
+          <button class="btn-primary" style="width:100%">Ver Oferta</button>
+        </a>
+      </div>
+    `).join("")}
+  </div>
+  `;
+ }
+}
+
+render();
 </script>
-
 </body>
 </html>
