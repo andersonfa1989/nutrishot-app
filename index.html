@@ -1,208 +1,212 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 <title>NutriShot Elements</title>
 
-<!-- Google Ads -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6941311170472131" crossorigin="anonymous"></script>
 
 <style>
-:root{
-  --primary:#2ab573;
-  --blue:#2490eb;
-  --bg:#f9fafb;
-}
-body{
-  margin:0;
-  font-family:Segoe UI,Roboto,sans-serif;
-  background:var(--bg);
-  color:#333;
-  overflow-x:hidden;
-}
-.card{
-  background:#fff;
-  border-radius:18px;
-  padding:18px;
-  margin:15px;
-  box-shadow:0 4px 15px rgba(0,0,0,.05);
-}
-button{
-  border:none;
-  border-radius:14px;
-  padding:14px;
-  font-weight:bold;
-  cursor:pointer;
-}
-.btn-primary{background:var(--primary);color:#fff;}
-.btn-blue{background:var(--blue);color:#fff;}
+/* === MANTIDO SEU ESTILO ORIGINAL === */
+:root{--primary:#2ab573;--blue:#2490eb;--bg:#f9fafb;--water:#3498db}
+body{margin:0;font-family:Segoe UI,Roboto,sans-serif;background:var(--bg);overflow-x:hidden}
+.hidden{display:none}
+
 /* MENU */
-.sidebar{
-  position:fixed;
-  top:0;left:-260px;
-  width:260px;height:100%;
-  background:#fff;
-  z-index:9999;
-  transition:.3s;
-  box-shadow:2px 0 15px rgba(0,0,0,.15);
-}
+.sidebar{position:fixed;top:0;left:-280px;width:280px;height:100%;background:#fff;z-index:10000;transition:.3s;box-shadow:2px 0 15px rgba(0,0,0,.1)}
 .sidebar.active{left:0}
-.sidebar header{
-  padding:30px 20px;
-  background:linear-gradient(135deg,var(--blue),var(--primary));
-  color:#fff;
-}
-.menu-item{
-  padding:15px 22px;
-  cursor:pointer;
-  font-weight:500;
-}
-.menu-item:hover{background:#f0f7f4}
-.overlay{
-  display:none;
-  position:fixed;
-  top:0;left:0;
-  width:100%;height:100%;
-  background:rgba(0,0,0,.4);
-  z-index:9998;
-}
+.sidebar-header{padding:40px 20px;background:linear-gradient(135deg,var(--blue),var(--primary));color:#fff}
+.menu-item{padding:15px 25px;cursor:pointer;font-weight:500}
+.menu-item:hover{background:#f0f7f4;color:var(--primary)}
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);display:none;z-index:9999}
 .overlay.active{display:block}
-/* TOPO */
-.top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:15px;
-}
-.hamb{font-size:26px;cursor:pointer}
-/* LOJA */
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-.prod{
-  background:#fff;
-  border-radius:16px;
-  padding:12px;
-  text-align:center;
-  border:1px solid #eee;
-}
-.prod img{
-  width:100%;
-  height:90px;
-  object-fit:contain;
-}
-.ad{
-  margin:15px;
-  border-radius:16px;
-  overflow:hidden;
-  background:#eee;
-  min-height:90px;
-}
+
+/* UI */
+.card{background:#fff;border-radius:20px;padding:20px;margin:15px;border:1px solid #eee}
+.fab{position:fixed;bottom:30px;right:20px;width:65px;height:65px;border-radius:50%;background:#000;color:#fff;font-size:30px;border:none}
+.ad-banner{margin:15px;border-radius:15px;overflow:hidden;background:#eee}
+.progress{height:10px;background:#eee;border-radius:10px;overflow:hidden}
+.progress div{height:100%;background:var(--primary)}
 </style>
 </head>
 
 <body>
 
-<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+<div id="overlay" class="overlay" onclick="toggleMenu()"></div>
 
-<div class="sidebar" id="sidebar">
-  <header>
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-header">
     <b style="font-size:22px">NutriShot</b><br>
     <small id="userName">Usuário</small>
-  </header>
-
-  <div class="menu-item" onclick="go('home')">🏠 Dashboard</div>
-  <div class="menu-item" onclick="go('shop')">🛒 Loja de Suplementos</div>
-  <div class="menu-item" onclick="alert('Em breve')">📊 Gráfico Semanal</div>
-  <div class="menu-item" onclick="alert('Em breve')">📅 Histórico Diário</div>
-  <div class="menu-item" onclick="alert('Plano enviado via WhatsApp')">📲 Plano WhatsApp</div>
-  <div class="menu-item" onclick="alert('Área Premium')">⭐ Premium</div>
+  </div>
+  <div class="menu-item" onclick="nav('home')">🏠 Dashboard</div>
+  <div class="menu-item" onclick="nav('catalogo')">🛒 Loja de Suplementos</div>
+  <div class="menu-item" onclick="nav('plano')">📲 Plano WhatsApp</div>
+  <div class="menu-item" onclick="nav('historico')">📜 Histórico Diário</div>
+  <div class="menu-item" onclick="alert('Premium em breve')">💎 Premium</div>
   <div class="menu-item" onclick="logout()" style="color:#e74c3c">🚪 Sair</div>
 </div>
 
 <div id="app"></div>
 
 <script>
-const SUPLEMENTOS = [
- {nome:"Creatina Growth 100g",img:"creatina-100g.png",link:"https://amzn.to/4b47g9o"},
- {nome:"Whey Chocolate",img:"wey-choco.png",link:"https://amzn.to/3LjWMIB"},
- {nome:"Whey Morango",img:"wey-moran.png",link:"https://amzn.to/4sPsdvg"},
- {nome:"Whey Creme",img:"wey-creme.png",link:"https://amzn.to/4qq9ODl"},
- {nome:"Gainer Chocolate",img:"Hipercalórico-choco.png",link:"https://amzn.to/4qpZKKC"},
- {nome:"Gainer Cookies",img:"Hipercalórico-cooki.png",link:"https://amzn.to/4bC9A7C"},
- {nome:"Termogênico",img:"termog.png",link:"https://amzn.to/4b5phUQ"},
- {nome:"L-Carnitina 1000mg",img:"l-creat1000.png",link:"https://amzn.to/3LJAv6S"},
- {nome:"L-Carnitina 2000mg",img:"l-creat2000.png",link:"https://amzn.to/4bBHcCw"}
-];
+const SUPLEMENTOS={
+ganho:[
+{nome:"Creatina Growth",link:"https://amzn.to/4b47g9o"},
+{nome:"Whey Chocolate",link:"https://amzn.to/3LjWMIB"},
+{nome:"Hipercalórico",link:"https://amzn.to/4qpZKKC"}
+],
+perda:[
+{nome:"Termogênico",link:"https://amzn.to/4b5phUQ"},
+{nome:"L-Carnitina",link:"https://amzn.to/4bBHcCw"}
+]
+};
 
-let tela = "home";
-const app = document.getElementById("app");
+let estado=JSON.parse(localStorage.getItem("nutrishot"))||{
+tela:"home",nome:"Isaac",objetivo:"ganho",
+cal:0,agua:0,historico:[]
+};
 
+function salvar(){localStorage.setItem("nutrishot",JSON.stringify(estado))}
 function toggleMenu(){
- sidebar.classList.toggle("active");
- overlay.classList.toggle("active");
+sidebar.classList.toggle("active");
+overlay.classList.toggle("active");
 }
-
-function go(t){
- toggleMenu();
- tela=t;
- render();
-}
-
-function logout(){
- alert("Logout realizado");
-}
+function nav(t){estado.tela=t;salvar();render();toggleMenu()}
+function logout(){localStorage.clear();location.reload()}
 
 function render(){
- if(tela==="home"){
-  app.innerHTML=`
-  <div class="top">
-    <div class="hamb" onclick="toggleMenu()">☰</div>
-    <b>Dashboard</b>
-  </div>
+document.getElementById("userName").innerText=estado.nome;
+const app=document.getElementById("app");
 
-  <div class="card">
-    <b>Bem-vindo ao NutriShot 👋</b><br>
-    Controle total da sua alimentação.
-  </div>
+if(estado.tela==="home"){
+app.innerHTML=`
+<div style="padding:15px;display:flex;align-items:center">
+<span style="font-size:26px" onclick="toggleMenu()">☰</span>
+<b style="margin-left:15px">Dashboard</b>
+</div>
 
-  <div class="ad">
-    <ins class="adsbygoogle"
-      style="display:block"
-      data-ad-client="ca-pub-6941311170472131"
-      data-ad-slot="2257554053"
-      data-ad-format="auto"
-      data-ad-full-width-responsive="true"></ins>
-  </div>
-  `;
-  setTimeout(()=>{(adsbygoogle=window.adsbygoogle||[]).push({});},500);
- }
+<div class="card">
+<b>Hidratação</b>
+<div class="progress"><div style="width:${estado.agua/2000*100}%"></div></div>
+<button onclick="estado.agua+=250;salvar();render()">+ 250ml</button>
+</div>
 
- if(tela==="shop"){
-  app.innerHTML=`
-  <div class="top">
-    <div class="hamb" onclick="toggleMenu()">☰</div>
-    <b>Loja de Suplementos</b>
-  </div>
+<div class="ad-banner">
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-6941311170472131"
+data-ad-slot="2257554053"
+data-ad-format="auto"
+data-ad-full-width-responsive="true"></ins>
+</div>
 
-  <div class="grid">
-    ${SUPLEMENTOS.map(p=>`
-      <div class="prod">
-        <img src="${p.img}" onerror="this.src='https://via.placeholder.com/150'">
-        <b style="font-size:12px">${p.nome}</b><br><br>
-        <a href="${p.link}" target="_blank">
-          <button class="btn-primary" style="width:100%">Ver Oferta</button>
-        </a>
-      </div>
-    `).join("")}
-  </div>
-  `;
- }
+<div class="card">
+<b>Calorias</b>
+<h2>${estado.cal} kcal</h2>
+</div>
+
+<button class="fab" onclick="addRefeicao()">+</button>
+`;
+(adsbygoogle=window.adsbygoogle||[]).push({});
+}
+else if(estado.tela==="catalogo"){
+const lista = estado.objetivo==="ganho" ? SUPLEMENTOS.ganho : SUPLEMENTOS.perda;
+app.innerHTML=`
+<div style="padding:15px;display:flex;align-items:center">
+<span style="font-size:26px" onclick="toggleMenu()">☰</span>
+<b style="margin-left:15px">Loja de Suplementos</b>
+</div>
+
+<div style="padding:15px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+${lista.map(p=>`
+<div class="card" style="text-align:center">
+<b style="font-size:14px">${p.nome}</b>
+<a href="${p.link}" target="_blank">
+<button style="margin-top:10px;width:100%;padding:10px;border:none;border-radius:12px;background:var(--primary);color:#fff;font-weight:bold">
+Ver Oferta
+</button>
+</a>
+</div>
+`).join("")}
+</div>
+`;
 }
 
+else if(estado.tela==="plano"){
+app.innerHTML=`
+<div style="padding:15px;display:flex;align-items:center">
+<span style="font-size:26px" onclick="toggleMenu()">☰</span>
+<b style="margin-left:15px">Plano Alimentar</b>
+</div>
+
+<div class="card">
+<p><b>Objetivo:</b> ${estado.objetivo==="ganho"?"Ganho de Massa":"Emagrecimento"}</p>
+<button onclick="gerarPlano()" style="width:100%;padding:15px;border:none;border-radius:15px;background:var(--blue);color:#fff;font-weight:bold">
+📲 Gerar e Enviar WhatsApp
+</button>
+</div>
+`;
+}
+
+else if(estado.tela==="historico"){
+app.innerHTML=`
+<div style="padding:15px;display:flex;align-items:center">
+<span style="font-size:26px" onclick="toggleMenu()">☰</span>
+<b style="margin-left:15px">Histórico Diário</b>
+</div>
+
+<div class="card">
+${estado.historico.length===0
+? "<small>Nenhuma refeição registrada.</small>"
+: estado.historico.map(h=>`
+<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee">
+<span>${h.tipo}</span>
+<b>${h.cal} kcal</b>
+</div>
+`).join("")}
+</div>
+`;
+}
+}
+
+/* ===== FUNÇÕES EXTRAS ===== */
+
+function addRefeicao(){
+const cal = Math.floor(Math.random()*300+200);
+estado.cal += cal;
+estado.historico.unshift({
+tipo:"Refeição",
+cal:cal,
+data:new Date().toLocaleDateString()
+});
+salvar();
+render();
+}
+
+function gerarPlano(){
+const texto = encodeURIComponent(
+`Plano NutriShot 🚀
+
+Objetivo: ${estado.objetivo==="ganho"?"Ganho de Massa":"Emagrecimento"}
+
+Café da manhã:
+• Ovos + pão integral
+
+Almoço:
+• Frango + arroz + salada
+
+Jantar:
+• Carne magra + legumes
+
+Água: 2L por dia 💧
+`
+);
+window.open(`https://wa.me/?text=${texto}`,"_blank");
+}
+
+/* ===== INICIALIZAÇÃO ===== */
 render();
 </script>
 </body>
