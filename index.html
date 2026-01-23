@@ -2,239 +2,193 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>NutriShot Elements</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NutriShot AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f5f6fa;
-}
-.app {
-    display: flex;
-    height: 100vh;
-}
-.menu {
-    width: 240px;
-    background: #1e272e;
-    color: #fff;
-    padding: 15px;
-}
-.menu h2 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-.menu-item {
-    padding: 10px;
-    margin-bottom: 8px;
-    background: #2f3640;
-    cursor: pointer;
-    border-radius: 6px;
-}
-.menu-item:hover {
-    background: #40739e;
-}
-.conteudo {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-}
-.card {
-    background: #fff;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 15px;
-}
-.produto img {
-    width: 100%;
-    border-radius: 6px;
-}
-.botao {
-    padding: 10px;
-    background: #27ae60;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
-.botao:hover {
-    opacity: 0.9;
-}
-.footer-banner {
-    position: fixed;
-    bottom: 0;
-    left: 240px;
-    right: 0;
-    background: #fbc531;
-    padding: 10px;
-    text-align: center;
-    font-weight: bold;
-}
-.hidden {
-    display: none;
-}
+body{margin:0;font-family:Arial;background:#f4f6f8}
+.hidden{display:none}
+.menu{width:240px;background:#2db27d;color:#fff;height:100vh;position:fixed}
+.menu h2{padding:20px;margin:0}
+.menu a{display:block;padding:15px;color:#fff;text-decoration:none}
+.menu a:hover{background:rgba(0,0,0,.1)}
+.content{margin-left:240px;padding:20px}
+.card{background:#fff;border-radius:12px;padding:15px;margin-bottom:15px}
+.banner{background:#6c5ce7;color:#fff;padding:15px;border-radius:12px}
+.btn{padding:12px;border:none;border-radius:10px;cursor:pointer}
+.btn-green{background:#2db27d;color:#fff}
+.btn-blue{background:#0984e3;color:#fff}
+.btn-outline{border:2px solid #2db27d;background:#eafff4}
+.float-btn{position:fixed;bottom:20px;right:20px;width:60px;height:60px;border-radius:50%;font-size:30px}
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center}
+.modal-box{background:#fff;padding:20px;border-radius:12px;width:90%;max-width:400px}
+.progress{height:10px;background:#eee;border-radius:10px;overflow:hidden}
+.progress div{height:100%;background:#2db27d}
 </style>
 </head>
 
 <body>
-<div class="app">
-    <div class="menu">
-        <h2>NutriShot</h2>
-        <div class="menu-item" onclick="mostrar('dashboard')">🏠 Dashboard</div>
-        <div class="menu-item" onclick="mostrar('loja')">🛒 Loja de Suplementos</div>
-        <div class="menu-item" onclick="mostrar('medidas')">📏 Atualizar Medidas</div>
-        <div class="menu-item" onclick="mostrar('plano')">🥗 Plano Alimentar</div>
-        <div class="menu-item" onclick="mostrar('grafico')">📊 Gráfico Semanal</div>
-        <div class="menu-item" onclick="mostrar('historico')">📜 Histórico Diário</div>
-        <div class="menu-item" onclick="mostrar('premium')">💎 Premium</div>
-        <div class="menu-item" onclick="sair()">🚪 Sair</div>
-    </div>
 
-    <div class="conteudo">
-        <!-- DASHBOARD -->
-        <div id="dashboard" class="card">
-            <h3>Bem-vindo 👋</h3>
-            <p>Acompanhe sua evolução diária.</p>
-        </div>
-
-        <!-- LOJA -->
-        <div id="loja" class="card hidden">
-            <h3>🛒 Loja de Suplementos</h3>
-
-            <div class="produto">
-                <p>Creatina 100g</p>
-                <a href="https://seulink.com/creatina-100g" target="_blank">Comprar</a>
-            </div>
-
-            <div class="produto">
-                <p>Whey Creme</p>
-                <a href="https://seulink.com/wey-creme" target="_blank">Comprar</a>
-            </div>
-
-            <div class="produto">
-                <p>Whey Chocolate</p>
-                <a href="https://seulink.com/wey-choco" target="_blank">Comprar</a>
-            </div>
-
-            <div class="produto">
-                <p>Whey Morango</p>
-                <a href="https://seulink.com/wey-moran" target="_blank">Comprar</a>
-            </div>
-
-            <div class="produto">
-                <p>Hipercalórico Chocolate</p>
-                <a href="https://seulink.com/Hipercalórico-choco" target="_blank">Comprar</a>
-            </div>
-
-            <div class="produto">
-                <p>Hipercalórico Cookies</p>
-                <a href="https://seulink.com/Hipercalórico-cooki" target="_blank">Comprar</a>
-            </div>
-
-            <div class="produto">
-                <p>Termogênico</p>
-                <a href="https://seulink.com/termog" target="_blank">Comprar</a>
-            </div>
-
-            <div class="produto">
-                <p>L-Creatina 1000mg</p>
-                <a href="https://seulink.com/l-creat1000" target="_blank">Comprar</a>
-            </div>
-
-            <div class="produto">
-                <p>L-Creatina 2000mg</p>
-                <a href="https://seulink.com/l-creat2000" target="_blank">Comprar</a>
-            </div>
-
-            <div class="produto">
-                <p>Psyllium</p>
-                <a href="https://seulink.com/psyllium" target="_blank">Comprar</a>
-            </div>
-        </div>
-
-        <!-- MEDIDAS -->
-        <div id="medidas" class="card hidden">
-            <h3>📏 Atualizar Medidas</h3>
-            <input placeholder="Peso (kg)">
-            <input placeholder="Altura (cm)">
-            <button class="botao">Salvar</button>
-        </div>
-
-        <!-- PLANO -->
-        <div id="plano" class="card hidden">
-            <h3>🥗 Plano Alimentar</h3>
-            <select id="objetivo">
-                <option value="emagrecer">Emagrecer</option>
-                <option value="massa">Ganhar Massa</option>
-            </select>
-            <button class="botao" onclick="enviarWhats()">Enviar WhatsApp</button>
-        </div>
-
-        <!-- GRÁFICO -->
-        <div id="grafico" class="card hidden">
-            <h3>📊 Gráfico Semanal</h3>
-            <canvas id="graficoSemanal"></canvas>
-        </div>
-
-        <!-- HISTÓRICO -->
-        <div id="historico" class="card hidden">
-            <h3>📜 Histórico Diário</h3>
-            <p>Refeições e hidratação registradas por dia.</p>
-        </div>
-
-        <!-- PREMIUM -->
-        <div id="premium" class="card hidden">
-            <h3>💎 Premium</h3>
-            <p>Remova anúncios e desbloqueie relatórios.</p>
-            <button class="botao">Assinar</button>
-        </div>
-    </div>
+<div class="menu">
+  <h2>NutriShot AI</h2>
+  <a onclick="show('dashboard')">🏠 Dashboard</a>
+  <a onclick="show('loja')">🛒 Loja de Suplementos</a>
+  <a onclick="show('medidas')">📏 Atualizar Medidas</a>
+  <a onclick="show('plano')">📲 Gerar Plano WhatsApp</a>
+  <a onclick="show('historico')">📜 Histórico Diário</a>
+  <a onclick="show('premium')">💎 Premium</a>
+  <a onclick="alert('Sessão encerrada')">🚪 Sair</a>
 </div>
 
-<div class="footer-banner">
-    🚀 Versão Free — Assine o Premium
+<div class="content">
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="page">
+  <div class="banner">Sequência Ativa • 1 Dia 🔥</div>
+
+  <div class="card">
+    <h4>Hidratação Diária</h4>
+    <div class="progress"><div id="aguaBar" style="width:0%"></div></div>
+    <button class="btn btn-blue" onclick="addAgua()">+ Beber 250ml</button>
+  </div>
+
+  <div class="card">
+    <h4>Consumo de Calorias</h4>
+    <p id="kcal">0 / 2577 kcal</p>
+  </div>
+
+  <div class="card">
+    <h4>Macros</h4>
+    Prot: <span id="prot">0</span>g |
+    Carb: <span id="carb">0</span>g |
+    Gord: <span id="gord">0</span>g
+  </div>
+
+  <div class="card">
+    <h4>Dica de Ouro ✨</h4>
+    <button class="btn btn-green" onclick="verDica()">Ver Dica Exclusiva</button>
+  </div>
+
+  <div class="card">
+    <canvas id="grafico"></canvas>
+  </div>
+</div>
+
+<!-- LOJA -->
+<div id="loja" class="page hidden">
+  <div class="card">
+    <h3>Loja de Suplementos</h3>
+    <p><a href="#">Creatina 100g</a></p>
+    <p><a href="#">Whey Chocolate</a></p>
+    <p><a href="#">Whey Morango</a></p>
+    <p><a href="#">Hipercalórico</a></p>
+    <p><a href="#">Termogênico</a></p>
+  </div>
+</div>
+
+<!-- MEDIDAS -->
+<div id="medidas" class="page hidden">
+  <div class="card">
+    <h3>Atualizar Medidas</h3>
+    <input placeholder="Peso"><br><br>
+    <input placeholder="Altura"><br><br>
+    <button class="btn btn-green">Salvar</button>
+  </div>
+</div>
+
+<!-- PLANO -->
+<div id="plano" class="page hidden">
+  <div class="card">
+    <h3>Plano Alimentar</h3>
+    <button class="btn btn-outline" onclick="enviarPlano('emagrecer')">Emagrecer</button>
+    <button class="btn btn-outline" onclick="enviarPlano('massa')">Ganhar Massa</button>
+  </div>
+</div>
+
+<!-- HISTORICO -->
+<div id="historico" class="page hidden">
+  <div class="card">
+    <h3>Histórico Diário</h3>
+    <div id="listaHistorico"></div>
+  </div>
+</div>
+
+<!-- PREMIUM -->
+<div id="premium" class="page hidden">
+  <div class="card">
+    <h3>Premium</h3>
+    <p>Remova anúncios e desbloqueie tudo</p>
+    <button class="btn btn-green">Assinar</button>
+  </div>
+</div>
+
+</div>
+
+<button class="btn btn-green float-btn" onclick="novaRefeicao()">+</button>
+
+<!-- MODAL -->
+<div id="modal" class="modal hidden">
+  <div class="modal-box" id="modalBox"></div>
 </div>
 
 <script>
-function mostrar(id) {
-    document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
-    document.getElementById(id).classList.remove('hidden');
+let kcal=0,prot=0,carb=0,gord=0,agua=0;
 
-    if (id === 'grafico') renderGrafico();
+function show(id){
+ document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
+ document.getElementById(id).classList.remove('hidden');
 }
 
-function renderGrafico() {
-    const ctx = document.getElementById('graficoSemanal');
-    if (!ctx) return;
-
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
-            datasets: [{
-                label: 'Kcal',
-                data: [1800,2000,1900,2100,1950,2200,2000]
-            }]
-        }
-    });
+function addAgua(){
+ agua+=250;
+ document.getElementById('aguaBar').style.width=Math.min(100,agua/2275*100)+'%';
 }
 
-function enviarWhats() {
-    const obj = document.getElementById('objetivo').value;
-    let texto = obj === 'emagrecer'
-        ? 'Plano para emagrecimento: café leve, almoço equilibrado, jantar low carb.'
-        : 'Plano para ganho de massa: proteína alta, carbo bom, pós treino reforçado.';
-
-    window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`);
+function verDica(){
+ mostrarAd(()=>alert('Beba água antes das refeições!'));
 }
 
-function sair() {
-    alert('Sessão encerrada');
+function novaRefeicao(){
+ document.getElementById('modal').classList.remove('hidden');
+ document.getElementById('modalBox').innerHTML=`
+ <h3>Qual refeição?</h3>
+ <button onclick="analisar()">Café</button>
+ <button onclick="analisar()">Almoço</button>
+ <button onclick="analisar()">Jantar</button>
+ `;
 }
+
+function analisar(){
+ mostrarAd(()=>{
+  let r={k:350,p:25,c:40,g:10};
+  kcal+=r.k;prot+=r.p;carb+=r.c;gord+=r.g;
+  document.getElementById('kcal').innerText=kcal+' / 2577 kcal';
+  document.getElementById('prot').innerText=prot;
+  document.getElementById('carb').innerText=carb;
+  document.getElementById('gord').innerText=gord;
+  document.getElementById('modal').classList.add('hidden');
+ });
+}
+
+function mostrarAd(cb){
+ alert('Publicidade');
+ cb();
+}
+
+function enviarPlano(tipo){
+ let txt= tipo==='emagrecer'
+ ? 'Plano para emagrecimento com déficit calórico'
+ : 'Plano para ganho de massa com superávit calórico';
+ window.open('https://wa.me/?text='+encodeURIComponent(txt));
+}
+
+new Chart(document.getElementById('grafico'),{
+ type:'bar',
+ data:{labels:['S','T','Q','Q','S','S','D'],datasets:[{data:[1,2,3,4,2,1,0]}]}
+});
 </script>
+
 </body>
 </html>
